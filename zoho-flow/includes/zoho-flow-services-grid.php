@@ -143,7 +143,7 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
         }
       ?>
 			<div id='app-request' class="grid-app-wrapper grid-app-request">
-				<a href="https://creator.zohopublic.com/zohointranet/zoho-flow/form-embed/Request_an_App/7fBw7xgDYWV0bJrNa8S0m8AVXWUFC4u42mapek0d3ySeYHNVxZK4x0JMTD8mC8Weg18tNBjKvWsT2e0vQUXC3OGWpENy7Vb4sMtN?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=300&height=440" class="thickbox" title="New integration request">
+				<a href="https://creatorapp.zohopublic.com/zohointranet/zoho-flow/form-embed/Request_an_App/qqePxZq7ZkzdWKGCYvntEk14O9YqjUGHJUZJHYsMA5zOK6XEC8b6Gh7mrdz2TnYu4AUVBRwu1YzKVU8KAwbn2OurBsJ66FqkT8Rm?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=320&height=440" class="thickbox" title="New integration request">
 					<div class="grid-app-request-icon">
 						<div class="plus alt"> </div>
 					</div>

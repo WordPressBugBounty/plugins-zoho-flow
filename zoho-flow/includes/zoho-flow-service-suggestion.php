@@ -15,7 +15,7 @@ class Zoho_Flow_Service_Suggestion{
 
   /**
    * admin notice blocked services:
-   * wpforms,formidable-forms,everest-forms, mailster, bitform, ninja-tables, Akismet,WP Mail, SMTP, Fluent SMTP, The Newsletter Plugin, UserFeedback, Jetpack CRM, Fluent Booking, BookingPress, Easy Digital Downloads
+   * WPForms,Formidable Forms,everest-forms, Mailster, Bitform, Ninja Tables, Akismet,WP Mail, SMTP, Fluent SMTP, The Newsletter Plugin, UserFeedback, Jetpack CRM, Fluent Booking, BookingPress, Easy Digital Downloads, Simply Schedule Appointments
    */
   public function __construct() {
       global $pagenow;
@@ -198,7 +198,42 @@ class Zoho_Flow_Service_Suggestion{
 	        'heateor-social-commenting' => 'super-socializer',
 	        'heateor-social-login' => 'super-socializer',
 	        'heateor-social-sharing' => 'super-socializer',
-	        'heateor-like-buttons' => 'super-socializer'
+	        'heateor-like-buttons' => 'super-socializer',
+	        'tec-tickets' => 'event-tickets',
+	        'tec-tickets-attendees' => 'event-tickets',
+	        'tec-tickets-settings' => 'event-tickets',
+	        'tec-tickets-help' => 'event-tickets',
+	        'bookly-dashboard' => 'bookly',
+	        'bookly-calendar' => 'bookly',
+	        'bookly-appointments' => 'bookly',
+	        'bookly-staff' => 'bookly',
+	        'bookly-services' => 'bookly',
+	        'bookly-customers' => 'bookly',
+	        'bookly-settings' => 'bookly',
+	        'bookly-shop' => 'bookly',
+	        'bookly-news' => 'bookly',
+	        'bookly-notifications' => 'bookly',
+	        'bookly-cloud-products' => 'bookly',
+					'cp_apphourbooking' => 'appointment-hour-booking',
+					'cp_apphourbooking_settings' => 'appointment-hour-booking',
+					'cp_apphourbooking_addons' => 'appointment-hour-booking',
+					'cp_apphourbooking_support' => 'appointment-hour-booking',
+					'wpsbc-calendars' => 'wp-simple-booking-calendar',
+					'wpsbc-settings' => 'wp-simple-booking-calendar',
+					'wpbs-calendars' => 'wp-booking-system',
+					'wpbs-forms' => 'wp-booking-system',
+					'wpbs-settings' => 'wp-booking-system',
+					'vikbooking' => 'vikbooking',
+					'bookit' => 'bookit',
+					'bookit-appointments' => 'bookit',
+					'bookit-services' => 'bookit',
+					'bookit-staff' => 'bookit',
+					'bookit-customers' => 'bookit',
+					'bookit-settings' => 'bookit',
+					'bookit-account' => 'bookit',
+					'bookit-addons-integrations' => 'bookit',
+					'booking-package/index.php' => 'booking-package',
+					'booking-package_schedule_page' => 'booking-package'
 	    );
 	    if( isset( $page ) ){
 	        if( array_key_exists( $page, $page_service_map ) ){
@@ -229,6 +264,13 @@ class Zoho_Flow_Service_Suggestion{
 	        'wpdmpro' => 'download-manager',
 	        'llms_form' => 'lifter-lms',
 	        'popup' => 'popup-maker',
+					'tribe_events' => 'the-events-calendar',
+					'tribe_venue' => 'the-events-calendar',
+					'tribe_organizer' => 'the-events-calendar',
+	        'tec_tc_order' => 'event-tickets',
+					'event' => 'events-manager',
+					'location' => 'events-manager',
+					'event-recurring' => 'events-manager'
 	    );
 	    if( isset( $post_type ) ){
 	        if( array_key_exists( $post_type, $post_type_service_map ) ){
@@ -596,6 +638,86 @@ class Zoho_Flow_Service_Suggestion{
           $this->icon_file = 'super-socializer.png';
           $this->gallery_app_link = 'super-socializer';
           $this->plugin_api_page_link = 'super-socializer';
+          $this->is_plugin_integration = true;
+      }
+      elseif( 'the-events-calendar' === $service_id ){
+          $this->id = 'the-events-calendar';
+          $this->name = 'The Events Calendar';
+          $this->icon_file = 'the-events-calendar.png';
+          $this->gallery_app_link = 'the-events-calendar';
+          $this->plugin_api_page_link = 'the-events-calendar';
+          $this->is_plugin_integration = true;
+      }
+      elseif( 'event-tickets' === $service_id ){
+          $this->id = 'event-tickets';
+          $this->name = 'Event Tickets';
+          $this->icon_file = 'event-tickets.png';
+          $this->gallery_app_link = 'event-tickets';
+          $this->plugin_api_page_link = 'event-tickets';
+          $this->is_plugin_integration = true;
+      }
+      elseif( 'bookly' === $service_id ){
+          $this->id = 'bookly';
+          $this->name = 'Bookly';
+          $this->icon_file = 'bookly.png';
+          $this->gallery_app_link = 'bookly';
+          $this->plugin_api_page_link = 'bookly';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'appointment-hour-booking' === $service_id ){
+          $this->id = 'appointment-hour-booking';
+          $this->name = 'Appointment Hour Booking';
+          $this->icon_file = 'appointment-hour-booking.png';
+          $this->gallery_app_link = 'appointment-hour-booking';
+          $this->plugin_api_page_link = 'appointment-hour-booking';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'events-manager' === $service_id ){
+          $this->id = 'events-manager';
+          $this->name = 'Events Manager';
+          $this->icon_file = 'events-manager.png';
+          $this->gallery_app_link = 'events-manager';
+          $this->plugin_api_page_link = 'events-manager';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'wp-simple-booking-calendar' === $service_id ){
+          $this->id = 'wp-simple-booking-calendar';
+          $this->name = 'WP Simple Booking Calendar';
+          $this->icon_file = 'wp-simple-booking-calendar.png';
+          $this->gallery_app_link = 'wp-simple-booking-calendar';
+          $this->plugin_api_page_link = 'wp-simple-booking-calendar';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'wp-booking-system' === $service_id ){
+          $this->id = 'wp-booking-system';
+          $this->name = 'WP Booking System';
+          $this->icon_file = 'wp-booking-system.png';
+          $this->gallery_app_link = 'wp-booking-system';
+          $this->plugin_api_page_link = 'wp-booking-system';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'vikbooking' === $service_id ){
+          $this->id = 'vikbooking';
+          $this->name = 'VikBooking';
+          $this->icon_file = 'vikbooking.png';
+          $this->gallery_app_link = 'vikbooking';
+          $this->plugin_api_page_link = 'vikbooking';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'bookit' === $service_id ){
+          $this->id = 'bookit';
+          $this->name = 'Bookit';
+          $this->icon_file = 'bookit.png';
+          $this->gallery_app_link = 'bookit';
+          $this->plugin_api_page_link = 'bookit';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'booking-package' === $service_id ){
+          $this->id = 'booking-package';
+          $this->name = 'Booking Package';
+          $this->icon_file = 'booking-package.png';
+          $this->gallery_app_link = 'booking-package';
+          $this->plugin_api_page_link = 'booking-package';
           $this->is_plugin_integration = true;
       }
       elseif( 'woocommerce' === $service_id ){

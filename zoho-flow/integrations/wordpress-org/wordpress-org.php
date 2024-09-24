@@ -2029,67 +2029,74 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	    }
 	}
 
+	public static $meta_keys_to_be_ignored = array(
+	    "_edit_lock"
+	);
 	//for updated post trigger
 	public function payload_post_meta_created_or_updated_for_post_update($meta_id, $post_id, $meta_key, $meta_value){
-		$post = get_post($post_id);
-		$args = array(
-			'event' => 'post_updated',
-			'post_type' => $post->post_type
-		);
-		$webhooks = $this->get_webhook_posts($args);
-		if(!empty($webhooks) && (!empty($post))){
-		    $post->permalink = get_permalink( $post->ID );
-			$event_data = array(
-				'event' => 'post_updated',
-				"meta_id" => $meta_id,
-				"meta_key" => $meta_key,
-				"meta_value" => $meta_value,
-				'data' => $post,
-				'meta' => $this->get_post_meta($post_id),
-				'taxonomy' => $this->get_post_taxonomy($post_id)
-			);
-			foreach($webhooks as $webhook){
-				$url = $webhook->url;
-				zoho_flow_execute_webhook($url, $event_data,array());
-			}
-		}
+	    if( !in_array( $meta_key, self::$meta_keys_to_be_ignored ) ){
+	        $post = get_post($post_id);
+	        $args = array(
+	            'event' => 'post_updated',
+	            'post_type' => $post->post_type
+	        );
+	        $webhooks = $this->get_webhook_posts($args);
+	        if(!empty($webhooks) && (!empty($post))){
+	            $post->permalink = get_permalink( $post->ID );
+	            $event_data = array(
+	                'event' => 'post_updated',
+	                "meta_id" => $meta_id,
+	                "meta_key" => $meta_key,
+	                "meta_value" => $meta_value,
+	                'data' => $post,
+	                'meta' => $this->get_post_meta($post_id),
+	                'taxonomy' => $this->get_post_taxonomy($post_id)
+	            );
+	            foreach($webhooks as $webhook){
+	                $url = $webhook->url;
+	                zoho_flow_execute_webhook($url, $event_data,array());
+	            }
+	        }
+	    }
 	}
 
 	//for created or updated post trigger
 	public function payload_post_meta_created_or_updated_for_post_created_or_update($meta_id, $post_id, $meta_key, $meta_value){
-		$post = get_post($post_id);
-		$args = array(
-			'event' => 'post_created_or_updated',
-			'post_type' => $post->post_type
-		);
-		$webhooks = $this->get_webhook_posts($args);
-		if(!empty($webhooks) && (!empty($post))){
-		    $post->permalink = get_permalink( $post->ID );
-			$event_data = array(
-				'event' => 'post_created_or_updated',
-				"meta_id" => $meta_id,
-				"meta_key" => $meta_key,
-				"meta_value" => $meta_value,
-				'data' => $post,
-				'meta' => $this->get_post_meta($post_id),
-				'taxonomy' => $this->get_post_taxonomy($post_id)
-			);
-			foreach($webhooks as $webhook){
-				$url = $webhook->url;
-				zoho_flow_execute_webhook($url, $event_data,array());
-			}
-		}
+	    if( !in_array( $meta_key, self::$meta_keys_to_be_ignored ) ){
+	        $post = get_post($post_id);
+	        $args = array(
+	            'event' => 'post_created_or_updated',
+	            'post_type' => $post->post_type
+	        );
+	        $webhooks = $this->get_webhook_posts($args);
+	        if(!empty($webhooks) && (!empty($post))){
+	            $post->permalink = get_permalink( $post->ID );
+	            $event_data = array(
+	                'event' => 'post_created_or_updated',
+	                "meta_id" => $meta_id,
+	                "meta_key" => $meta_key,
+	                "meta_value" => $meta_value,
+	                'data' => $post,
+	                'meta' => $this->get_post_meta($post_id),
+	                'taxonomy' => $this->get_post_taxonomy($post_id)
+	            );
+	            foreach($webhooks as $webhook){
+	                $url = $webhook->url;
+	                zoho_flow_execute_webhook($url, $event_data,array());
+	            }
+	        }
+	    }
 	}
 
 	/**
 	 * Fires after an object's terms have been set.
 	 *
-	 * @param  $post_id  	 Post ID.
-	 * @param  $terms      An array of object term IDs or slugs.
-	 * @param  $tt_ids     An array of term taxonomy IDs.
-	 * @param  $taxonomy   Taxonomy slug.
-	 * @param  $append     Whether to append new terms to the old terms.
-	 * @param  $old_tt_ids Old array of term taxonomy IDs.
+	 * @param  integer $post_id    ID of the post.
+	 * @param  array   $terms      An array of object term IDs or slugs.
+	 * @param  array   $tt_ids     An array of term taxonomy IDs.
+	 * @param  string  $taxonomy   Taxonomy slug.
+	 * @param  boolean $append     Whether to append new terms to the old terms.
+	 * @param  array   $old_tt_ids Old array of term taxonomy IDs.
 	 */
 	public function payload_post_taxonomy_set_for_post_update($post_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids){
 		$post = get_post($post_id);

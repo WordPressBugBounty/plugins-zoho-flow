@@ -322,6 +322,10 @@ class Zoho_Flow_Service
 				$siteinfo['logo_url']= $logo_url;
 			}
 		}
+		if ( ! function_exists( 'get_plugins' ) ) {
+		    require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+		$siteinfo['all_plugins'] = get_plugins();
 		return $siteinfo;
 	}
 
