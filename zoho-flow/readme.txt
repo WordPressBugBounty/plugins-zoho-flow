@@ -5,7 +5,7 @@ Tags: integration, automation, workflow, webhook, notification
 Requires at least: 4.4
 Requires PHP: 7.0.0
 Tested up to: 6.6.1
-Stable tag: 2.9.0
+Stable tag: 2.9.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -164,6 +164,11 @@ Yes, starting from version 2.0.0, the Zoho Flow plugin supports custom post type
 IMPORTANT: Security update - SQL injection vulnerability has been fixed. Upgrade immediately.
 
 == Changelog ==
+
+= 2.9.1 =
+
+= Ultimate Member =
+* New trigger and action support enabled and optimizations to the code
 
 = 2.9.0 =
 

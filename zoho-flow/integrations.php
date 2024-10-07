@@ -1692,46 +1692,107 @@ $zoho_flow_services_config = array (
             array (
                 'type' => 'list',
                 'path' => '/forms',
-                'method' => 'get_forms',
+                'method' => 'list_all_forms',
                 'capability' => 'manage_options',
                 'schema_method' => 'get_form_schema',
             ),
-            array (
+            array ( //Deprecated in version 2.9.1
                 'type' => 'list',
                 'path' => '/forms/(?\'form_id\'[\\d]+)/fields',
                 'method' => 'get_fields',
                 'capability' => 'manage_options',
                 'schema_method' => 'get_field_schema',
             ),
-            array (
+            array ( //Deprecated in version 2.9.1
                 'type' => 'list',
                 'path' => '/forms/(?\'form_id\'[\\d]+)/webhooks',
                 'method' => 'get_webhooks',
                 'capability' => 'manage_options',
                 'schema_method' => 'get_form_webhook_schema',
             ),
-            array (
+            array ( //Deprecated in version 2.9.1
                 'type' => 'create',
                 'path' => '/forms/(?\'form_id\'[\\d]+)/webhooks',
-                'method' => 'create_webhook',
+                'method' => 'create_webhook_old',
                 'capability' => 'manage_options',
             ),
-            array (
+            array ( //Deprecated in version 2.9.1
                 'type' => 'delete',
                 'path' => '/forms/(?\'form_id\'[\\d]+)/webhooks/(?\'webhook_id\'[\\d]+)',
-                'method' => 'delete_webhook',
+                'method' => 'delete_webhook_old',
                 'capability' => 'manage_options',
             ),
+            array (
+                'type' => 'list',
+                'path' => '/custom-fields',
+                'method' => 'list_all_fields',
+                'capability' => 'list_users'
+            ),
+            array (
+                'type' => 'list',
+                'path' => '/user',
+                'method' => 'fetch_user',
+                'capability' => 'list_users'
+            ),
+            array (
+                'type' => 'update',
+                'path' => '/user/(?\'user_id\'[\\d]+)/status/(?\'status\'[a-zA-Z_-]+)',
+                'method' => 'update_user_status',
+                'capability' => 'edit_users'
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'list_users',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
         ),
         'hooks' => array (
-            array (
+            array ( //Deprecated in version 2.9.1
                 'action' => 'um_after_save_registration_details',
                 'method' => 'process_form_submission',
                 'args_count' => 2,
             ),
-            array(
+            array(  //Deprecated in version 2.9.1
                 'action' => 'um_after_user_updated',
                 'method' => 'um_user_updated',
+                'args_count' => 3,
+            ),
+            array(
+                'action' => 'um_user_after_updating_profile',
+                'method' => 'payload_user_profile_updated',
+                'args_count' => 3,
+            ),
+            array(
+                'action' => 'um_after_user_account_updated',
+                'method' => 'payload_user_account_updated',
+                'args_count' => 2,
+            ),
+            array(
+                'action' => 'um_after_member_role_upgrade',
+                'method' => 'payload_member_role_changed',
+                'args_count' => 3,
+            ),
+            array(
+                'action' => 'um_after_user_status_is_changed',
+                'method' => 'payload_user_status_changed',
+                'args_count' => 2,
+            ),
+            array(
+                'action' => 'um_after_save_registration_details',
+                'method' => 'payload_user_registered',
                 'args_count' => 3,
             ),
         ),

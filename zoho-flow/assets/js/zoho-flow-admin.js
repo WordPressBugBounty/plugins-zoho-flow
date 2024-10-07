@@ -56,6 +56,7 @@ function generateApiKey(frm){
 		div.show();
 		jQuery("#generate-api-key-form").hide(); //NO I18N
 		btn.val(i18n.generate);
+		reloadApiKeyTable();
 	}).fail(function(response){
 		jQuery("#generate-api-key-error").remove(); //NO I18N
 		span = jQuery("<span id='generate-api-key-error' style='color:red;vertical-align:middle;margin-left:10px;'></span>");
@@ -132,7 +133,7 @@ jQuery(document).ready(function(){
 		e.preventDefault();
 		frm = jQuery("#generate-api-key-form"); //NO I18N
 		generateApiKey(frm);
-		reloadApiKeyTable();
+		//reloadApiKeyTable();
 	});
 
 	jQuery("#generate-api-key-form").submit(function(e){ //NO I18N
