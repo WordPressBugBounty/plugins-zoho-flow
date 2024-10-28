@@ -2845,6 +2845,85 @@ $zoho_flow_services_config = array (
         ),
     ),
     array (
+        'name' => esc_html__("WP-Members"),
+        'api_path' => 'wp-members',
+        'class_name' => 'Zoho_Flow_WP_Members',
+        'gallery_app_link' => 'wp-members',
+        'description' => esc_html__('Use WP-Members to manage content restrictions for registered users on your WordPress site. By integrating WP-Members with your favorite applications, you\'ll be able to manage your members\' membership levels more efficiently.', 'zoho-flow'),
+        'icon_file' => 'wp-members.png',
+        'class_test' => 'WP_Members',
+        'function_test' => 'wpmem_init',
+        'app_documentation_link' => '',
+        'embed_link' => 'wp_members',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/fields',
+                'method' => 'get_all_fields',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/user',
+                'method' => 'fetch_user',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'update',
+                'path' => '/user/(?\'user_id\'[\\d]+)/activate',
+                'method' => 'activate_user',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'update',
+                'path' => '/user/(?\'user_id\'[\\d]+)/deactivate',
+                'method' => 'deactivate_user',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'wpmem_post_register_data',
+                'method' => 'payload_user_registered',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'wpmem_post_update_data',
+                'method' => 'payload_user_profile_updated',
+                'args_count' => 3,
+            ),
+            array (
+                'action' => 'wpmem_user_activated',
+                'method' => 'payload_user_activated',
+                'args_count' => 1,
+            ),
+            array (
+                'action' => 'wpmem_user_deactivated',
+                'method' => 'payload_user_deactivated',
+                'args_count' => 1,
+            )
+        ),
+    ),
+    array (
         'name' => esc_html__("WP-Polls"),
         'api_path' => 'wp-polls',
         'class_name' => 'Zoho_Flow_WP_Polls',
@@ -3233,6 +3312,62 @@ $zoho_flow_services_config = array (
                 'action' => 'swpm_membership_level_changed',
                 'method' => 'payload_member_level_updated',
                 'args_count' => 1,
+            )
+        )
+    ),
+    array (
+        'name' => esc_html__('Profile Builder'),
+        'api_path' => 'profile-builder',
+        'class_name' => 'Zoho_Flow_Profile_Builder',
+        'gallery_app_link' => 'profile-builder',
+        'description' => esc_html__('Use Profile Builder to create and manage user registrations, profiles, and more on your WordPress site. By integrating Profile Builder with other applications, you can ensure all the user profile details are up to date.', 'zoho-flow'),
+        'icon_file' => 'profile-builder.png',
+        'class_test' => 'wppb_login_widget',
+        'app_documentation_link' => '',
+        'embed_link' => 'profile_builder',
+        'version' => 'v1',
+        'rest_apis' => array (
+            array(
+                'type' => 'list',
+                'path' => '/fields',
+                'method' => 'get_all_fields',
+                'capability' => 'manage_options',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/user',
+                'method' => 'fetch_user',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array (
+            array(
+                'action' => 'wppb_register_success',
+                'method' => 'payload_user_registered',
+                'args_count' => 3,
+            ),
+            array(
+                'action' => 'wppb_edit_profile_success',
+                'method' => 'payload_user_profile_updated',
+                'args_count' => 3,
             )
         )
     ),
@@ -4562,6 +4697,128 @@ $zoho_flow_services_config = array (
         )
     ),
     array(
+        'name' => esc_html__("Restrict User Access"),
+        'api_path' => 'restrict-user-access',
+        'class_name' => 'Zoho_Flow_Restrict_User_Access',
+        'gallery_app_link' => 'restrict-user-access',
+        'description' => esc_html__('Use Restrict User Access to manage content restrictions for registered users on your WordPress site. By integrating Restrict User Access with other applications, you can easily control your members\' membership levels.', 'zoho-flow'),
+        'icon_file' => 'restrict-user-access.png',
+        'class_test' => 'RUA_User',
+        'app_documentation_link' => '',
+        'embed_link' => 'restrict_user_access',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/levels',
+                'method' => 'list_levels',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/user',
+                'method' => 'fetch_user',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'update',
+                'path' => '/user/(?\'user_id\'[\\d]+)/level/(?\'level_id\'[\\d]+)/add',
+                'method' => 'add_user_level',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'update',
+                'path' => '/user/(?\'user_id\'[\\d]+)/level/(?\'level_id\'[\\d]+)/remove',
+                'method' => 'remove_user_level',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'manage_options',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'rua/user_level/added',
+                'method' => 'payload_user_level_added',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'rua/user_level/removed',
+                'method' => 'payload_user_level_removed',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'rua/user_level/extended',
+                'method' => 'payload_user_level_extended',
+                'args_count' => 2,
+            ),
+        )
+    ),
+    array(
+        'name' => esc_html__("New User Approve"),
+        'api_path' => 'new-user-approve',
+        'class_name' => 'Zoho_Flow_New_User_Approve',
+        'gallery_app_link' => 'new-user-approve',
+        'description' => esc_html__('Use New User Approve to manage user registrations and approvals on your WordPress site. By integrating New User Approve with your favorite applications, you can automatically send approval confirmations to your users.', 'zoho-flow'),
+        'icon_file' => 'new-user-approve.png',
+        'class_test' => 'pw_new_user_approve',
+        'app_documentation_link' => '',
+        'embed_link' => 'new_user_approve',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'new_user_approve_user_approved',
+                'method' => 'payload_user_approved',
+                'args_count' => 1,
+            ),
+            array (
+                'action' => 'new_user_approve_user_denied',
+                'method' => 'payload_user_denied',
+                'args_count' => 1,
+            ),
+            array (
+                'action' => 'nua_invited_user',
+                'method' => 'payload_user_invited',
+                'args_count' => 2,
+            )
+        )
+    ),
+    array(
         'name' => esc_html__("Quiz Maker"),
         'api_path' => 'quiz-maker',
         'class_name' => 'Zoho_Flow_QuizMaker',
@@ -5113,6 +5370,204 @@ $zoho_flow_services_config = array (
             )
         )
     ),
+    array(
+        'name' => esc_html__("Paid Member Subscriptions"),
+        'api_path' => 'paid-member-subscriptions',
+        'class_name' => 'Zoho_Flow_Paid_Member_Subscriptions',
+        'gallery_app_link' => 'paid-member-subscriptions',
+        'description' => esc_html__('Use Paid Membership Subscriptions to set up and manage member subscriptions on your WordPress site. Integrate Paid Membership Subscriptions with your favorite applications and automatically share invoices when payments are made.', 'zoho-flow'),
+        'icon_file' => 'paid-member-subscriptions.png',
+        'class_test' => 'PMS_Member',
+        'app_documentation_link' => '',
+        'embed_link' => 'paid_member_subscriptions',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/member-subscriptions',
+                'method' => 'list_member_subscriptions',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'pms_member_subscription_insert',
+                'method' => 'payload_member_subscription_added',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'pms_member_subscription_update',
+                'method' => 'payload_member_subscription_updated',
+                'args_count' => 3,
+            ),
+            array (
+                'action' => 'pms_payment_insert',
+                'method' => 'payload_payment_added',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'pms_payment_update',
+                'method' => 'payload_payment_updated',
+                'args_count' => 3,
+            )
+        )
+    ),
+    array(
+        'name' => esc_html__("RegistrationMagic"),
+        'api_path' => 'registrationmagic',
+        'class_name' => 'Zoho_Flow_RegistrationMagic',
+        'gallery_app_link' => 'registrationmagic',
+        'description' => esc_html__('Use RegsitrationMagic to build and manage registration forms, signup/login pages, and more on your WordPress site. By integrating RegistrationMagic with other applications,  you can efficiently collect and store form entries.', 'zoho-flow'),
+        'icon_file' => 'registrationmagic.png',
+        'class_test' => 'RM_Public',
+        'app_documentation_link' => '',
+        'embed_link' => 'registrationmagic',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'rm_form_managemanage_options',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'rm_form_managemanage_options',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'rm_new_user_registered',
+                'method' => 'payload_user_registered',
+                'args_count' => 1,
+            ),
+            array (
+                'action' => 'rm_user_activated',
+                'method' => 'payload_user_activated',
+                'args_count' => 1,
+            ),
+            array (
+                'action' => 'rm_user_deactivated',
+                'method' => 'payload_user_deactivated',
+                'args_count' => 1,
+            ),
+            array (
+                'action' => 'rm_user_signon',
+                'method' => 'payload_user_signon',
+                'args_count' => 1,
+            ),
+            array (
+                'action' => 'rm_submission_completed',
+                'method' => 'payload_submission_completed',
+                'args_count' => 3,
+            ),
+            array (
+                'action' => 'rm_subscribe_newsletter',
+                'method' => 'payload_newsletter_subscribed',
+                'args_count' => 2,
+            )
+        )
+    ),
+    array(
+        'name' => esc_html__("WP User Manager"),
+        'api_path' => 'wp-user-manager',
+        'class_name' => 'Zoho_Flow_WP_User_Manager',
+        'gallery_app_link' => 'wp-user-manager',
+        'description' => esc_html__('Use WP User Manager to manage logins, registrations, profile customizations, and more on your WordPress site. By integrating WP User Manager with your favorite apps, you can easily collect user information.', 'zoho-flow'),
+        'icon_file' => 'wp-user-manager.png',
+        'class_test' => 'WP_User_Manager',
+        'app_documentation_link' => '',
+        'embed_link' => 'wp_user_manager',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/registration-forms',
+                'method' => 'list_registration_forms',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/fields',
+                'method' => 'list_all_fields',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/registration-form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_registration_form_fields',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'wpum_after_registration',
+                'method' => 'payload_user_registered',
+                'args_count' => 3,
+            ),
+            array (
+                'action' => 'wpum_after_user_update',
+                'method' => 'payload_user_profile_updated',
+                'args_count' => 3,
+            )
+        )
+    ),
     array (
         'name' => esc_html__("PlanSo Forms"),
         'api_path' => 'planso-forms',
@@ -5394,6 +5849,118 @@ $zoho_flow_services_config = array (
         )
     ),
     array(
+        'name' => esc_html__("ARMember"),
+        'api_path' => 'armember',
+        'class_name' => 'Zoho_Flow_ARMember',
+        'gallery_app_link' => 'armember',
+        'description' => esc_html__('Use ARMember to manage subscription plans, restrict content access, handle member signups, and more on your WordPress site. Integrate ARMember with other applications to collect membership payments and share payment invoices.', 'zoho-flow'),
+        'icon_file' => 'armember.png',
+        'class_test' => 'ARMwidgetForm',
+        'app_documentation_link' => '',
+        'embed_link' => 'armember',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/fields',
+                'method' => 'get_all_fields',
+                'capability' => 'arm_manage_forms',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'get_all_forms',
+                'capability' => 'arm_manage_forms',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'get_form_fields',
+                'capability' => 'arm_manage_forms',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/subscription-plans',
+                'method' => 'get_all_plans',
+                'capability' => 'arm_manage_plans',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/members',
+                'method' => 'list_all_members',
+                'capability' => 'arm_manage_members',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/member/(?\'user_id\'[\\d]+)/status',
+                'method' => 'update_member_status',
+                'capability' => 'arm_manage_members',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/member/(?\'user_id\'[\\d]+)/plan/(?\'plan_id\'[\\d]+)',
+                'method' => 'update_member_subscription_plan',
+                'capability' => 'arm_manage_members',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/member',
+                'method' => 'fetch_member',
+                'capability' => 'arm_manage_members',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'arm_manage_members',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'arm_member_update_meta',
+                'method' => 'payload_member_added_or_updated',
+                'args_count' => 3,
+            ),
+            array (
+                'action' => 'arm_after_add_new_user',
+                'method' => 'payload_member_added',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'arm_after_update_user_profile',
+                'method' => 'payload_member_updated',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'arm_after_form_validate_action',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'arm_after_add_transaction',
+                'method' => 'payload_transaction_added',
+                'args_count' => 1,
+            ),
+            array (
+                'action' => 'arm_cancel_subscription',
+                'method' => 'payload_subscription_cancelled',
+                'args_count' => 2,
+            )
+        )
+    ),
+    array(
         'name' => esc_html__("Fluent Support"),
         'api_path' => 'fluent-support',
         'class_name' => 'Zoho_Flow_Fluent_Support',
@@ -5556,6 +6123,57 @@ $zoho_flow_services_config = array (
             )
         ),
         'hooks' => array(
+        ),
+    ),
+    array (
+        'name' => esc_html__("Quill Forms"),
+        'api_path' => 'quill-forms',
+        'class_name' => 'Zoho_Flow_Quill_Forms',
+        'gallery_app_link' => 'ws-form',
+        'description' => esc_html__('Use Quill Forms to build different types of forms on your WordPress site. By integrating Quill Forms with other applications, you can collect and manage form information more efficiently.', 'zoho-flow'),
+        'icon_file' => 'quill-forms.png',
+        'class_test' => 'QuillForms\Form_Submission',
+        'app_documentation_link' => '',
+        'embed_link' => 'quill_forms',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'read_quillform',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/forms/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'read_quillform',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'read_quillform_entry',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'quillforms_after_entry_processed',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 2,
+            )
         ),
     ),
     array(

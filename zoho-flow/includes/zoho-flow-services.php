@@ -32,6 +32,9 @@ class Zoho_Flow_Services {
 		$id = (string)$service['api_path'];
 		$plugin_file = __DIR__ . '/../integrations/' . $id . '/' . $id . '.php';
 		$is_available = file_exists($plugin_file) && ($class_test!=''?class_exists($class_test):true);
+		if( !$is_available && isset( $service['function_test'] ) && ( function_exists( $service['function_test'] ) ) ){
+			$is_available = true;
+		}
 
 		if(!array_key_exists($name, $this->services)){
 			$this->services[$id] = array(

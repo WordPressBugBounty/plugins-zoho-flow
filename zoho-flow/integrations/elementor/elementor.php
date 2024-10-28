@@ -190,30 +190,33 @@ class Zoho_Flow_Elementor extends Zoho_Flow_Service
 
     public function process_form_submission($record, $handler)
     {
-        $formid = $record->get_form_settings('id');
-        $postid = $record->get_form_settings('form_post_id');
+        $form_details = $handler->get_current_form();
+        $formid = $form_details['id'];
+        $postid = $form_details['settings']['form_post_id'];
         $formpost_id = implode('_', array($postid, $formid));
-
-        $raw_fields = $record->get( 'fields' );
-        $data = array();
-        foreach ( $raw_fields as $id => $field ) {
-            $type = $field['type'];
-            $fieldId = $field['id'];
-            if( $type === 'step'){
-                continue;
-            }
-            $data[$fieldId] = $field['value'];
-        }
 
         $args = array(
             'form_id' => $formpost_id
         );
         $webhooks = $this->get_webhook_posts($args);
-        $files = array();
-    	foreach ( $webhooks as $webhook ) {
-    		$url = $webhook->url;
-    		zoho_flow_execute_webhook($url, $data, $files);
-    	}
+        if( !empty( $webhooks ) ){
+          $raw_fields = $record->get( 'fields' );
+          $data = array();
+          foreach ( $raw_fields as $id => $field ) {
+              $type = $field['type'];
+              $fieldId = $field['id'];
+              if( $type === 'step'){
+                  continue;
+              }
+              $data[$fieldId] = $field['value'];
+          }
+          $files = array();
+      	foreach ( $webhooks as $webhook ) {
+      		$url = $webhook->url;
+      		zoho_flow_execute_webhook($url, $data, $files);
+      	}
+        }
+
     }
 
     private function splitPostAndFormId($id){

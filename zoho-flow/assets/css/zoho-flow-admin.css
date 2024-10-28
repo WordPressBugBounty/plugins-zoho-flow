@@ -475,6 +475,41 @@ span.tb-close-icon{
     max-width: 100%;
 }
 
+.flow-webinar-section{
+  border-bottom: solid 1px #e0e0e0;
+	padding-bottom: 20px;
+}
+
+.zwebinar-registration-wrap {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.zvideo-thumb-wrap:before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+.zwebinar-registration-wrap img {
+    transform: scale(1);
+    max-width: 100%;
+    border-radius: 6px !important;
+}
+
+.zwebinar-registration-wrap a {
+  text-decoration: none;
+  outline: 0;
+  box-shadow: none;
+}
+
+.zwebinar-registration-wrap a:focus{
+  box-shadow: none;
+}
+
 .zarrow {
     margin: 25px;
     display: inline-block;

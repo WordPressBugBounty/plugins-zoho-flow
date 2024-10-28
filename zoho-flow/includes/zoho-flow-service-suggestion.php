@@ -15,7 +15,7 @@ class Zoho_Flow_Service_Suggestion{
 
   /**
    * admin notice blocked services:
-   * WPForms,Formidable Forms,everest-forms, Mailster, Bitform, Ninja Tables, Akismet,WP Mail, SMTP, Fluent SMTP, The Newsletter Plugin, UserFeedback, Jetpack CRM, Fluent Booking, BookingPress, Easy Digital Downloads, Simply Schedule Appointments
+   * WPForms,Formidable Forms,everest-forms, Mailster, Bitform, Ninja Tables, Akismet,WP Mail, SMTP, Fluent SMTP, The Newsletter Plugin, UserFeedback, Jetpack CRM, Fluent Booking, BookingPress, Easy Digital Downloads, Simply Schedule Appointments, Quill Forms, Paid Member Subscriptions, ARMember
    */
   public function __construct() {
       global $pagenow;
@@ -233,7 +233,34 @@ class Zoho_Flow_Service_Suggestion{
 					'bookit-account' => 'bookit',
 					'bookit-addons-integrations' => 'bookit',
 					'booking-package/index.php' => 'booking-package',
-					'booking-package_schedule_page' => 'booking-package'
+					'booking-package_schedule_page' => 'booking-package',
+					'manage-fields' => 'profile-builder',
+					'profile-builder-add-ons' => 'profile-builder',
+					'profile-builder-general-settings' => 'profile-builder',
+					'profile-builder-basic-info' => 'profile-builder',
+					'profile-builder-dashboard' => 'profile-builder',
+					'wprua' => 'restrict-user-access',
+					'wprua-level' => 'restrict-user-access',
+					'wprua-settings' => 'restrict-user-access',
+					'wprua-addons' => 'restrict-user-access',
+					'rm_form_manage' => 'registrationmagic',
+					'rm_dashboard_widget_dashboard' => 'registrationmagic',
+					'rm_submission_manage' => 'registrationmagic',
+					'rm_attachment_manage' => 'registrationmagic',
+					'rm_analytics_show_form' => 'registrationmagic',
+					'rm_form_manage_cstatus' => 'registrationmagic',
+					'rm_ex_chronos_manage_tasks' => 'registrationmagic',
+					'rm_invitations_manage' => 'registrationmagic',
+					'rm_user_manage' => 'registrationmagic',
+					'rm_user_role_manage' => 'registrationmagic',
+					'rm_paypal_field_manage' => 'registrationmagic',
+					'rm_payments_manage' => 'registrationmagic',
+					'rm_options_manage' => 'registrationmagic',
+					'rm_support_forum' => 'registrationmagic',
+					'rm_support_premium_page' => 'registrationmagic',
+					'new-user-approve-admin' => 'new-user-approve',
+					'nua-invitation-code' => 'new-user-approve'
+
 	    );
 	    if( isset( $page ) ){
 	        if( array_key_exists( $page, $page_service_map ) ){
@@ -270,7 +297,8 @@ class Zoho_Flow_Service_Suggestion{
 	        'tec_tc_order' => 'event-tickets',
 					'event' => 'events-manager',
 					'location' => 'events-manager',
-					'event-recurring' => 'events-manager'
+					'event-recurring' => 'events-manager',
+					'invitation_code' => 'new-user-approve'
 	    );
 	    if( isset( $post_type ) ){
 	        if( array_key_exists( $post_type, $post_type_service_map ) ){
@@ -718,6 +746,38 @@ class Zoho_Flow_Service_Suggestion{
           $this->icon_file = 'booking-package.png';
           $this->gallery_app_link = 'booking-package';
           $this->plugin_api_page_link = 'booking-package';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'profile-builder' === $service_id ){
+          $this->id = 'profile-builder';
+          $this->name = 'Profile Builder';
+          $this->icon_file = 'profile-builder.png';
+          $this->gallery_app_link = 'profile-builder';
+          $this->plugin_api_page_link = 'profile-builder';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'restrict-user-access' === $service_id ){
+          $this->id = 'restrict-user-access';
+          $this->name = 'Restrict User Access';
+          $this->icon_file = 'restrict-user-access.png';
+          $this->gallery_app_link = 'restrict-user-access';
+          $this->plugin_api_page_link = 'restrict-user-access';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'registrationmagic' === $service_id ){
+          $this->id = 'registrationmagic';
+          $this->name = 'RegistrationMagic';
+          $this->icon_file = 'registrationmagic.png';
+          $this->gallery_app_link = 'registrationmagic';
+          $this->plugin_api_page_link = 'registrationmagic';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'new-user-approve' === $service_id ){
+          $this->id = 'new-user-approve';
+          $this->name = 'New User Approve';
+          $this->icon_file = 'new-user-approve.png';
+          $this->gallery_app_link = 'new-user-approve';
+          $this->plugin_api_page_link = 'new-user-approve';
           $this->is_plugin_integration = true;
       }
       elseif( 'woocommerce' === $service_id ){

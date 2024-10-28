@@ -70,7 +70,7 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
 
   public function display(){
     ?>
-    <div class="app-list-container" style="display:grid; grid-template-columns:repeat(4, 1fr);" >
+    <div class="app-list-container" style="display:grid; grid-template-columns:repeat(4, 1fr); padding-bottom: 0px;" >
       <?php
         foreach ($this->services as $service) {
 					if(get_option('permalink_structure') && $service['is_available']){
@@ -93,6 +93,10 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
 						<?php
 			    }
         }
+				?>
+			</div>
+			<div class="app-list-container" style="display:grid; grid-template-columns:repeat(4, 1fr); padding-top: 0px;" >
+				<?php
 				foreach ($this->services as $service) {
 					if(get_option('permalink_structure') && !$service['is_available']){
 						?>

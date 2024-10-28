@@ -433,6 +433,14 @@ function zoho_flow_show_service_grid(){
 					<a href="https://creatorapp.zohopublic.com/zohointranet/zoho-flow/form-embed/Request_an_App/qqePxZq7ZkzdWKGCYvntEk14O9YqjUGHJUZJHYsMA5zOK6XEC8b6Gh7mrdz2TnYu4AUVBRwu1YzKVU8KAwbn2OurBsJ66FqkT8Rm?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=320&height=440" class="thickbox" title="Integration request"><?php echo esc_html__('Request app/plugin', 'zoho-flow') ?></a>
 				</p>
 			</div>
+			<div class="flow-webinar-section">
+				<h2><?php echo esc_html__('Register for live webinar') ?></h2>
+				<div class="zwebinar-registration-wrap">
+					<a href="https://www.zoho.com/flow/webinars.html?utm_source=wordpress&utm_medium=link&utm_campaign=zoho-flow-plugin" target="_blank">
+						 <img src="<?php echo plugins_url('../assets/images/zoho-flow-webinar.png', __FILE__); ?>">
+					</a>
+				</div>
+			</div>
 			<div class="flow-social-media-section">
 				<p style="margin:0px !important;height: 20px !important;"><?php echo esc_html__('Follow us on') ?></p>
 				<div class="social-media-icons">
