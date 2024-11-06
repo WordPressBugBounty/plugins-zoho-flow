@@ -565,41 +565,69 @@ $zoho_flow_services_config = array (
         'rest_apis' => array (
             array (
                 'type' => 'list',
-                'path' => '/forms',
-                'method' => 'get_forms',
-                'capability' => 'manage_options',
-                'schema_method' => 'get_form_schema',
-            ),
-            array (
-                'type' => 'list',
-                'path' => '/forms/(?\'form_id\'[a-zA-Z0-9_]+)/fields',
+                'path' => '/forms/(?\'form_id\'[a-zA-Z0-9_]+)/fields', //Deprecated
                 'method' => 'get_fields',
                 'capability' => 'manage_options',
             ),
             array (
                 'type' => 'list',
-                'path' => '/forms/(?\'form_id\'[a-zA-Z0-9_]+)/webhooks',
+                'path' => '/forms/(?\'form_id\'[a-zA-Z0-9_]+)/webhooks', //Deprecated
                 'method' => 'get_webhooks',
                 'capability' => 'manage_options',
                 'schema_method' => 'get_form_webhook_schema',
             ),
             array (
                 'type' => 'create',
-                'path' => '/forms/(?\'form_id\'[a-zA-Z0-9_]+)/webhooks',
-                'method' => 'create_webhook',
+                'path' => '/forms/(?\'form_id\'[a-zA-Z0-9_]+)/webhooks', //Deprecated
+                'method' => 'create_webhook_old',
                 'capability' => 'manage_options',
             ),
             array (
                 'type' => 'delete',
-                'path' => '/forms/(?\'form_id\'[a-zA-Z0-9_]+)/webhooks/(?\'webhook_id\'[\\d]+)',
-                'method' => 'delete_webhook',
+                'path' => '/forms/(?\'form_id\'[a-zA-Z0-9_]+)/webhooks/(?\'webhook_id\'[\\d]+)', //Deprecated
+                'method' => 'delete_webhook_old',
                 'capability' => 'manage_options',
             ),
+            array (
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'manage_options',
+            ),
+            array (
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[a-zA-Z0-9_]+)/post/(?\'post_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'manage_options',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
         ),
         'hooks' => array (
             array (
                 'action' => 'elementor_pro/forms/new_record',
                 'method' => 'process_form_submission',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'elementor_pro/forms/new_record',
+                'method' => 'payload_submission_added',
                 'args_count' => 2,
             ),
         ),

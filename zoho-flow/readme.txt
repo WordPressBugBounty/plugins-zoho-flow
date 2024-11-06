@@ -1,11 +1,11 @@
-=== Zoho Flow for WordPress ===
+=== Zoho Flow – Integrate 85+ plugins with 900+ business apps, no-code workflow automation ===
 
 Contributors: zohoflow
 Tags: integration, automation, workflow, webhook, notification
 Requires at least: 4.4
 Requires PHP: 7.0.0
 Tested up to: 6.6.1
-Stable tag: 2.10.0
+Stable tag: 2.10.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,9 +13,9 @@ Integrate your WordPress plugins with your business applications and automate wo
 
 == Description ==
 
-Integrate your WordPress plugins with hundreds of business applications and automate workflows between them.
+Integrate your plugins with hundreds of business applications and automate workflows between them using Zoho Flow.
 
-With Zoho Flow’s intuitive drag-and-drop workflow builder, you can connect all your apps and customize data flow between them exactly the way you want. Build automations that save time and eliminate human error—no coding required.
+With an intuitive drag-and-drop workflow builder, you can connect all your apps and customize data flow between them exactly the way you want. Build automations that save time and eliminate human error—no coding required.
 
 **Powerful tools to help you tailor detailed workflows**
 
@@ -165,6 +165,11 @@ IMPORTANT: Security update - SQL injection vulnerability has been fixed. Upgrade
 
 == Changelog ==
 
+= 2.10.1 =
+
+= Elementor Pro Integration =
+* New trigger support enabled and optimizations to the code
+
 = 2.10.0 =
 
 = Added support for the following plugins: =
@@ -183,7 +188,7 @@ IMPORTANT: Security update - SQL injection vulnerability has been fixed. Upgrade
 
 = 2.9.1 =
 
-= Ultimate Member =
+= Ultimate Member Integration =
 * New trigger and action support enabled and optimizations to the code
 
 = 2.9.0 =
