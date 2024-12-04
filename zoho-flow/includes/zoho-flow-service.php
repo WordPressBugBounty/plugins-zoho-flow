@@ -94,7 +94,7 @@ class Zoho_Flow_Service
 	}
 
 	public function register_hooks(){
-		if(array_key_exists('hooks', $this->service)){
+		if( array_key_exists('hooks', $this->service) && $this->has_api_keys() ){
 			foreach ($this->service['hooks'] as $hook) {
 				$action = (string)$hook['action'];
 				$method = (string)$hook['method'];
@@ -107,6 +107,28 @@ class Zoho_Flow_Service
 		        if (!has_action( $action, array($this, $method) ) ) {
 		            add_action( $action, array($this, $method), 10,  $args_count);
 		        }
+			}
+		}
+	}
+
+	public function register_dynamic_hooks(){
+		if( array_key_exists('dynamic_hooks', $this->service) && $this->has_api_keys() ){
+			foreach ($this->service['dynamic_hooks'] as $hook) {
+				$method = (string)$hook['method'];
+				if(isset($hook['args_count'])){
+					$args_count = (int)$hook['args_count'];
+				}
+				else{
+					$args_count = 1;
+				}
+				$actions = get_option( $hook['option'] );
+				if( isset( $actions ) && is_array( $actions ) ){
+					foreach ($actions as $action) {
+						if (!has_action( $action, array($this, $method) ) ) {
+								add_action( $action, array($this, $method), 10,  $args_count);
+						}
+					}
+				}
 			}
 		}
 	}
@@ -221,6 +243,27 @@ class Zoho_Flow_Service
 
         return $result;
 	}
+
+	private function has_api_keys(){
+    $args = array(
+							'post_type' => WP_ZOHO_FLOW_API_KEY_POST_TYPE,
+							'posts_per_page' => -1,
+							'fields' => 'ids',
+			        'meta_query' => array(
+			              	'relation' => 'AND',
+			        				array(
+			        					'key' => 'plugin_service',
+			        					'value' => $this->service_id,
+			        					'compare' => '='
+			        				)
+			  			)
+						);
+		$api_keys = get_posts( $args );
+		if( isset( $api_keys ) && ( sizeof( $api_keys ) > 0 ) )	{
+			return true;
+		}
+		return false;
+  }
 
 	public function get_all_api_keys(){
         $args = array(

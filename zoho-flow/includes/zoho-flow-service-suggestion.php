@@ -15,7 +15,7 @@ class Zoho_Flow_Service_Suggestion{
 
   /**
    * admin notice blocked services:
-   * WPForms,Formidable Forms,everest-forms, Mailster, Bitform, Ninja Tables, Akismet,WP Mail, SMTP, Fluent SMTP, The Newsletter Plugin, UserFeedback, Jetpack CRM, Fluent Booking, BookingPress, Easy Digital Downloads, Simply Schedule Appointments, Quill Forms, Paid Member Subscriptions, ARMember
+   * WPForms,Formidable Forms,everest-forms, Mailster, Bitform, Ninja Tables, Akismet,WP Mail, SMTP, Fluent SMTP, The Newsletter Plugin, UserFeedback, Jetpack CRM, Fluent Booking, BookingPress, Easy Digital Downloads, Simply Schedule Appointments, Quill Forms, Paid Member Subscriptions, ARMember, ARForms, Spectra, Wappointment, Form Maker
    */
   public function __construct() {
       global $pagenow;
@@ -89,6 +89,7 @@ class Zoho_Flow_Service_Suggestion{
 	        'gf_edit_forms' => 'gravity-forms',
 	        'gf_addons' => 'gravity-forms',
 	        'gf_entries' => 'gravity-forms',
+					'gf_settings' => 'gravity-forms',
 	        'gf_export' => 'gravity-forms',
 	        'mailpoet-homepage' => 'mailpoet',
 	        'mailpoet-forms' => 'mailpoet',
@@ -259,7 +260,30 @@ class Zoho_Flow_Service_Suggestion{
 					'rm_support_forum' => 'registrationmagic',
 					'rm_support_premium_page' => 'registrationmagic',
 					'new-user-approve-admin' => 'new-user-approve',
-					'nua-invitation-code' => 'new-user-approve'
+					'nua-invitation-code' => 'new-user-approve',
+					'rate-my-post' => 'feedbackwp',
+					'rate-my-post-stats' => 'feedbackwp',
+					'rate-my-post-analytics' => 'feedbackwp',
+					'snippets' => 'code-snippets',
+					'add-snippet' => 'code-snippets',
+					'import-code-snippets' => 'code-snippets',
+					'snippets-settings' => 'code-snippets',
+					'code-snippets-welcome' => 'code-snippets',
+					'rcp-members' => 'restrict-content',
+					'rcp-customers' => 'restrict-content',
+					'rcp-member-levels' => 'restrict-content',
+					'rcp-payments' => 'restrict-content',
+					'rcp-settings' => 'restrict-content',
+					'rcp-tools' => 'restrict-content',
+					'rcp-need-help' => 'restrict-content',
+					'rcp-addons' => 'restrict-content',
+					'rcp-why-go-pro' => 'restrict-content',
+					'sureforms_entries' => 'sureforms',
+					'romethemeform-entries' => 'romethemeform',
+					'rtm-settings' => 'romethemeform',
+					'jet-engine' => 'jetengine',
+					'jet-engine-cpt' => 'jetengine',
+					'jet-engine-cct' => 'jetengine'
 
 	    );
 	    if( isset( $page ) ){
@@ -298,7 +322,11 @@ class Zoho_Flow_Service_Suggestion{
 					'event' => 'events-manager',
 					'location' => 'events-manager',
 					'event-recurring' => 'events-manager',
-					'invitation_code' => 'new-user-approve'
+					'invitation_code' => 'new-user-approve',
+					'sureforms_form' => 'sureforms',
+					'jet-engine-booking' => 'jetengine',
+					'wpzf-form' => 'wpzoom-forms',
+					'wpzf-submission' => 'wpzoom-forms'
 	    );
 	    if( isset( $post_type ) ){
 	        if( array_key_exists( $post_type, $post_type_service_map ) ){
@@ -780,19 +808,75 @@ class Zoho_Flow_Service_Suggestion{
           $this->plugin_api_page_link = 'new-user-approve';
           $this->is_plugin_integration = true;
       }
+			elseif( 'feedbackwp' === $service_id ){
+          $this->id = 'feedbackwp';
+          $this->name = 'FeedbackWP';
+          $this->icon_file = 'feedbackwp.png';
+          $this->gallery_app_link = 'feedbackwp';
+          $this->plugin_api_page_link = 'feedbackwp';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'code-snippets' === $service_id ){
+          $this->id = 'code-snippets';
+          $this->name = 'Code Snippets';
+          $this->icon_file = 'code-snippets.png';
+          $this->gallery_app_link = 'code-snippets';
+          $this->plugin_api_page_link = 'code-snippets';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'restrict-content' === $service_id ){
+          $this->id = 'restrict-content';
+          $this->name = 'Restrict Content';
+          $this->icon_file = 'restrict-content.png';
+          $this->gallery_app_link = 'restrict-content';
+          $this->plugin_api_page_link = 'restrict-content';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'sureforms' === $service_id ){
+          $this->id = 'sureforms';
+          $this->name = 'SureForms';
+          $this->icon_file = 'sureforms.png';
+          $this->gallery_app_link = 'sureforms';
+          $this->plugin_api_page_link = 'sureforms';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'romethemeform' === $service_id ){
+          $this->id = 'romethemeform';
+          $this->name = 'RomethemeForm';
+          $this->icon_file = 'romethemeform.png';
+          $this->gallery_app_link = 'romethemeform';
+          $this->plugin_api_page_link = 'romethemeform';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'jetengine' === $service_id ){
+          $this->id = 'jetengine';
+          $this->name = 'JetEngine';
+          $this->icon_file = 'jetengine.png';
+          $this->gallery_app_link = 'jetengine';
+          $this->plugin_api_page_link = 'jetengine';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'wpzoom-forms' === $service_id ){
+          $this->id = 'wpzoom-forms';
+          $this->name = 'WPZOOM Forms';
+          $this->icon_file = 'wpzoom-forms.png';
+          $this->gallery_app_link = 'wpzoom-forms';
+          $this->plugin_api_page_link = 'wpzoom-forms';
+          $this->is_plugin_integration = true;
+      }
+			elseif( 'gravity-forms' === $service_id ){
+          $this->id = 'gravity-forms';
+          $this->name = 'JetEngine';
+          $this->icon_file = 'gravity-forms.png';
+          $this->gallery_app_link = 'gravity-forms';
+          $this->plugin_api_page_link = 'gravity-forms';
+          $this->is_plugin_integration = true;
+      }
       elseif( 'woocommerce' === $service_id ){
           $this->id = 'woocommerce';
           $this->name = 'WooCommerce';
           $this->icon_file = 'woocommerce.png';
           $this->gallery_app_link = 'woocommerce';
-          $this->plugin_api_page_link = '';
-          $this->is_plugin_integration = false;
-      }
-      elseif( 'gravity-forms' === $service_id ){
-          $this->id = 'gravity-forms';
-          $this->name = 'Gravity Forms';
-          $this->icon_file = 'gravity-forms.png';
-          $this->gallery_app_link = 'gravity-forms';
           $this->plugin_api_page_link = '';
           $this->is_plugin_integration = false;
       }

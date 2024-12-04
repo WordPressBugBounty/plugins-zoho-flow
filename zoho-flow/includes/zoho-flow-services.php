@@ -55,6 +55,7 @@ class Zoho_Flow_Services {
 				$this->services[$id]['instance'] = $instance;
 				add_action( 'rest_api_init', [$instance, 'register_apis']);
 				$instance->register_hooks();
+				$instance->register_dynamic_hooks();
 
 				$hook = 'zoho_flow_register_service_' . str_replace('-', '_', $id);
 				do_action( $hook, $this->services[$id]);

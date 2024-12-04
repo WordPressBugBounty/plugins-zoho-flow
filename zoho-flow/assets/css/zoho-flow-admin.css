@@ -653,6 +653,12 @@ span.tb-close-icon{
   box-shadow: none;
 }
 
+.grid-app-direct-integration {
+    visibility: hidden;
+    color: #38761d;
+    padding-top: 5px;
+}
+
 /*app details popup*/
 .service-details-popup{
   margin-left: auto !important;

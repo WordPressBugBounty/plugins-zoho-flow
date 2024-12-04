@@ -9,7 +9,7 @@ Text Domain: zoho-flow
 Requires at least: 4.4
 Requires PHP: 7.0.0
 Domain Path: /languages/
-Version: 2.10.1
+Version: 2.11.0
 */
 
 if ( ! defined( 'ABSPATH' ) ) {

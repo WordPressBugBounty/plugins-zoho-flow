@@ -93,12 +93,90 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
 						<?php
 			    }
         }
+				require_once WP_ZOHO_FLOW_PLUGIN_DIR . '/dir-integrations.php';
+				foreach ($zoho_flow_dir_integrations_config as $service ) {
+					if( class_exists( $service['class_test'] ) ){
+						$service['is_available'] = true;
+						?>
+
+			      	<div id='<?php echo $service['id'] ?>' class="grid-app-wrapper grid-app-available">
+								<a target="_blank" href="https://www.zohoflow.com/apps/<?php echo $service['gallery_app_link'] ?>/integrations/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_<?php echo $service['gallery_app_link'] ?>">
+									<div class="grid-app-icon">
+			              <center>
+			                <?php echo $this->column_icon_file($service) ?>
+			              </center>
+			            </div>
+			            <div class="grid-app-name">
+			              <center>
+			                <?php echo $this->column_name($service) ?>
+			              </center>
+										<div class="grid-app-direct-integration">
+											<center>
+				                <?php echo 'Authenticate Directly &#x2197;' ?>
+				              </center>
+										</div>
+			            </div>
+									</a>
+			          </div>
+						<?php
+					}
+				}
 				?>
 			</div>
 			<div class="app-list-container" style="display:grid; grid-template-columns:repeat(4, 1fr); padding-top: 0px;" >
 				<?php
 				foreach ($this->services as $service) {
 					if(get_option('permalink_structure') && !$service['is_available']){
+						?>
+						<div id="service_details_popup_<?php echo $service['id'] ?>" style="display:none;">
+							<div class="service-details-popup" style="width:550px;text-align: center;">
+								<center>
+									<div class="service-details-popup-app-icon">
+										<center>
+											<?php echo $this->column_icon_file($service) ?>
+										</center>
+									</div>
+									<div class="service-details-popup-app-name">
+										<center>
+											<strong>
+												<?php echo $service['name'] ?>
+											</strong>
+										</center>
+									</div>
+									<div class="service-details-popup-app-description">
+										<center>
+												<?php echo $service['description'] ?>
+										</center>
+									</div>
+								</center>
+							</div>
+							<div class="service-details-popup-app-not-available-banner">
+								<center>
+										<?php echo 'Plugin not Installed / Activated' ?>
+								</center>
+							</div>
+						</div>
+							<div id='<?php echo $service['id'] ?>' class="grid-app-wrapper grid-app-not-available">
+								<a href='<?php echo $this->app_link_name($service) ?>' class='thickbox'>
+									<div class="grid-app-icon">
+			              <center>
+			                <?php echo $this->column_icon_file($service) ?>
+			              </center>
+			            </div>
+			            <div class="grid-app-name">
+			              <center>
+			                <?php echo $this->column_name($service) ?>
+			              </center>
+			            </div>
+									</a>
+			          </div>
+						<?php
+			    }
+        }
+				require_once WP_ZOHO_FLOW_PLUGIN_DIR . '/dir-integrations.php';
+				foreach ( $zoho_flow_dir_integrations_config as $service ) {
+					if( !class_exists( $service['class_test'] ) ){
+						$service['is_available'] = false;
 						?>
 						<div id="service_details_popup_<?php echo $service['id'] ?>" style="display:none;">
 							<div class="service-details-popup" style="width:550px;text-align: center;">

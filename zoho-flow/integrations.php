@@ -633,6 +633,97 @@ $zoho_flow_services_config = array (
         ),
     ),
     array (
+        'name' => esc_html__("Gravity Forms"),
+        'api_path' => 'gravity-forms',
+        'class_name' => 'Zoho_Flow_Gravity_Forms',
+        'gallery_app_link' => 'gravity-forms',
+        'description' => esc_html__('Use Gravity Forms to build different types of forms in various themes on your WordPress site. Integrate Gravity Forms with other apps to automate workflows when a form entry is made on your WordPress site.', 'zoho-flow'),
+        'icon_file' => 'gravity-forms.png',
+        'class_test' => 'GFForms',
+        'app_documentation_link' => '',
+        'embed_link' => 'gravity_forms',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/entry/(?\'entry_id\'[\\d]+)',
+                'method' => 'fetch_entry',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/form/(?\'form_id\'[\\d]+)/entries',
+                'method' => 'search_entries',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/form/(?\'form_id\'[\\d]+)/submit',
+                'method' => 'submit_form_entry',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/entry',
+                'method' => 'add_form_entry',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'update',
+                'path' => '/entry/(?\'entry_id\'[\\d]+)',
+                'method' => 'update_form_entry',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'gform_entry_created',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'gform_after_update_entry',
+                'method' => 'payload_form_entry_updated',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'gform_update_status',
+                'method' => 'payload_form_entry_status_updated',
+                'args_count' => 3,
+            )
+        ),
+    ),
+    array (
         'name' => esc_html__('WPForms'),
         'api_path' => 'wpforms',
         'class_name' => 'Zoho_Flow_WPForms',
@@ -921,6 +1012,98 @@ $zoho_flow_services_config = array (
                 'method' => 'process_save_post',
                 'args_count' => 1,
             )
+        )
+    ),
+    array(
+        'name' => esc_html__("Spectra"),
+        'api_path' => 'spectra',
+        'class_name' => 'Zoho_Flow_Spectra',
+        'gallery_app_link' => 'spectra',
+        'description' => esc_html__('Use Spectra to add ready-to-use blocks, templates, and other compositions to your WordPress site. By integrating Spectra with your favourite applications, you can get notified when someone engages with your website.', 'zoho-flow'),
+        'icon_file' => 'spectra.png',
+        'class_test' => 'UAGB_Forms',
+        'app_documentation_link' => '',
+        'embed_link' => 'spectra',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/post/(?\'post_id\'[\\d]+)/form/(?\'form_id\'[0-9a-zA-Z_-]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'uagb_form_success',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 1,
+            )
+        )
+    ),
+    array(
+        'name' => esc_html__("Code Snippets"),
+        'api_path' => 'code-snippets',
+        'class_name' => 'Zoho_Flow_Code_Snippets',
+        'gallery_app_link' => 'code-snippets',
+        'description' => esc_html__('Use Code Snippets to add and manage small pieces of code to enhance your WordPress site. Integrate Code Snippets with other applications to automate any changes to your website.', 'zoho-flow'),
+        'icon_file' => 'code-snippets.png',
+        'class_test' => 'Code_Snippets\Snippet',
+        'app_documentation_link' => '',
+        'embed_link' => 'code_snippets',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/snippets',
+                'method' => 'list_all_snippets',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/snippet/(?\'snippet_id\'[\\d]+)/activate',
+                'method' => 'activate_snippet',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/snippet/(?\'snippet_id\'[\\d]+)/deactivate',
+                'method' => 'deactivate_snippet',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            //Hooks
         )
     ),
     array (
@@ -1545,7 +1728,7 @@ $zoho_flow_services_config = array (
         'name' => esc_html__("Kadence Blocks"),
         'api_path' => 'kadence-blocks',
         'class_name' => 'Zoho_Flow_Kadence_Blocks',
-        'gallery_app_link' => 'metform',
+        'gallery_app_link' => 'kadence-blocks',
         'description' => esc_html__('Use Kadence Blocks to create customized content on your WordPress site. By integrating Kadence Blocks with other applications, you collect form entries from  visitors on your WordPress site.', 'zoho-flow'),
         'icon_file' => 'kadence-blocks.png',
         'class_test' => 'KB_Ajax_Form',
@@ -1593,6 +1776,126 @@ $zoho_flow_services_config = array (
             array (
                 'action' => 'kadence_blocks_advanced_form_submission',
                 'method' => 'payload_form_entry_submitted_advanced_forms',
+                'args_count' => 3,
+            )
+        ),
+    ),
+    array (
+        'name' => esc_html__("JetEngine"),
+        'api_path' => 'jetengine',
+        'class_name' => 'Zoho_Flow_JetEngine',
+        'gallery_app_link' => 'jetengine',
+        'description' => esc_html__('Use JetEngine to create custom fields for any post type on your WordPress site. By integrating JetEngine with other applications, you can get notified whenever a custom content update is made in your website.', 'zoho-flow'),
+        'icon_file' => 'jetengine.png',
+        'class_test' => 'Jet_Engine',
+        'app_documentation_link' => '',
+        'embed_link' => 'jetengine',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/custom-content-types',
+                'method' => 'list_cct',
+                'capability' => 'manage_options',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/custom-content-type/(?\'cct_slug\'[0-9a-zA-Z_-]+)',
+                'method' => 'fetch_cct',
+                'capability' => 'manage_options',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/cct/(?\'cct_slug\'[0-9a-zA-Z_-]+)/entry/(?\'_ID\'[\\d]+)',
+                'method' => 'get_cct_entry',
+                'capability' => 'manage_options',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/cct/(?\'cct_slug\'[0-9a-zA-Z_-]+)/entry',
+                'method' => 'add_cct_entry',
+                'capability' => 'manage_options',
+            ),
+            array(
+                'type' => 'update',
+                'path' => '/cct/(?\'cct_slug\'[0-9a-zA-Z_-]+)/entry/(?\'_ID\'[\\d]+)',
+                'method' => 'update_cct_entry',
+                'capability' => 'manage_options',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/custom-post-types',
+                'method' => 'list_cpt',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/custom-post-type/(?\'cpt_slug\'[0-9a-zA-Z_-]+)',
+                'method' => 'fetch_cpt',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'manage_options',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'jet-engine/forms/handler/before-send',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 1,
+            ),
+            array (
+                'action' => 'transition_post_status',
+                'method' => 'payload_cpt_entry_status_changed',
+                'args_count' => 3,
+            )
+        ),
+        'dynamic_hooks' => array(
+            array (
+                'option' => 'ZF_JetEngine_CCT_item_added',
+                'method' => 'payload_cct_entry_added',
+                'args_count' => 3,
+            ),
+            array (
+                'option' => 'ZF_JetEngine_CCT_item_updated',
+                'method' => 'payload_cct_entry_updated',
+                'args_count' => 3,
+            ),
+            array (
+                'option' => 'ZF_JetEngine_CCT_item_added_or_updated',
+                'method' => 'payload_cct_entry_added_or_updated',
+                'args_count' => 3,
+            ),
+            array (
+                'option' => 'ZF_JetEngine_CPT_item_added_or_updated',
+                'method' => 'payload_cpt_entry_added_or_updated',
                 'args_count' => 3,
             )
         ),
@@ -3007,6 +3310,57 @@ $zoho_flow_services_config = array (
                 'args_count' => 0,
             )
         )
+    ),
+    array (
+        'name' => esc_html__("Form Maker"),
+        'api_path' => 'form-maker',
+        'class_name' => 'Zoho_Flow_Form_Maker',
+        'gallery_app_link' => 'form-maker',
+        'description' => esc_html__('Use Form Maker to build online forms of any kind on your WordPress site. By integrating Form Maker with your favourite applications, you\'ll be able to move form data across platforms automatically.', 'zoho-flow'),
+        'icon_file' => 'form-maker.png',
+        'class_test' => 'WDFM',
+        'app_documentation_link' => '',
+        'embed_link' => 'form_maker',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'fm_addon_frontend_init',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 1,
+            )
+        ),
     ),
     array (
         'name' => esc_html__("WP Booking Calendar"),
@@ -4847,6 +5201,50 @@ $zoho_flow_services_config = array (
         )
     ),
     array(
+        'name' => esc_html__("FeedbackWP"),
+        'api_path' => 'feedbackwp',
+        'class_name' => 'Zoho_Flow_New_FeedbackWP',
+        'gallery_app_link' => 'feedbackwp',
+        'description' => esc_html__('Use FeedbackWP to manage star ratings in the posts and pages on your WordPress site. By integrating FeedbackWP with other applications, you will be able to create desk tickets automatically for negative ratings or reviews.', 'zoho-flow'),
+        'icon_file' => 'feedbackwp.png',
+        'class_test' => 'Rate_My_Post_Public',
+        'app_documentation_link' => '',
+        'embed_link' => 'feedbackwp',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'edit_posts',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'rmp_after_vote',
+                'method' => 'payload_rating_added',
+                'args_count' => 4,
+            ),
+            array (
+                'action' => 'rmp_after_feedback',
+                'method' => 'payload_feedback_added',
+                'args_count' => 2,
+            )
+        )
+    ),
+    array(
         'name' => esc_html__("Quiz Maker"),
         'api_path' => 'quiz-maker',
         'class_name' => 'Zoho_Flow_QuizMaker',
@@ -4931,6 +5329,113 @@ $zoho_flow_services_config = array (
                 'capability' => 'read',
             )
         )
+    ),
+    array (
+        'name' => esc_html__("RomethemeForm"),
+        'api_path' => 'romethemeform',
+        'class_name' => 'Zoho_Flow_RomethemeForm',
+        'gallery_app_link' => 'romethemeform',
+        'description' => esc_html__('Use RomeThemeForm to build different types of contact forms in various themes on your WordPress site. By integrating RomeThemeForm with your favourite apps you will be able to automate workflows when a form entry is made.', 'zoho-flow'),
+        'icon_file' => 'romethemeform.png',
+        'class_test' => 'RomeThemeForm',
+        'app_documentation_link' => '',
+        'embed_link' => 'romethemeform',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'save_post_romethemeform_entry',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 3,
+            )
+        ),
+    ),
+    array (
+        'name' => esc_html__("WPZOOM Forms"),
+        'api_path' => 'wpzoom-forms',
+        'class_name' => 'Zoho_Flow_WPZOOM_Forms',
+        'gallery_app_link' => 'wpzoom-forms',
+        'description' => esc_html__('Use WPZOOM Forms to build different types of contact forms on your WordPress site. By integrating WPZOOM Forms with your favourite applications, you\'ll be able to manage form data more efficiently.', 'zoho-flow'),
+        'icon_file' => 'wpzoom-forms.png',
+        'class_test' => 'WPZOOM_Forms',
+        'app_documentation_link' => '',
+        'embed_link' => 'wpzoom_forms',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'admin_post_wpzf_submit',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 0,
+            ),
+            array (
+                'action' => 'admin_post_nopriv_wpzf_submit',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 0,
+            )
+        ),
     ),
     array(
         'name' => esc_html__("WP Booking System"),
@@ -5596,6 +6101,81 @@ $zoho_flow_services_config = array (
             )
         )
     ),
+    array(
+        'name' => esc_html__("Restrict Content"),
+        'api_path' => 'restrict-content',
+        'class_name' => 'Zoho_Flow_Restrict_Content',
+        'gallery_app_link' => 'restrict-content',
+        'description' => esc_html__('Use Restrict Content to manage content restrictions on your WordPress site. By integrating Restrict Content with other applications, you can create an automated content calendar for your customers based on their membership level.', 'zoho-flow'),
+        'icon_file' => 'restrict-content.png',
+        'class_test' => 'RCP_Membership',
+        'app_documentation_link' => '',
+        'embed_link' => 'restrict_content',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/membership-levels',
+                'method' => 'list_membership_levels',
+                'capability' => 'rcp_view_levels',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'rcp_view_members',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'rcp_edit_membership_after',
+                'method' => 'payload_membership_updated',
+                'args_count' => 1,
+            ),
+            array (
+                'action' => 'rcp_transition_membership_status_active',
+                'method' => 'payload_membership_activated',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'rcp_transition_membership_status_expired',
+                'method' => 'payload_membership_expired',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'rcp_transition_membership_status_cancelled',
+                'method' => 'payload_membership_cancelled',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'rcp_membership_post_renew',
+                'method' => 'payload_membership_renewed',
+                'args_count' => 3,
+            ),
+            array (
+                'action' => 'rcp_new_membership_added',
+                'method' => 'payload_membership_added',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'rcp_insert_payment',
+                'method' => 'payload_payment_added',
+                'args_count' => 3,
+            )
+        )
+    ),
     array (
         'name' => esc_html__("PlanSo Forms"),
         'api_path' => 'planso-forms',
@@ -6154,10 +6734,61 @@ $zoho_flow_services_config = array (
         ),
     ),
     array (
+        'name' => esc_html__("SureForms"),
+        'api_path' => 'sureforms',
+        'class_name' => 'Zoho_Flow_SureForms',
+        'gallery_app_link' => 'sureforms',
+        'description' => esc_html__('Use SureForms to build different types of forms on your WordPress site. By integrating SureForms with your favourite applications, you\'ll be able to kickstart automated workflows based on form entries.', 'zoho-flow'),
+        'icon_file' => 'sureforms.png',
+        'class_test' => 'SRFM\Inc\Form_Submit',
+        'app_documentation_link' => '',
+        'embed_link' => 'sureforms',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'srfm_form_submit',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 1,
+            )
+        ),
+    ),
+    array (
         'name' => esc_html__("Quill Forms"),
         'api_path' => 'quill-forms',
         'class_name' => 'Zoho_Flow_Quill_Forms',
-        'gallery_app_link' => 'ws-form',
+        'gallery_app_link' => 'quill-forms',
         'description' => esc_html__('Use Quill Forms to build different types of forms on your WordPress site. By integrating Quill Forms with other applications, you can collect and manage form information more efficiently.', 'zoho-flow'),
         'icon_file' => 'quill-forms.png',
         'class_test' => 'QuillForms\Form_Submission',
@@ -6200,6 +6831,67 @@ $zoho_flow_services_config = array (
             array (
                 'action' => 'quillforms_after_entry_processed',
                 'method' => 'payload_form_entry_submitted',
+                'args_count' => 2,
+            )
+        ),
+    ),
+    array (
+        'name' => esc_html__("ARForms"),
+        'api_path' => 'arforms',
+        'class_name' => 'Zoho_Flow_ARForms',
+        'gallery_app_link' => 'arforms',
+        'description' => esc_html__('Use ARForms to create various types of forms like contact forms, registration forms, event forms, and more on your WordPress site. By integrating ARForms with your favourite applications, you\'ll be able to parse your form information more efficiently.', 'zoho-flow'),
+        'icon_file' => 'arforms.png',
+        'class_test' => 'arforms_form_builder',
+        'app_documentation_link' => '',
+        'embed_link' => 'arforms',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'arfviewforms',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'arfviewforms',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'arfviewentries',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'arfliteentryexecute',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 4,
+            ),
+            array (
+                'action' => 'arfentryexecute',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 4,
+            ),
+            array (
+                'action' => 'arfaftercreateentry',
+                'method' => 'payload_pro_form_entry_submitted',
                 'args_count' => 2,
             )
         ),
@@ -6298,6 +6990,67 @@ $zoho_flow_services_config = array (
             array (
                 'action' => 'fluent_booking/payment/update_payment_status_paid',
                 'method' => 'payload_payment_paid',
+                'args_count' => 1,
+            )
+        )
+    ),
+    array(
+        'name' => esc_html__("Wappointment"),
+        'api_path' => 'wappointment',
+        'class_name' => 'Zoho_Flow_Wappointment',
+        'gallery_app_link' => 'wappointment',
+        'description' => esc_html__('Use Wappointment to schedules meetings and appointments easily on your WordPress site. Integrate Wappointment with other applications to send automated notifications when an appointment or a meeting is scheduled.', 'zoho-flow'),
+        'icon_file' => 'wappointment.png',
+        'class_test' => 'Wappointment\Models\Appointment',
+        'app_documentation_link' => '',
+        'embed_link' => 'wappointment',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/services',
+                'method' => 'list_services',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/service/(?\'service_id\'[\\d]+)',
+                'method' => 'fetch_service',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_private_pages',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'wappointment_appointment_rescheduled',
+                'method' => 'payload_appointment_rescheduled',
+                'args_count' => 1,
+            ),
+            array (
+                'action' => 'wappointment_appointment_confirmed',
+                'method' => 'payload_appointment_confirmed',
+                'args_count' => 1,
+            ),
+            array (
+                'action' => 'wappointment_appointment_canceled',
+                'method' => 'payload_appointment_canceled',
                 'args_count' => 1,
             )
         )

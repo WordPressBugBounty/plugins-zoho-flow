@@ -177,47 +177,28 @@ jQuery(document).ready(function(){
 		jQuery("#review_notice").remove(); //NO I18N
 	});
 
-	jQuery('.grid-app-available').mouseover(function(e){ //NO I18N
-		var event_d =  jQuery(e.target);
-		if(event_d.prop('className') === 'grid-app-available'){ //NO I18N
-			event_d.css('box-shadow','0 8px 16px 0 rgba(85,93,102,.3)'); //NO I18N
-		}
-		else{
-			var event_p = event_d.parents('div.grid-app-available'); //NO I18N
-			event_p.css('box-shadow','0 8px 16px 0 rgba(85,93,102,.3)'); //NO I18N
-		}
+	jQuery('.grid-app-available').on('mouseover', function() { //NO I18N
+		jQuery(this).css('box-shadow', '0 8px 16px 0 rgba(85,93,102,.3)'); //NO I18N
+    jQuery(this).find('.grid-app-direct-integration').css('visibility', 'visible'); //NO I18N
 	});
 
-	jQuery('.grid-app-not-available').mouseover(function(e){ //NO I18N
-		var event_d =  jQuery(e.target);
-		if(event_d.prop('className') === 'grid-app-not-available'){ //NO I18N
-			event_d.css('border-shadow','0 8px 16px 0 rgba(85,93,102,.3)'); //NO I18N
-			event_d.css('background','#f2f2f2'); //NO I18N
-			event_d.css('opacity','0.5'); //NO I18N
-		}
-		else{
-			var event_p = event_d.parents('div.grid-app-not-available'); //NO I18N
-			event_p.css('border-shadow','0 8px 16px 0 rgba(85,93,102,.3)'); //NO I18N
-			event_p.css('background','#f2f2f2'); //NO I18N
-			event_p.css('opacity','0.5'); //NO I18N
-		}
+	jQuery('.grid-app-available').on('mouseout', function() { //NO I18N
+		jQuery(this).css('box-shadow', 'none'); //NO I18N
+    jQuery(this).find('.grid-app-direct-integration').css('visibility', 'hidden'); //NO I18N
 	});
 
-	jQuery('.grid-app-wrapper').mouseout(function(e){ //NO I18N
-		var event_d =  jQuery(e.target);
-		if(event_d.prop('className') === 'grid-app-wrapper'){ //NO I18N
-			event_d.css('box-shadow',''); //NO I18N
-			event_d.css('background',''); //NO I18N
-			event_d.css('border',''); //NO I18N
-			event_d.css('opacity','1'); //NO I18N
-		}
-		else{
-			var event_p = event_d.parents('div.grid-app-wrapper'); //NO I18N
-			event_p.css('box-shadow',''); //NO I18N
-			event_p.css('background',''); //NO I18N
-			event_p.css('border',''); //NO I18N
-			event_p.css('opacity','1'); //NO I18N
-		}
+	jQuery('.grid-app-not-available').on('mouseover', function() { //NO I18N
+		//jQuery(this).css('box-shadow', '0 8px 16px 0 rgba(85,93,102,.3)'); //NO I18N
+		jQuery(this).css('background', '#f2f2f2'); //NO I18N
+		jQuery(this).css('opacity', '0.5'); //NO I18N
+    jQuery(this).find('.grid-app-direct-integration').css('visibility', 'visible'); //NO I18N
+	});
+
+	jQuery('.grid-app-not-available').on('mouseout', function() { //NO I18N
+		//jQuery(this).css('box-shadow', 'none'); //NO I18N
+		jQuery(this).css('background', ''); //NO I18N
+		jQuery(this).css('opacity', '1'); //NO I18N
+    jQuery(this).find('.grid-app-direct-integration').css('visibility', 'hidden'); //NO I18N
 	});
 
 });

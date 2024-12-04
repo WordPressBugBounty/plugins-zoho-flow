@@ -8,7 +8,7 @@ function zoho_flow_debug($message) {
       if(WP_ZOHO_FLOW_DEBUG){
             ini_set('log_errors', true);
             ini_set('error_log', WP_ZOHO_FLOW_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'errors.log');
-            error_log(print_r($message, true));     
+            error_log(print_r($message, true));
       }
 }
 
@@ -18,7 +18,7 @@ function zoho_flow_execute_webhook($url, $post_params, $file_params){
 	if(empty($file_params)){
 		$args['headers'] = array(
 			'content-type' => 'application/json',
-		);	
+		);
 		$args['body'] = json_encode($post_params);
 
 	}
@@ -213,7 +213,7 @@ function zoho_flow_execute_webhook($url, $post_params, $file_params){
 
 		$args['headers'] = array(
 		        'content-type' => 'multipart/form-data; boundary=' . $boundary
-		);	
+		);
 
 		// First, add the standard POST fields:
 		foreach ( $post_params as $name => $value ) {
@@ -237,23 +237,122 @@ function zoho_flow_execute_webhook($url, $post_params, $file_params){
 		        $payload .= "\r\n";
 		        $payload .= $file;
 		        $payload .= "\r\n";
-		}	
+		}
 		$payload .= '--' . $boundary . '--';
 		$args['body'] = $payload;
 
 	}
 	$args['timeout'] = '5';
+	$hook_status_code = zoho_flow_invoke_webhook_url( $url, $args );
+	if( 200 !== $hook_status_code ){
+	    if( 410 === $hook_status_code ){
+	        zoho_flow_delete_webhook( $url );
+	    }
+	    elseif( empty( $hook_status_code ) || 400 <= $hook_status_code ){
+	        $timestamp = time() + 300; // Set it to run 5 mins from now
+	        if ( !wp_next_scheduled('zoho_flow_rerun_after_5_mins', array( $url, $args ) ) ) {
+	            wp_schedule_single_event($timestamp, 'zoho_flow_rerun_after_5_mins', array( $url, $args ) );
+	        }
+	    }
+	}
+}
 
-	$res = wp_remote_post( $url, $args );
+function zoho_flow_invoke_webhook_url( $url, $args ){
+    $res = wp_remote_post( $url, $args );
     $response_code = wp_remote_retrieve_response_code( $res );
-    if($response_code >= 400){
-        //TODO:Handle error
+    return $response_code;
+}
+
+add_action('zoho_flow_rerun_after_5_mins', 'zoho_flow_5_mins_rerun', 10, 2);
+
+function zoho_flow_5_mins_rerun( $url, $args ) {
+    
+    $args['timeout'] = '10'; //Increasing the timeout for rerun calls.
+    
+    $hook_status_code = zoho_flow_invoke_webhook_url( $url, $args );
+    if( 200 !== $hook_status_code ){
+        if( 410 === $hook_status_code ){
+            zoho_flow_delete_webhook( $url );
+        }
+        elseif( empty( $hook_status_code ) or 400 <= $hook_status_code ){
+            $timestamp = time() + 600; // Set it to run 10 mins from now
+            if ( !wp_next_scheduled('zoho_flow_rerun_after_10_mins',  array( $url, $args ) ) ) {
+                wp_schedule_single_event($timestamp, 'zoho_flow_rerun_after_10_mins',  array( $url, $args ) );
+            }
+        }
+    }
+}
+
+add_action('zoho_flow_rerun_after_10_mins', 'zoho_flow_10_mins_rerun', 10, 2);
+
+function zoho_flow_10_mins_rerun( $url, $args ) {
+    $hook_status_code = zoho_flow_invoke_webhook_url( $url, $args );
+    if( 200 !== $hook_status_code ){
+        if( 410 === $hook_status_code ){
+            zoho_flow_delete_webhook( $url );
+        }
+        elseif( empty( $hook_status_code ) || 400 <= $hook_status_code ){
+            $timestamp = time() + 1800; // Set it to run 30 mins from now
+            if ( !wp_next_scheduled('zoho_flow_rerun_after_30_mins', array( $url, $args ) ) ) {
+                wp_schedule_single_event($timestamp, 'zoho_flow_rerun_after_30_mins', array( $url, $args ) );
+            }
+        }
+    }
+}
+
+add_action('zoho_flow_rerun_after_30_mins', 'zoho_flow_30_mins_rerun', 10, 2);
+
+function zoho_flow_30_mins_rerun( $url, $args ) {
+    $hook_status_code = zoho_flow_invoke_webhook_url( $url, $args );
+    if( 200 !== $hook_status_code ){
+        if( 410 === $hook_status_code ){
+            zoho_flow_delete_webhook( $url );
+        }
+        elseif( empty( $hook_status_code ) or 400 <= $hook_status_code ){
+            $timestamp = time() + 3600; // Set it to run 60 mins from now
+            if ( !wp_next_scheduled('zoho_flow_rerun_after_60_mins', array( $url, $args ) ) ) {
+                wp_schedule_single_event($timestamp, 'zoho_flow_rerun_after_60_mins', array( $url, $args ) );
+            }
+        }
+    }
+}
+
+add_action('zoho_flow_rerun_after_60_mins', 'zoho_flow_60_mins_rerun', 10, 2);
+
+function zoho_flow_60_mins_rerun( $url, $args ) {
+    $hook_status_code = zoho_flow_invoke_webhook_url( $url, $args );
+    if( 200 !== $hook_status_code ){
+        if( 410 === $hook_status_code ){
+            zoho_flow_delete_webhook( $url );
+        }
+        elseif( empty( $hook_status_code ) or 400 <= $hook_status_code ){
+            // Can be used for further cycles
+        }
+    }
+}
+
+function zoho_flow_delete_webhook( $url ){
+    $args = array(
+        'post_type' => WP_ZOHO_FLOW_WEBHOOK_POST_TYPE,
+        'posts_per_page' => -1,
+        'fields' => 'ids',
+        'meta_query' => array(
+            array(
+                'key' => 'url',
+                'value' => $url,
+                'compare' => '='
+            )
+        )
+    );
+    $webhook_ids = get_posts( $args );
+    foreach ($webhook_ids as $webhook_id) {
+        wp_delete_post( $webhook_id, true );
     }
 }
 
 function zoho_flow_convert_php_java_datepattern($php_pattern){
       //https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
-      //https://www.php.net/manual/en/function.date.php      
+      //https://www.php.net/manual/en/function.date.php
       $format_mapping = array(
 
             'd' => 'dd',    //Day of the month, 2 digits with leading zeros   01 to 31

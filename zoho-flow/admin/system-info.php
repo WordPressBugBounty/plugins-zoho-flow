@@ -22,18 +22,21 @@ if( ! class_exists( 'WP_List_Table' ) ) {
 					'value' => get_bloginfo('name')
 				));
 			}
+			
 			if(!empty(get_bloginfo('description'))){
 				array_push($siteinfo,array(
 					'name' => 'Description',
 					'value' => get_bloginfo('description')
 				));
 			}
+			
 			if(!empty(get_bloginfo('wpurl'))){
 				array_push($siteinfo,array(
 					'name' => 'Home URL',
 					'value' => $this->get_copy_element('wpurl', get_bloginfo('wpurl'))
 				));
 			}
+			
 			if(!empty(get_bloginfo('url'))){
 				array_push($siteinfo,array(
 					'name' => 'Site URL',
@@ -44,30 +47,35 @@ if( ! class_exists( 'WP_List_Table' ) ) {
 					'value' => $this->get_copy_element('base_url', get_bloginfo('url'))
 				));
 			}
+			
 			if(!empty(get_bloginfo('admin_email'))){
 				array_push($siteinfo,array(
 					'name' => 'Admin Email Address',
 					'value' => get_bloginfo('admin_email')
 				));
 			}
+			
 			if(!empty(get_bloginfo('language'))){
 				array_push($siteinfo,array(
 					'name' => 'Language',
 					'value' => get_bloginfo('language')
 				));
 			}
+			
 			if(!empty(wp_timezone_string())){
 				array_push($siteinfo,array(
 					'name' => 'Timezone',
 					'value' => wp_timezone_string()
 				));
 			}
+			
 			if(!empty(PHP_VERSION)){
 				array_push($siteinfo,array(
 					'name' => 'PHP Version',
 					'value' => PHP_VERSION
 				));
 			}
+			
 			if(!empty(get_bloginfo('version'))){
 				array_push($siteinfo,array(
 					'name' => 'WP Version',
@@ -88,6 +96,7 @@ if( ! class_exists( 'WP_List_Table' ) ) {
 					'value' => ini_get('default_charset')
 				));
 			}
+			
 			if(is_multisite()){
 				array_push($siteinfo,array(
 					'name' => 'WP Multisite',
@@ -100,60 +109,82 @@ if( ! class_exists( 'WP_List_Table' ) ) {
 					'value' => 'No'
 				));
 			}
+			
+			if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON) {
+			    array_push($siteinfo,array(
+			        'name' => 'WP Cron',
+			        'value' => 'Disabled'
+			    ));
+			} else {
+			    array_push($siteinfo,array(
+			        'name' => 'WP Cron',
+			        'value' => 'Enabled'
+			    ));
+			}
+			
 			if(!empty(get_bloginfo('atom_url'))){
 				array_push($siteinfo,array(
 					'name' => 'Atom URL',
 					'value' => $this->get_copy_element('atom_url', get_bloginfo('atom_url'))
 				));
 			}
+			
 			if(!empty(get_bloginfo('rdf_url'))){
 				array_push($siteinfo,array(
 					'name' => 'RDF URL',
 					'value' => $this->get_copy_element('rdf_url', get_bloginfo('rdf_url'))
 				));
 			}
+			
 			if(!empty(get_bloginfo('rss_url'))){
 				array_push($siteinfo,array(
 					'name' => 'RSS URL',
 					'value' => $this->get_copy_element('rss_url', get_bloginfo('rss_url'))
 				));
 			}
+			
 			if(!empty(get_bloginfo('rss2_url'))){
 				array_push($siteinfo,array(
 					'name' => 'RSS 2 URL',
 					'value' => $this->get_copy_element('rss2_url', get_bloginfo('rss2_url'))
 				));
 			}
+			
 			if(!empty(get_bloginfo('comments_atom_url'))){
 				array_push($siteinfo,array(
 					'name' => 'Comments Atom URL',
 					'value' => $this->get_copy_element('comments_atom_url', get_bloginfo('comments_atom_url'))
 				));
 			}
+			
 			if(!empty(get_bloginfo('comments_rss2_url'))){
 				array_push($siteinfo,array(
 					'name' => 'Comments Rss 2 URL',
 					'value' => $this->get_copy_element('comments_rss2_url', get_bloginfo('comments_rss2_url'))
 				));
 			}
+			
 			if(!empty($_SERVER['REMOTE_ADDR'])){
 				array_push($siteinfo,array(
 					'name' => 'Remote IP Address',
 					'value' => $_SERVER['REMOTE_ADDR']
 				));
 			}
+			
 			if(!empty($_SERVER['REMOTE_PORT'])){
 				array_push($siteinfo,array(
 					'name' => 'Remote Port',
 					'value' => $_SERVER['REMOTE_PORT']
 				));
 			}
+			
 			if(!empty($_SERVER['SERVER_NAME'])){
 				array_push($siteinfo,array(
 					'name' => 'Server Address',
 					'value' => $_SERVER['SERVER_NAME']
 				));
 			}
+			
 			if(!empty($_SERVER['SERVER_PORT'])){
 				array_push($siteinfo,array(
 					'name' => 'Server Port',
