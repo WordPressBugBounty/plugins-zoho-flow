@@ -245,20 +245,41 @@ class Zoho_Flow_Service
 	}
 
 	private function has_api_keys(){
-    $args = array(
-							'post_type' => WP_ZOHO_FLOW_API_KEY_POST_TYPE,
-							'posts_per_page' => -1,
-							'fields' => 'ids',
-			        'meta_query' => array(
-			              	'relation' => 'AND',
-			        				array(
-			        					'key' => 'plugin_service',
-			        					'value' => $this->service_id,
-			        					'compare' => '='
-			        				)
-			  			)
-						);
-		$api_keys = get_posts( $args );
+		/*$args = array(
+			'post_type' => WP_ZOHO_FLOW_API_KEY_POST_TYPE,
+			'posts_per_page' => -1,
+			'fields' => 'ids',
+			'meta_query' => array(
+					'relation' => 'AND',
+							array(
+								'key' => 'plugin_service',
+								'value' => $this->service_id,
+								'compare' => '='
+							)
+				)
+		);
+		$api_keys = get_posts( $args );*/
+
+		global $wpdb;
+
+		$post_type = WP_ZOHO_FLOW_API_KEY_POST_TYPE;
+		$service_id = $this->service_id;
+
+		$query = $wpdb->prepare(
+			"SELECT p.ID
+			FROM {$wpdb->posts} p
+			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
+			WHERE p.post_type = %s
+			AND p.post_status = 'publish'
+			AND pm.meta_key = %s
+			AND pm.meta_value = %s",
+			$post_type,
+			'plugin_service',
+			$service_id
+		);
+
+		$api_keys = $wpdb->get_col($query);
+		
 		if( isset( $api_keys ) && ( sizeof( $api_keys ) > 0 ) )	{
 			return true;
 		}
