@@ -159,10 +159,12 @@ class Zoho_Flow_Gravity_Forms extends Zoho_Flow_Service{
             if( !is_wp_error( $entry_details ) ){
                 foreach ( $entry_details as $key => $value ){ //For Backward compatibility, numeric keys are not removed.
                     if( is_float( $key ) ){
-                        $entry_details['input_'.$key] = maybe_unserialize( $value, true );
+                        $entry_details[$key] = maybe_unserialize( $value, true );
+                        $entry_details['input_'.$key] = $entry_details[$key];
                     }
                     elseif( is_numeric( $key ) ){
-                        $entry_details['input_'. preg_replace('/\./', '_', $key)] = maybe_unserialize( $value, true );
+                        $entry_details[$key] = maybe_unserialize( $value, true );
+                        $entry_details['input_'. preg_replace('/\./', '_', $key)] = $entry_details[$key];
                     }
                 }
                 return $entry_details;

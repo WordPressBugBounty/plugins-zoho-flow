@@ -25,4 +25,21 @@ jQuery(document).ready(function(){
       copyValue(copy_value_element_id);
     }
   });
+
+  jQuery(document).ready(function () {
+    jQuery("#zf-boost-speed-toggle").change(function () { //NO I18N
+      var toggleState = jQuery(this).is(":checked") ? "on" : "off"; //NO I18N
+
+      jQuery.post(ajaxurl, {
+        action: "update_zf_boost_speed",  //NO I18N
+        state: toggleState
+      })
+        .done(function (response) {
+        })
+        .fail(function () {
+          //Failure handler
+        });
+    });
+  });
+  
 });

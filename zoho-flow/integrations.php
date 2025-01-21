@@ -1780,6 +1780,57 @@ $zoho_flow_services_config = array (
             )
         ),
     ),
+    array(
+        'name' => esc_html__("CoBlocks"),
+        'api_path' => 'coblocks',
+        'class_name' => 'Zoho_Flow_CoBlocks',
+        'gallery_app_link' => 'coblocks',
+        'description' => esc_html__('Use CoBlocks to create interactive content in the form of blocks on your WordPress site. By integrating CoBlocks with other applications, you will be able to manage form data more efficiently.', 'zoho-flow'),
+        'icon_file' => 'coblocks.jpeg',
+        'class_test' => 'CoBlocks',
+        'app_documentation_link' => '',
+        'embed_link' => 'coblocks',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/post/(?\'post_id\'[\\d]+)/form/(?\'form_id\'[0-9a-zA-Z]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'coblocks_form_submit',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 3,
+            )
+        )
+    ),
     array (
         'name' => esc_html__("JetEngine"),
         'api_path' => 'jetengine',
@@ -1899,6 +1950,57 @@ $zoho_flow_services_config = array (
                 'args_count' => 3,
             )
         ),
+    ),
+    array(
+        'name' => esc_html__("Otter Blocks"),
+        'api_path' => 'otter-blocks',
+        'class_name' => 'Zoho_Flow_Otter_Blocks',
+        'gallery_app_link' => 'otter-blocks',
+        'description' => esc_html__('Use Otter Blocks to create page-building blocks and templates for your WordPress site.the form of blocks on your WordPress site. By integrating Otter Blocks with your favourite applications, you can automatically move form data to your CRM.', 'zoho-flow'),
+        'icon_file' => 'otter-blocks.png',
+        'class_test' => 'ThemeIsle\GutenbergBlocks\Server\Form_Server',
+        'app_documentation_link' => '',
+        'embed_link' => 'otter_blocks',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/post/(?\'post_id\'[\\d]+)/form/(?\'form_id\'[0-9a-zA-Z_-]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'otter_form_after_submit',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 1,
+            )
+        )
     ),
     array(
         'name' => esc_html__("FluentSMTP"),
@@ -2361,6 +2463,57 @@ $zoho_flow_services_config = array (
                 'method' => 'process_form_submission',
                 'args_count' => 4,
             ),
+        ),
+    ),
+    array (
+        'name' => esc_html__("Essential Blocks"),
+        'api_path' => 'essential-blocks',
+        'class_name' => 'Zoho_Flow_Essential_Blocks',
+        'gallery_app_link' => 'essential-blocks',
+        'description' => esc_html__('Use Essential Blocks to create interactive content on your WordPress site by providing a variety of easy-to-use blocks. Integrate Essential Blocks with your other applications to trigger workflows based on form entries.', 'zoho-flow'),
+        'icon_file' => 'essential-blocks.png',
+        'class_test' => 'EssentialBlocks\Integrations\Form',
+        'app_documentation_link' => '',
+        'embed_link' => 'essential_blocks',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[a-zA-Z0-9_-]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'eb_form_submit_before_email',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 3,
+            )
         ),
     ),
     array (
@@ -4333,6 +4486,50 @@ $zoho_flow_services_config = array (
             )
         ),
     ),
+    array(
+        'name' => esc_html__("PublishPress Blocks"),
+        'api_path' => 'publishpress-blocks',
+        'class_name' => 'Zoho_Flow_PublishPress_Blocks',
+        'gallery_app_link' => 'publishpress-blocks',
+        'description' => esc_html__('Use PublisherPress to create interactive content in the form of blocks on your WordPress site. By integrating PublishedPress Blocks with your favourite applications, you can automate adding subscribers to your mailing lists when a form entry is made.', 'zoho-flow'),
+        'icon_file' => 'publishpress-blocks.png',
+        'class_test' => 'AdvancedGutenbergMain',
+        'app_documentation_link' => '',
+        'embed_link' => 'publishpress_blocks',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'update_option_advgb_contacts_saved',
+                'method' => 'payload_contact_added',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'update_option_advgb_newsletter_saved',
+                'method' => 'payload_subscriber_added',
+                'args_count' => 2,
+            )
+        )
+    ),
     array (
         'name' => esc_html__('AffiliateWP'),
         'api_path' => 'affiliatewp',
@@ -4869,6 +5066,57 @@ $zoho_flow_services_config = array (
                 'action' => 'kaliforms_after_form_process_action',
                 'method' => 'payload_form_entry_submitted',
                 'args_count' => 1,
+            )
+        )
+    ),
+    array(
+        'name' => esc_html__("Snow Monkey Forms"),
+        'api_path' => 'snow-monkey-forms',
+        'class_name' => 'Zoho_Flow_Snow_Monkey_Forms',
+        'gallery_app_link' => 'snow-monkey-forms',
+        'description' => esc_html__('Use Snow Monkey Forms to build online forms on your WordPress site. Integrate Snow Monkey Forms with other applications to collect form data more efficiently.', 'zoho-flow'),
+        'icon_file' => 'snow-monkey-forms.png',
+        'class_test' => 'Snow_Monkey\Plugin\Forms\App\Model\AdministratorMailer',
+        'app_documentation_link' => '',
+        'embed_link' => 'snow_monkey_forms',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[0-9a-zA-Z_-]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'snow_monkey_forms/administrator_mailer/after_send',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 4,
             )
         )
     ),
@@ -5435,6 +5683,108 @@ $zoho_flow_services_config = array (
                 'method' => 'payload_form_entry_submitted',
                 'args_count' => 0,
             )
+        ),
+    ),
+    array (
+        'name' => esc_html__("Gutena Forms"),
+        'api_path' => 'gutena-forms',
+        'class_name' => 'Zoho_Flow_Gutena_Forms',
+        'gallery_app_link' => 'gutena-forms',
+        'description' => esc_html__('Use Gutena Forms to build a variety of online forms on your WordPress site. By integrating Gutena Forms with your favourite applications, you will be able to trigger workflows based on form entries.', 'zoho-flow'),
+        'icon_file' => 'gutena-forms.png',
+        'class_test' => 'Gutena_Forms',
+        'app_documentation_link' => '',
+        'embed_link' => 'gutena_forms',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[a-zA-Z0-9_]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'gutena_forms_submitted_data',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 3,
+            ),
+        ),
+    ),
+    array (
+        'name' => esc_html__("HTML Forms"),
+        'api_path' => 'html-forms',
+        'class_name' => 'Zoho_Flow_HTML_Forms',
+        'gallery_app_link' => 'html-forms',
+        'description' => esc_html__('Use HTML Forms to build forms for a variety of purposes on their WordPress site. Integrate HTML Forms with your favourite applications to trigger workflows based on your form entries.', 'zoho-flow'),
+        'icon_file' => 'html-forms.png',
+        'class_test' => 'HTML_Forms\Forms',
+        'app_documentation_link' => '',
+        'embed_link' => 'html_forms',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[a-zA-Z0-9_]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'hf_form_success',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 2,
+            ),
         ),
     ),
     array(
@@ -7054,5 +7404,56 @@ $zoho_flow_services_config = array (
                 'args_count' => 1,
             )
         )
+    ),
+    array (
+        'name' => esc_html__("BuddyForms"),
+        'api_path' => 'buddyforms',
+        'class_name' => 'Zoho_Flow_BuddyForms',
+        'gallery_app_link' => 'buddyforms',
+        'description' => esc_html__('Use BuddyForms to build online forms on your WordPress site. By integrating BuddyForms with other applications you can automate the transfer of data from your forms to your CRM.', 'zoho-flow'),
+        'icon_file' => 'buddyforms.jpg',
+        'class_test' => 'BuddyForms',
+        'app_documentation_link' => '',
+        'embed_link' => 'buddyforms',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[a-zA-Z0-9]+)',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'buddyforms_after_submission_end',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 1,
+            ),
+        ),
     )
 );

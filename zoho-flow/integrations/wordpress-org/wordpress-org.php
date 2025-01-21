@@ -1359,7 +1359,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 		$query     = $wpdb->prepare('
 			SELECT
 				DISTINCT meta_key
-			    FROM ' . $wpdb->base_prefix . 'usermeta
+			    FROM ' . $wpdb->base_prefix . 'usermeta LIMIT 500
             ');
 		$meta_keys = $wpdb->get_results( $query );
 		return rest_ensure_response($meta_keys);

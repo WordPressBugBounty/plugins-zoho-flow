@@ -6,7 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function zoho_flow_load(){
 	if(did_action('plugins_loaded') === 1){
-		load_plugin_textdomain( 'zoho-flow', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
 
 		require_once WP_ZOHO_FLOW_PLUGIN_DIR . '/includes/capabilities.php';
 		require_once WP_ZOHO_FLOW_PLUGIN_DIR . '/includes/utils.php';
@@ -31,6 +30,12 @@ function zoho_flow_load(){
 	}
 }
 add_action( 'plugins_loaded', 'zoho_flow_load', 10, 0 );
+
+function zoho_flow_init(){
+    load_plugin_textdomain( 'zoho-flow', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
+}
+
+add_action( 'init', 'zoho_flow_init', 10, 0 );
 
 function zoho_flow_activation(){
 
@@ -107,3 +112,53 @@ function zoho_flow_uninstall(){
 
 }
 register_uninstall_hook(__FILE__, 'zoho_flow_uninstall');
+
+add_action('admin_enqueue_scripts', 'my_plugin_enqueue_thickbox');
+function my_plugin_enqueue_thickbox() {
+
+    wp_enqueue_script('thickbox');
+    wp_enqueue_style('thickbox');
+
+	wp_enqueue_script(
+        'zoho-flow-deactivation-js',
+        plugins_url('assets/js/zoho-flow-deactivation.js', __FILE__),
+        array('jquery', 'thickbox'), // Dependencies
+        '1.0', // Version
+        true // Load in footer
+    );
+
+	wp_localize_script('zoho-flow-deactivation-js', 'zohoFlow', array(
+        'ajaxurl' => admin_url('admin-ajax.php'),
+    ));
+
+	wp_enqueue_style(
+        'zoho-flow-deactivation-css',
+        plugins_url('assets/css/zoho-flow-deactivation.css', __FILE__),
+        array('thickbox'),
+        '1.0',
+        'all'
+    );
+}
+
+add_action('wp_ajax_zoho_flow_deactivate_plugin', 'zoho_flow_deactivate_plugin');
+function zoho_flow_deactivate_plugin() {
+
+    if (!current_user_can('activate_plugins')) {
+        wp_send_json_error('Unauthorized', 403);
+    }
+
+    $plugin = WP_ZOHO_FLOW_PLUGIN_NAME.'/zoho-flow.php';
+    deactivate_plugins($plugin);
+
+    wp_send_json_success('Plugin deactivated');
+}
+
+add_filter('plugin_action_links_' . WP_ZOHO_FLOW_PLUGIN_NAME . '/zoho-flow.php', 'my_plugin_deactivation_link');
+function my_plugin_deactivation_link($links) {
+
+    $form_url = 'https://creatorapp.zohopublic.com/zohointranet/zoho-flow/form-embed/Wordpress_showcase_page_deactivation_form/vmkOy5mh2201nr0Odr4KxVsHZgr9M0NQveBR57Kuk2wTkJ1yOSpCpWuGZRxObxaT9SXZhu7bkbAYyZMdx1D25rOzP2qqx22Mgwk1';
+    
+    $links['deactivate'] = '<a href="' . esc_url($form_url) . '?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=320&height=440" class="thickbox zf-deactivation-popup" title="Deactivate Zoho Flow?">Deactivate</a>';
+    return $links;
+}
+

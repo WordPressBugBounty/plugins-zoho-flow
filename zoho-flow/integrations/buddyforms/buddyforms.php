@@ -1,21 +1,21 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+    exit;
 }
 
 /**
  * class used for APIs and Webhooks
  *
- * @since zohoflow      2.10.0
- * @since wpzoom-forms  1.2.4
+ * @since zohoflow      2.11.0
+ * @since buddyforms    2.8.13
  */
-class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
-    
+class Zoho_Flow_BuddyForms extends Zoho_Flow_Service{
+
     /**
      *  @var array Webhook events supported.
      */
     public static $supported_events = array(
-        "form_entry_submitted",
+        "form_entry_submitted"
     );
     
     /**
@@ -32,7 +32,7 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
      */
     public function list_forms( $request ){
         $args = array(
-            "post_type" => "wpzf-form",
+            "post_type" => "buddyforms",
             "numberposts" => ($request['limit']) ? $request['limit'] : '200',
             "orderby" => ($request['order_by']) ? $request['order_by'] : 'post_modified',
             "order" => ($request['order']) ? $request['order'] : 'DESC',
@@ -43,6 +43,7 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
             $forms_return_list[] = array(
                 "ID" => $form->ID,
                 "post_title" => $form->post_title,
+                "post_name" => $form->post_name,
                 "post_status" => $form->post_status,
                 "post_author" => $form->post_author,
                 "post_date" => $form->post_date,
@@ -63,35 +64,16 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
      * @return WP_REST_Response|WP_Error    WP_REST_Response array with form field details | WP_Error object with error details.
      */
     public function list_form_fields( $request ){
-        $form_id = $request['form_id'];
+        $form_id = $request->get_url_params()['form_id'];
         if( $this->is_valid_form( $form_id ) ){
-            $post = get_post( $form_id, 'ARRAY_A' );
-            $form_block = parse_blocks( $post['post_content'] );
-            return rest_ensure_response( $this->parse_wpzoom_form_block( $form_block ) );
+            $post = get_post_meta( $form_id, '_buddyforms_options' );
+            if( is_array( $post ) ){
+                return rest_ensure_response( $post[0] );
+            }
         }
         return new WP_Error( 'rest_bad_request', "Form does not exist!", array( 'status' => 404 ) );
     }
-    
-    private function parse_wpzoom_form_block( $blocks ){
-        $field_array = array();
-        if( is_array( $blocks ) ){
-            foreach ( $blocks as $block ){
-                if( 0 === ( strpos( $block['blockName'], 'wpzoom-forms/' ) ) && !empty( $block['attrs'] ) ){
-                    $attrs = $block['attrs'];
-                    $attrs['type'] = $block['blockName'];
-                    $field_array[] = $attrs;
-                }
-                if( is_array( $block['innerBlocks'] ) && !empty( $block['innerBlocks'] ) ){
-                    $inner_field_array = $this->parse_wpzoom_form_block( $block['innerBlocks'] );
-                    if( !empty( $inner_field_array ) ){
-                        $field_array = array_merge( $field_array, $inner_field_array );
-                    }
-                }
-            }
-        }
-        return $field_array;
-    }
-    
+
     /**
      * Check whether the Form ID is valid or not.
      *
@@ -100,14 +82,11 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
      */
     private function is_valid_form( $form_id ){
         if( isset( $form_id ) ){
-            if( "wpzf-form" === get_post_type( $form_id ) ){
+            if( "buddyforms" === get_post_type( $form_id ) ){
                 return true;
             }
-            return false;
         }
-        else{
-            return false;
-        }
+        return false;
     }
     
     /**
@@ -119,7 +98,7 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
      */
     public function create_webhook( $request ){
         $entry = json_decode( $request->get_body() );
-        if( ( !isset( $entry->form_id ) ) || !$this->is_valid_form( $entry->form_id ) ){
+        if( ( !isset( $entry->post_id ) && !isset( $entry->form_id ) ) || !$this->is_valid_form( $entry->form_id ) ){
             return new WP_Error( 'rest_bad_request', "Form does not exist!", array( 'status' => 400 ) );
         }
         if( ( isset( $entry->name ) ) && ( isset( $entry->url ) ) && ( isset( $entry->event ) ) && ( in_array( $entry->event, self::$supported_events ) ) && ( preg_match( "/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i", $entry->url ) ) ){
@@ -129,7 +108,14 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
                 'event' => $entry->event,
                 'form_id' => $entry->form_id
             );
-            $post_name = "WPZOOM Forms ";
+            $bf_post = get_post( $entry->form_id, 'ARRAY_A' );
+            if( is_array( $bf_post ) ){
+                $args['form_slug'] = $bf_post['post_name'];
+            }
+            else{
+                return new WP_Error( 'rest_bad_request', "Form does not exist!", array( 'status' => 400 ) );
+            }
+            $post_name = "BuddyForms ";
             $post_id = $this->create_webhook_post( $post_name, $args );
             if( is_wp_error( $post_id ) ){
                 $errors = $post_id->get_error_messages();
@@ -177,20 +163,23 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
     
     /**
      * Fires after entry is processed.
+     *
+     * @param   array    $submission     Form entry details.
      */
-    public function payload_form_entry_submitted( ){
-        $form_entry = $_POST;
-        $form_id = $form_entry['form_id'];
+    public function payload_form_entry_submitted( $submission ){
         $args = array(
             'event' => 'form_entry_submitted',
-            'form_id' => $form_id
+            'form_slug' => $submission['form_slug']
         );
         $webhooks = $this->get_webhook_posts( $args );
         if( !empty( $webhooks ) ){
-            unset( $form_entry['_wpnonce'] );
+            $submission_meta = get_post_meta( $submission['ID'] );
+            foreach( $submission_meta as $meta_key => $meta_value ){
+                $submission_meta[ $meta_key ] = $meta_value[0];
+            }
             $event_data = array(
                 'event' => 'form_entry_submitted',
-                'data' => $form_entry
+                'data' => $submission_meta
             );
             foreach( $webhooks as $webhook ){
                 $event_data['id'] = $webhook->ID;
@@ -199,9 +188,9 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
             }
         }
     }
-    
+
     /**
-     * default API
+     * Default API
      * Get user and system info.
      *
      * @return array|WP_Error System and logged in user details | WP_Error object with error details.
@@ -211,10 +200,10 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
         if( ! function_exists( 'get_plugin_data' ) ){
             require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
         }
-        $plugin_dir = ABSPATH . 'wp-content/plugins/wpzoom-forms/wpzoom-forms.php';
+        $plugin_dir = ABSPATH . 'wp-content/plugins/buddyforms/BuddyForms.php';
         if(file_exists( $plugin_dir ) ){
             $plugin_data = get_plugin_data( $plugin_dir );
-            $system_info['wpzoom_forms'] = $plugin_data['Version'];
+            $system_info['buddyforms'] = $plugin_data['Version'];
         }
         return rest_ensure_response( $system_info );
     }

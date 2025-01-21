@@ -7,10 +7,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * class used for APIs and Webhooks
  *
  * @since zohoflow      2.10.0
- * @since wpzoom-forms  1.2.4
+ * @since gutena-forms  1.2.4
  */
-class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
-    
+class Zoho_Flow_Gutena_Forms extends Zoho_Flow_Service{
+
     /**
      *  @var array Webhook events supported.
      */
@@ -25,31 +25,33 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
      *
      * request params  Optional. Arguments for querying forms.
      * @type int     limit        Number of forms to query for. Default: 200.
-     * @type string  $order_by    Forms list order by the field. Default: post_modified.
+     * @type string  $order_by    Forms list order by the field. Default: modified_time.
      * @type string  $order       Form list order Values: ASC|DESC. Default: DESC.
      *
      * @return WP_REST_Response|WP_Error    WP_REST_Response array of form details | WP_Error object with error details.
      */
     public function list_forms( $request ){
-        $args = array(
-            "post_type" => "wpzf-form",
-            "numberposts" => ($request['limit']) ? $request['limit'] : '200',
-            "orderby" => ($request['order_by']) ? $request['order_by'] : 'post_modified',
-            "order" => ($request['order']) ? $request['order'] : 'DESC',
+        global $wpdb;
+        $order_by_allowed = array(
+            'form_id',
+            'form_name',
+            'added_time',
+            'modified_time'
         );
-        $forms_list = get_posts( $args );
-        $forms_return_list = array();
-        foreach ( $forms_list as $form ){
-            $forms_return_list[] = array(
-                "ID" => $form->ID,
-                "post_title" => $form->post_title,
-                "post_status" => $form->post_status,
-                "post_author" => $form->post_author,
-                "post_date" => $form->post_date,
-                "post_modified" => $form->post_modified
-            );
-        }
-        return rest_ensure_response( $forms_return_list );
+        $order_allowed = array('ASC', 'DESC');
+        
+        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'modified_time';
+        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
+        $limit = ($request['limit']) ? $request['limit'] : '200';
+        
+        $results = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT form_id, user_id, block_form_id, form_name, added_time, modified_time, published FROM {$wpdb->prefix}gutenaforms ORDER BY $order_by $order LIMIT %d",
+                $limit
+            ), 'ARRAY_A'
+                );
+        
+        return rest_ensure_response( $results );
     }
     
     /**
@@ -64,32 +66,12 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
      */
     public function list_form_fields( $request ){
         $form_id = $request['form_id'];
-        if( $this->is_valid_form( $form_id ) ){
-            $post = get_post( $form_id, 'ARRAY_A' );
-            $form_block = parse_blocks( $post['post_content'] );
-            return rest_ensure_response( $this->parse_wpzoom_form_block( $form_block ) );
+        $form = $this->is_valid_form( $form_id );
+        if( $form ){
+
+            return rest_ensure_response( $form['form_schema']['form_fields'] );
         }
         return new WP_Error( 'rest_bad_request', "Form does not exist!", array( 'status' => 404 ) );
-    }
-    
-    private function parse_wpzoom_form_block( $blocks ){
-        $field_array = array();
-        if( is_array( $blocks ) ){
-            foreach ( $blocks as $block ){
-                if( 0 === ( strpos( $block['blockName'], 'wpzoom-forms/' ) ) && !empty( $block['attrs'] ) ){
-                    $attrs = $block['attrs'];
-                    $attrs['type'] = $block['blockName'];
-                    $field_array[] = $attrs;
-                }
-                if( is_array( $block['innerBlocks'] ) && !empty( $block['innerBlocks'] ) ){
-                    $inner_field_array = $this->parse_wpzoom_form_block( $block['innerBlocks'] );
-                    if( !empty( $inner_field_array ) ){
-                        $field_array = array_merge( $field_array, $inner_field_array );
-                    }
-                }
-            }
-        }
-        return $field_array;
     }
     
     /**
@@ -100,14 +82,27 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
      */
     private function is_valid_form( $form_id ){
         if( isset( $form_id ) ){
-            if( "wpzf-form" === get_post_type( $form_id ) ){
-                return true;
+            global $wpdb;
+            $result = $wpdb->get_row(
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}gutenaforms WHERE block_form_id = %s",
+                    $form_id
+                        ), 'ARRAY_A'
+                            );
+            
+            if( !empty( $result ) ){
+                
+                $result['form_schema'] = maybe_unserialize( $result['form_schema'], true );
+                return $result;
+                
             }
             return false;
         }
         else{
             return false;
         }
+        
+        return false;
     }
     
     /**
@@ -129,7 +124,7 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
                 'event' => $entry->event,
                 'form_id' => $entry->form_id
             );
-            $post_name = "WPZOOM Forms ";
+            $post_name = "Gutena Forms ";
             $post_id = $this->create_webhook_post( $post_name, $args );
             if( is_wp_error( $post_id ) ){
                 $errors = $post_id->get_error_messages();
@@ -177,20 +172,21 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
     
     /**
      * Fires after entry is processed.
+     *
+     * @param   array       $entry          Form entry details.
+     * @param   string      $form_id        Form ID.
+     * @param   array       $field_schema   Form field details.
      */
-    public function payload_form_entry_submitted( ){
-        $form_entry = $_POST;
-        $form_id = $form_entry['form_id'];
+    public function payload_form_entry_submitted( $entry, $form_id, $field_schema ){
         $args = array(
             'event' => 'form_entry_submitted',
             'form_id' => $form_id
         );
         $webhooks = $this->get_webhook_posts( $args );
         if( !empty( $webhooks ) ){
-            unset( $form_entry['_wpnonce'] );
             $event_data = array(
                 'event' => 'form_entry_submitted',
-                'data' => $form_entry
+                'data' => $entry
             );
             foreach( $webhooks as $webhook ){
                 $event_data['id'] = $webhook->ID;
@@ -199,7 +195,7 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
             }
         }
     }
-    
+
     /**
      * default API
      * Get user and system info.
@@ -211,10 +207,10 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
         if( ! function_exists( 'get_plugin_data' ) ){
             require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
         }
-        $plugin_dir = ABSPATH . 'wp-content/plugins/wpzoom-forms/wpzoom-forms.php';
+        $plugin_dir = ABSPATH . 'wp-content/plugins/gutena-forms/gutena-forms.php';
         if(file_exists( $plugin_dir ) ){
             $plugin_data = get_plugin_data( $plugin_dir );
-            $system_info['wpzoom_forms'] = $plugin_data['Version'];
+            $system_info['gutena_forms'] = $plugin_data['Version'];
         }
         return rest_ensure_response( $system_info );
     }

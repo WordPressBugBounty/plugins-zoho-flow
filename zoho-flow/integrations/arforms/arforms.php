@@ -235,6 +235,7 @@ class Zoho_Flow_ARForms extends Zoho_Flow_Service{
                 'data' => $entry_values
             );
             foreach( $webhooks as $webhook ){
+                $event_data['id'] = $webhook->ID;
                 $url = $webhook->url;
                 zoho_flow_execute_webhook( $url, $event_data, array() );
             }
@@ -261,6 +262,7 @@ class Zoho_Flow_ARForms extends Zoho_Flow_Service{
                     'data' => $form_entry
                 );
                 foreach( $webhooks as $webhook ){
+                    $event_data['id'] = $webhook->ID;
                     $url = $webhook->url;
                     zoho_flow_execute_webhook( $url, $event_data, array() );
                 }

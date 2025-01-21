@@ -8,10 +8,148 @@ if( ! class_exists( 'WP_List_Table' ) ) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
+function enqueue_toggle_script() {
+    wp_enqueue_script('toggle-script', get_template_directory_uri() . '/js/toggle.js', ['jquery'], null, true);
+    wp_localize_script('toggle-script', 'ajaxurl', admin_url('admin-ajax.php'));
+}
+add_action('wp_enqueue_scripts', 'enqueue_toggle_script');
+
+
+$zf_boost_speed_state = get_option('zf_boost_speed', 'off');
+
+function update_zf_boost_speed() {
+
+
+    if (isset($_POST['state'])) {
+        $new_state = sanitize_text_field($_POST['state']);
+
+        update_option('zf_boost_speed', $new_state, true);
+
+        wp_send_json_success(['state' => $new_state]);
+    } else {
+
+        wp_send_json_error('Invalid state');
+    }
+}
+add_action('wp_ajax_update_zf_boost_speed', 'update_zf_boost_speed');
+
+class Zoho_Flow_Settings_Menue extends WP_List_Table {
+
+	function get_copy_element($row_name,$row_value){
+		return '<span id="'.$row_name.'-span">'. $row_value .'</span> <a id="'.$row_name.'-copy-value" style="padding: 0px 0px;" class="dashicons dashicons-admin-page system-info-copy-icon"></a><span id="'.$row_name.'-span-copy-sucess" style="display: none; padding-right: 5px; padding-left: 5px; color: green;">Copied!</span>';
+	}
+
+	function get_toggle_boost_speed_element(){
+		
+		$zf_boost_speed_state = get_option('zf_boost_speed', 'off');
+		$checked = ($zf_boost_speed_state === "on") ? 'checked' : '';
+
+		// Return the toggle HTML
+		return '
+			<div class="toggle-switch">
+				<input type="checkbox" id="zf-boost-speed-toggle" class="toggle-input" ' . $checked . '>
+				<label for="zf-boost-speed-toggle" class="toggle-label"></label>
+			</div>
+		';
+	}
+
+	function get_rows(){
+		$settings = array();
+		
+		if(!empty(get_bloginfo('url'))){
+			array_push($settings,array(
+				'name' => 'Base URL',
+				'value' => $this->get_copy_element('base_url', get_bloginfo('url'))
+			));
+		}
+
+		if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON) {
+			array_push($settings,array(
+				'name' => 'WP Cron',
+				'value' => 'Disabled'
+			));
+		} else {
+			array_push($settings,array(
+				'name' => 'WP Cron',
+				'value' => 'Enabled'
+			));
+			array_push($settings,array(
+				'name' => 'Enable Asynchronous Trigger Process <span class="info-icon" data-tooltip="Improves processing speed of triggers by handling webhooks in the background using WP Cron jobs."> &#9432; </span>',
+				'value' => $this->get_toggle_boost_speed_element()
+			));
+		}
+		
+		if(is_multisite()){
+			array_push($settings,array(
+				'name' => 'WP Multisite',
+				'value' => 'Yes'
+			));
+		}
+		else{
+			array_push($settings,array(
+				'name' => 'WP Multisite',
+				'value' => 'No'
+			));
+		}
+
+		return $settings;
+	}
+
+	function get_columns(){
+	  $columns = array(
+		'name'    => 'Label',
+		  'value' => 'Value'
+	  );
+	  return $columns;
+	}
+
+	function prepare_items() {
+	  $columns = $this->get_columns();
+	  $hidden = array(
+		  'id' => 'ID'
+	  );
+	  $sortable = array();
+	  $this->_column_headers = array($columns, $hidden, $sortable);
+		$items = $this->get_rows();
+	  $this->items = $items;
+
+	}
+
+	function column_default( $item, $column_name ) {
+		switch( $column_name ) {
+			case 'name':
+			case 'value':
+				return $item[ $column_name ];
+			default:
+				return '';
+		}
+	}
+
+	function get_table_classes(){
+		$classes = parent::get_table_classes();
+		array_push($classes, 'zoho-flow-site-info-table');
+		return $classes;
+	}
+}
+
   class Zoho_Flow_System_Info_Menue extends WP_List_Table {
 
 		function get_copy_element($row_name,$row_value){
 			return '<span id="'.$row_name.'-span">'. $row_value .'</span> <a id="'.$row_name.'-copy-value" style="padding: 0px 0px;" class="dashicons dashicons-admin-page system-info-copy-icon"></a><span id="'.$row_name.'-span-copy-sucess" style="display: none; padding-right: 5px; padding-left: 5px; color: green;">Copied!</span>';
+		}
+
+		function get_toggle_boost_speed_element(){
+			
+			$zf_boost_speed_state = get_option('zf_boost_speed', 'off');
+			$checked = ($zf_boost_speed_state === "on") ? 'checked' : '';
+
+			// Return the toggle HTML
+			return '
+				<div class="toggle-switch">
+					<input type="checkbox" id="zf-boost-speed-toggle" class="toggle-input" ' . $checked . '>
+					<label for="zf-boost-speed-toggle" class="toggle-label"></label>
+				</div>
+			';
 		}
 
 		function get_rows(){
@@ -42,10 +180,6 @@ if( ! class_exists( 'WP_List_Table' ) ) {
 					'name' => 'Site URL',
 					'value' => $this->get_copy_element('site_url', get_bloginfo('url'))
 				));
-				array_push($siteinfo,array(
-					'name' => 'Base URL',
-					'value' => $this->get_copy_element('base_url', get_bloginfo('url'))
-				));
 			}
 			
 			if(!empty(get_bloginfo('admin_email'))){
@@ -53,6 +187,18 @@ if( ! class_exists( 'WP_List_Table' ) ) {
 					'name' => 'Admin Email Address',
 					'value' => get_bloginfo('admin_email')
 				));
+			}
+
+			if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON) {
+			    array_push($siteinfo,array(
+			        'name' => 'WP Cron',
+			        'value' => 'Disabled'
+			    ));
+			} else {
+			    array_push($siteinfo,array(
+			        'name' => 'WP Cron',
+			        'value' => 'Enabled'
+			    ));
 			}
 			
 			if(!empty(get_bloginfo('language'))){
@@ -108,18 +254,6 @@ if( ! class_exists( 'WP_List_Table' ) ) {
 					'name' => 'WP Multisite',
 					'value' => 'No'
 				));
-			}
-			
-			if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON) {
-			    array_push($siteinfo,array(
-			        'name' => 'WP Cron',
-			        'value' => 'Disabled'
-			    ));
-			} else {
-			    array_push($siteinfo,array(
-			        'name' => 'WP Cron',
-			        'value' => 'Enabled'
-			    ));
 			}
 			
 			if(!empty(get_bloginfo('atom_url'))){

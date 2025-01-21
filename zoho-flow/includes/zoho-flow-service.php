@@ -94,7 +94,7 @@ class Zoho_Flow_Service
 	}
 
 	public function register_hooks(){
-		if( array_key_exists('hooks', $this->service) && $this->has_api_keys() ){
+		if( array_key_exists('hooks', $this->service) && $this->has_webhooks() ){
 			foreach ($this->service['hooks'] as $hook) {
 				$action = (string)$hook['action'];
 				$method = (string)$hook['method'];
@@ -112,7 +112,7 @@ class Zoho_Flow_Service
 	}
 
 	public function register_dynamic_hooks(){
-		if( array_key_exists('dynamic_hooks', $this->service) && $this->has_api_keys() ){
+		if( array_key_exists('dynamic_hooks', $this->service) && $this->has_webhooks() ){
 			foreach ($this->service['dynamic_hooks'] as $hook) {
 				$method = (string)$hook['method'];
 				if(isset($hook['args_count'])){
@@ -244,7 +244,7 @@ class Zoho_Flow_Service
         return $result;
 	}
 
-	private function has_api_keys(){
+	private function has_webhooks(){
 		/*$args = array(
 			'post_type' => WP_ZOHO_FLOW_API_KEY_POST_TYPE,
 			'posts_per_page' => -1,
@@ -262,7 +262,7 @@ class Zoho_Flow_Service
 
 		global $wpdb;
 
-		$post_type = WP_ZOHO_FLOW_API_KEY_POST_TYPE;
+		$post_type = WP_ZOHO_FLOW_WEBHOOK_POST_TYPE;
 		$service_id = $this->service_id;
 
 		$query = $wpdb->prepare(
@@ -278,9 +278,9 @@ class Zoho_Flow_Service
 			$service_id
 		);
 
-		$api_keys = $wpdb->get_col($query);
+		$webhooks = $wpdb->get_col($query);
 		
-		if( isset( $api_keys ) && ( sizeof( $api_keys ) > 0 ) )	{
+		if( isset( $webhooks ) && ( sizeof( $webhooks ) > 0 ) )	{
 			return true;
 		}
 		return false;
@@ -389,6 +389,12 @@ class Zoho_Flow_Service
 		if ( ! function_exists( 'get_plugins' ) ) {
 		    require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
+		if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON) {
+			$siteinfo['wp_cron'] = 'Disabled';
+		} else {
+			$siteinfo['wp_cron'] = 'Enabled';
+		}
+		$siteinfo['asynchronous_trigger_process'] = get_option('zf_boost_speed', 'off');
 		$siteinfo['all_plugins'] = get_plugins();
 		return $siteinfo;
 	}

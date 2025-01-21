@@ -15,7 +15,7 @@ class Zoho_Flow_Service_Suggestion{
 
   /**
    * admin notice blocked services:
-   * WPForms,Formidable Forms,everest-forms, Mailster, Bitform, Ninja Tables, Akismet,WP Mail, SMTP, Fluent SMTP, The Newsletter Plugin, UserFeedback, Jetpack CRM, Fluent Booking, BookingPress, Easy Digital Downloads, Simply Schedule Appointments, Quill Forms, Paid Member Subscriptions, ARMember, ARForms, Spectra, Wappointment, Form Maker
+   * WPForms,Formidable Forms,everest-forms, Mailster, Bitform, Ninja Tables, Akismet,WP Mail, SMTP, Fluent SMTP, The Newsletter Plugin, UserFeedback, Jetpack CRM, Fluent Booking, BookingPress, Easy Digital Downloads, Simply Schedule Appointments, Quill Forms, Paid Member Subscriptions, ARMember, ARForms, Spectra, Wappointment, Form Maker, gutena-forms, Otter Blocks, Essential Blocks, CoBlocks
    */
   public function __construct() {
       global $pagenow;
@@ -89,7 +89,7 @@ class Zoho_Flow_Service_Suggestion{
 	        'gf_edit_forms' => 'gravity-forms',
 	        'gf_addons' => 'gravity-forms',
 	        'gf_entries' => 'gravity-forms',
-					'gf_settings' => 'gravity-forms',
+			'gf_settings' => 'gravity-forms',
 	        'gf_export' => 'gravity-forms',
 	        'mailpoet-homepage' => 'mailpoet',
 	        'mailpoet-forms' => 'mailpoet',
@@ -215,75 +215,83 @@ class Zoho_Flow_Service_Suggestion{
 	        'bookly-news' => 'bookly',
 	        'bookly-notifications' => 'bookly',
 	        'bookly-cloud-products' => 'bookly',
-					'cp_apphourbooking' => 'appointment-hour-booking',
-					'cp_apphourbooking_settings' => 'appointment-hour-booking',
-					'cp_apphourbooking_addons' => 'appointment-hour-booking',
-					'cp_apphourbooking_support' => 'appointment-hour-booking',
-					'wpsbc-calendars' => 'wp-simple-booking-calendar',
-					'wpsbc-settings' => 'wp-simple-booking-calendar',
-					'wpbs-calendars' => 'wp-booking-system',
-					'wpbs-forms' => 'wp-booking-system',
-					'wpbs-settings' => 'wp-booking-system',
-					'vikbooking' => 'vikbooking',
-					'bookit' => 'bookit',
-					'bookit-appointments' => 'bookit',
-					'bookit-services' => 'bookit',
-					'bookit-staff' => 'bookit',
-					'bookit-customers' => 'bookit',
-					'bookit-settings' => 'bookit',
-					'bookit-account' => 'bookit',
-					'bookit-addons-integrations' => 'bookit',
-					'booking-package/index.php' => 'booking-package',
-					'booking-package_schedule_page' => 'booking-package',
-					'manage-fields' => 'profile-builder',
-					'profile-builder-add-ons' => 'profile-builder',
-					'profile-builder-general-settings' => 'profile-builder',
-					'profile-builder-basic-info' => 'profile-builder',
-					'profile-builder-dashboard' => 'profile-builder',
-					'wprua' => 'restrict-user-access',
-					'wprua-level' => 'restrict-user-access',
-					'wprua-settings' => 'restrict-user-access',
-					'wprua-addons' => 'restrict-user-access',
-					'rm_form_manage' => 'registrationmagic',
-					'rm_dashboard_widget_dashboard' => 'registrationmagic',
-					'rm_submission_manage' => 'registrationmagic',
-					'rm_attachment_manage' => 'registrationmagic',
-					'rm_analytics_show_form' => 'registrationmagic',
-					'rm_form_manage_cstatus' => 'registrationmagic',
-					'rm_ex_chronos_manage_tasks' => 'registrationmagic',
-					'rm_invitations_manage' => 'registrationmagic',
-					'rm_user_manage' => 'registrationmagic',
-					'rm_user_role_manage' => 'registrationmagic',
-					'rm_paypal_field_manage' => 'registrationmagic',
-					'rm_payments_manage' => 'registrationmagic',
-					'rm_options_manage' => 'registrationmagic',
-					'rm_support_forum' => 'registrationmagic',
-					'rm_support_premium_page' => 'registrationmagic',
-					'new-user-approve-admin' => 'new-user-approve',
-					'nua-invitation-code' => 'new-user-approve',
-					'rate-my-post' => 'feedbackwp',
-					'rate-my-post-stats' => 'feedbackwp',
-					'rate-my-post-analytics' => 'feedbackwp',
-					'snippets' => 'code-snippets',
-					'add-snippet' => 'code-snippets',
-					'import-code-snippets' => 'code-snippets',
-					'snippets-settings' => 'code-snippets',
-					'code-snippets-welcome' => 'code-snippets',
-					'rcp-members' => 'restrict-content',
-					'rcp-customers' => 'restrict-content',
-					'rcp-member-levels' => 'restrict-content',
-					'rcp-payments' => 'restrict-content',
-					'rcp-settings' => 'restrict-content',
-					'rcp-tools' => 'restrict-content',
-					'rcp-need-help' => 'restrict-content',
-					'rcp-addons' => 'restrict-content',
-					'rcp-why-go-pro' => 'restrict-content',
-					'sureforms_entries' => 'sureforms',
-					'romethemeform-entries' => 'romethemeform',
-					'rtm-settings' => 'romethemeform',
-					'jet-engine' => 'jetengine',
-					'jet-engine-cpt' => 'jetengine',
-					'jet-engine-cct' => 'jetengine'
+            'cp_apphourbooking' => 'appointment-hour-booking',
+            'cp_apphourbooking_settings' => 'appointment-hour-booking',
+            'cp_apphourbooking_addons' => 'appointment-hour-booking',
+            'cp_apphourbooking_support' => 'appointment-hour-booking',
+            'wpsbc-calendars' => 'wp-simple-booking-calendar',
+            'wpsbc-settings' => 'wp-simple-booking-calendar',
+            'wpbs-calendars' => 'wp-booking-system',
+            'wpbs-forms' => 'wp-booking-system',
+            'wpbs-settings' => 'wp-booking-system',
+            'vikbooking' => 'vikbooking',
+            'bookit' => 'bookit',
+            'bookit-appointments' => 'bookit',
+            'bookit-services' => 'bookit',
+            'bookit-staff' => 'bookit',
+            'bookit-customers' => 'bookit',
+            'bookit-settings' => 'bookit',
+            'bookit-account' => 'bookit',
+            'bookit-addons-integrations' => 'bookit',
+            'booking-package/index.php' => 'booking-package',
+            'booking-package_schedule_page' => 'booking-package',
+            'manage-fields' => 'profile-builder',
+            'profile-builder-add-ons' => 'profile-builder',
+            'profile-builder-general-settings' => 'profile-builder',
+            'profile-builder-basic-info' => 'profile-builder',
+            'profile-builder-dashboard' => 'profile-builder',
+            'wprua' => 'restrict-user-access',
+            'wprua-level' => 'restrict-user-access',
+            'wprua-settings' => 'restrict-user-access',
+            'wprua-addons' => 'restrict-user-access',
+            'rm_form_manage' => 'registrationmagic',
+            'rm_dashboard_widget_dashboard' => 'registrationmagic',
+            'rm_submission_manage' => 'registrationmagic',
+            'rm_attachment_manage' => 'registrationmagic',
+            'rm_analytics_show_form' => 'registrationmagic',
+            'rm_form_manage_cstatus' => 'registrationmagic',
+            'rm_ex_chronos_manage_tasks' => 'registrationmagic',
+            'rm_invitations_manage' => 'registrationmagic',
+            'rm_user_manage' => 'registrationmagic',
+            'rm_user_role_manage' => 'registrationmagic',
+            'rm_paypal_field_manage' => 'registrationmagic',
+            'rm_payments_manage' => 'registrationmagic',
+            'rm_options_manage' => 'registrationmagic',
+            'rm_support_forum' => 'registrationmagic',
+            'rm_support_premium_page' => 'registrationmagic',
+            'new-user-approve-admin' => 'new-user-approve',
+            'nua-invitation-code' => 'new-user-approve',
+            'rate-my-post' => 'feedbackwp',
+            'rate-my-post-stats' => 'feedbackwp',
+            'rate-my-post-analytics' => 'feedbackwp',
+            'snippets' => 'code-snippets',
+            'add-snippet' => 'code-snippets',
+            'import-code-snippets' => 'code-snippets',
+            'snippets-settings' => 'code-snippets',
+            'code-snippets-welcome' => 'code-snippets',
+            'rcp-members' => 'restrict-content',
+            'rcp-customers' => 'restrict-content',
+            'rcp-member-levels' => 'restrict-content',
+            'rcp-payments' => 'restrict-content',
+            'rcp-settings' => 'restrict-content',
+            'rcp-tools' => 'restrict-content',
+            'rcp-need-help' => 'restrict-content',
+            'rcp-addons' => 'restrict-content',
+            'rcp-why-go-pro' => 'restrict-content',
+            'sureforms_entries' => 'sureforms',
+            'romethemeform-entries' => 'romethemeform',
+            'rtm-settings' => 'romethemeform',
+            'jet-engine' => 'jetengine',
+            'jet-engine-cpt' => 'jetengine',
+            'jet-engine-cct' => 'jetengine',
+            'advgb_main' => 'publishpress-blocks',
+            'advgb_block_access' => 'publishpress-blocks',
+            'advgb_block_settings' => 'publishpress-blocks',
+            'advgb_custom_styles' => 'publishpress-blocks',
+            'advgb_block_controls' => 'publishpress-blocks',
+            'advgb_settings' => 'publishpress-blocks',
+            'html-forms' => 'html-forms',
+            'html-forms-settings' => 'html-forms'
 
 	    );
 	    if( isset( $page ) ){
@@ -315,18 +323,21 @@ class Zoho_Flow_Service_Suggestion{
 	        'wpdmpro' => 'download-manager',
 	        'llms_form' => 'lifter-lms',
 	        'popup' => 'popup-maker',
-					'tribe_events' => 'the-events-calendar',
-					'tribe_venue' => 'the-events-calendar',
-					'tribe_organizer' => 'the-events-calendar',
+            'tribe_events' => 'the-events-calendar',
+            'tribe_venue' => 'the-events-calendar',
+            'tribe_organizer' => 'the-events-calendar',
 	        'tec_tc_order' => 'event-tickets',
-					'event' => 'events-manager',
-					'location' => 'events-manager',
-					'event-recurring' => 'events-manager',
-					'invitation_code' => 'new-user-approve',
-					'sureforms_form' => 'sureforms',
-					'jet-engine-booking' => 'jetengine',
-					'wpzf-form' => 'wpzoom-forms',
-					'wpzf-submission' => 'wpzoom-forms'
+            'event' => 'events-manager',
+            'location' => 'events-manager',
+            'event-recurring' => 'events-manager',
+            'invitation_code' => 'new-user-approve',
+            'sureforms_form' => 'sureforms',
+            'jet-engine-booking' => 'jetengine',
+            'wpzf-form' => 'wpzoom-forms',
+            'wpzf-submission' => 'wpzoom-forms',
+            'snow-monkey-forms' => 'snow-monkey-forms',
+            'wp_block' => 'publishpress-blocks',
+            'buddyforms' => 'buddyforms'
 	    );
 	    if( isset( $post_type ) ){
 	        if( array_key_exists( $post_type, $post_type_service_map ) ){
@@ -336,551 +347,583 @@ class Zoho_Flow_Service_Suggestion{
 	}
 
   private function set_service_meta( $service_id ){
-      if( 'wordpress-org' === $service_id ){
-          $this->id = 'wordpress-org';
-          $this->name = 'WordPress.org';
-          $this->icon_file = 'wordpress.png';
-          $this->gallery_app_link = 'wordpress-org';
-          $this->plugin_api_page_link = 'wordpress-org';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'contact-form-7' === $service_id ){
-          $this->id = 'contact-form-7';
-          $this->name = 'Contact Form 7';
-          $this->icon_file = 'contact-form-7.png';
-          $this->gallery_app_link = 'contact-form-7';
-          $this->plugin_api_page_link = 'contact-form-7';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'ninja-forms' === $service_id ){
-          $this->id = 'ninja-forms';
-          $this->name = 'Ninja Forms';
-          $this->icon_file = 'ninja-forms.png';
-          $this->gallery_app_link = 'ninja-forms';
-          $this->plugin_api_page_link = 'ninja-forms';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'formidable-forms' === $service_id ){
-          $this->id = 'formidable-forms';
-          $this->name = 'Formidable Forms';
-          $this->icon_file = 'formidable-forms.png';
-          $this->gallery_app_link = 'formidable-forms';
-          $this->plugin_api_page_link = 'formidable-forms';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'ultimate-member' === $service_id ){
-          $this->id = 'ultimate-member';
-          $this->name = 'Ultimate Member';
-          $this->icon_file = 'ultimate-member.png';
-          $this->gallery_app_link = 'ultimate-member';
-          $this->plugin_api_page_link = 'ultimate-member';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'digi-member' === $service_id ){
-          $this->id = 'digi-member';
-          $this->name = 'DigiMember';
-          $this->icon_file = 'digi-member.png';
-          $this->gallery_app_link = 'digimember';
-          $this->plugin_api_page_link = 'digi-member';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'learndash' === $service_id ){
-          $this->id = 'learndash';
-          $this->name = 'LearnDash';
-          $this->icon_file = 'learndash.png';
-          $this->gallery_app_link = 'learndash';
-          $this->plugin_api_page_link = 'learndash';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'planso-forms' === $service_id ){
-          $this->id = 'planso-forms';
-          $this->name = 'PlanSo Forms';
-          $this->icon_file = 'planso-forms.png';
-          $this->gallery_app_link = 'planso-forms';
-          $this->plugin_api_page_link = 'planso-forms';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'simple-membership' === $service_id ){
-          $this->id = 'simple-membership';
-          $this->name = 'Simple Membership';
-          $this->icon_file = 'simple-membership.png';
-          $this->gallery_app_link = 'simple-membership';
-          $this->plugin_api_page_link = 'simple-membership';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'advanced-custom-fields' === $service_id ){
-          $this->id = 'advanced-custom-fields';
-          $this->name = 'Advanced Custom Fields';
-          $this->icon_file = 'acf.png';
-          $this->gallery_app_link = 'advanced-custom-fields';
-          $this->plugin_api_page_link = 'advanced-custom-fields';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'forminator' === $service_id ){
-          $this->id = 'forminator';
-          $this->name = 'Forminator';
-          $this->icon_file = 'forminator.png';
-          $this->gallery_app_link = 'forminator';
-          $this->plugin_api_page_link = 'forminator';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'givewp' === $service_id ){
-          $this->id = 'givewp';
-          $this->name = 'GiveWP';
-          $this->icon_file = 'givewp.png';
-          $this->gallery_app_link = 'givewp';
-          $this->plugin_api_page_link = 'givewp';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'user-registration' === $service_id ){
-          $this->id = 'user-registration';
-          $this->name = 'User Registration';
-          $this->icon_file = 'user-registration.png';
-          $this->gallery_app_link = 'user-registration';
-          $this->plugin_api_page_link = 'user-registration';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'paid-memberships-pro' === $service_id ){
-          $this->id = 'paid-memberships-pro';
-          $this->name = 'Paid Memberships Pro';
-          $this->icon_file = 'paid-memberships-pro.png';
-          $this->gallery_app_link = 'paid-memberships-pro';
-          $this->plugin_api_page_link = 'paid-memberships-pro';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'wp-travel-engine' === $service_id ){
-          $this->id = 'wp-travel-engine';
-          $this->name = 'WP Travel Engine';
-          $this->icon_file = 'wp-travel-engine.png';
-          $this->gallery_app_link = 'wp-travel-engine';
-          $this->plugin_api_page_link = 'wp-travel-engine';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'mailpoet' === $service_id ){
-          $this->id = 'mailpoet';
-          $this->name = 'MailPoet';
-          $this->icon_file = 'mailpoet.png';
-          $this->gallery_app_link = 'mailpoet';
-          $this->plugin_api_page_link = 'mailpoet';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'fluent-forms' === $service_id ){
-          $this->id = 'fluent-forms';
-          $this->name = 'Fluent Forms';
-          $this->icon_file = 'fluent-forms.png';
-          $this->gallery_app_link = 'fluent-forms';
-          $this->plugin_api_page_link = 'fluent-forms';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'fluentcrm' === $service_id ){
-          $this->id = 'fluentcrm';
-          $this->name = 'FluentCRM';
-          $this->icon_file = 'fluentcrm.png';
-          $this->gallery_app_link = 'fluentcrm';
-          $this->plugin_api_page_link = 'fluentcrm';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'fluent-support' === $service_id ){
-          $this->id = 'fluent-support';
-          $this->name = 'Fluent Support';
-          $this->icon_file = 'fluent-support.png';
-          $this->gallery_app_link = 'fluent-support';
-          $this->plugin_api_page_link = 'fluent-support';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'tablepress' === $service_id ){
-          $this->id = 'tablepress';
-          $this->name = 'TablePress';
-          $this->icon_file = 'tablepress.png';
-          $this->gallery_app_link = 'tablepress';
-          $this->plugin_api_page_link = 'tablepress';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'ninja-tables' === $service_id ){
-          $this->id = 'ninja-tables';
-          $this->name = 'Ninja Tables';
-          $this->icon_file = 'ninja-tables.png';
-          $this->gallery_app_link = 'ninja-tables';
-          $this->plugin_api_page_link = 'ninja-tables';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'post-smtp' === $service_id ){
-          $this->id = 'post-smtp';
-          $this->name = 'Post SMTP';
-          $this->icon_file = 'post-smtp.png';
-          $this->gallery_app_link = 'post-smtp';
-          $this->plugin_api_page_link = 'post-smtp';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'akismet' === $service_id ){
-          $this->id = 'akismet';
-          $this->name = 'Akismet';
-          $this->icon_file = 'akismet.png';
-          $this->gallery_app_link = 'akismet';
-          $this->plugin_api_page_link = 'akismet';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'userswp' === $service_id ){
-          $this->id = 'userswp';
-          $this->name = 'UsersWP';
-          $this->icon_file = 'userswp.png';
-          $this->gallery_app_link = 'userswp';
-          $this->plugin_api_page_link = 'userswp';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'buddyboss' === $service_id ){
-          $this->id = 'buddyboss';
-          $this->name = 'BuddyBoss';
-          $this->icon_file = 'buddyboss.png';
-          $this->gallery_app_link = 'buddyboss';
-          $this->plugin_api_page_link = 'buddyboss';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'login-signup-popup' === $service_id ){
-          $this->id = 'login-signup-popup';
-          $this->name = 'Login/Signup Popup';
-          $this->icon_file = 'login-signup-popup.png';
-          $this->gallery_app_link = 'login-signup-popup';
-          $this->plugin_api_page_link = 'login-signup-popup';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'affiliatewp' === $service_id ){
-          $this->id = 'affiliatewp';
-          $this->name = 'AffiliateWP';
-          $this->icon_file = 'affiliatewp.png';
-          $this->gallery_app_link = 'affiliatewp';
-          $this->plugin_api_page_link = 'affiliatewp';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'quiz-maker' === $service_id ){
-          $this->id = 'quiz-maker';
-          $this->name = 'Quiz Maker';
-          $this->icon_file = 'quiz-maker.png';
-          $this->gallery_app_link = 'quiz-maker';
-          $this->plugin_api_page_link = 'quiz-maker';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'hustle' === $service_id ){
-          $this->id = 'hustle';
-          $this->name = 'Hustle';
-          $this->icon_file = 'hustle.png';
-          $this->gallery_app_link = 'hustle';
-          $this->plugin_api_page_link = 'hustle';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'ws-form' === $service_id ){
-          $this->id = 'ws-form';
-          $this->name = 'WS Form';
-          $this->icon_file = 'ws-form.png';
-          $this->gallery_app_link = 'ws-form';
-          $this->plugin_api_page_link = 'ws-form';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'happyforms' === $service_id ){
-          $this->id = 'happyforms';
-          $this->name = 'Happyforms';
-          $this->icon_file = 'happyforms.png';
-          $this->gallery_app_link = 'happyforms';
-          $this->plugin_api_page_link = 'happyforms';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'weforms' === $service_id ){
-          $this->id = 'weforms';
-          $this->name = 'weForms';
-          $this->icon_file = 'weforms.png';
-          $this->gallery_app_link = 'weforms';
-          $this->plugin_api_page_link = 'weforms';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'jetformbuilder' === $service_id ){
-          $this->id = 'jetformbuilder';
-          $this->name = 'JetFormBuilder';
-          $this->icon_file = 'jetformbuilder.png';
-          $this->gallery_app_link = 'jetformbuilder';
-          $this->plugin_api_page_link = 'jetformbuilder';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'amelia' === $service_id ){
-          $this->id = 'amelia';
-          $this->name = 'Amelia';
-          $this->icon_file = 'amelia.png';
-          $this->gallery_app_link = 'amelia';
-          $this->plugin_api_page_link = 'amelia';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'metform' === $service_id ){
-          $this->id = 'metform';
-          $this->name = 'MetForm';
-          $this->icon_file = 'metform.png';
-          $this->gallery_app_link = 'metform';
-          $this->plugin_api_page_link = 'metform';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'wp-booking-calendar' === $service_id ){
-          $this->id = 'wp-booking-calendar';
-          $this->name = 'WP Booking Calendar';
-          $this->icon_file = 'wp-booking-calendar.png';
-          $this->gallery_app_link = 'wp-booking-calendar';
-          $this->plugin_api_page_link = 'wp-booking-calendar';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'kadence-blocks' === $service_id ){
-          $this->id = 'kadence-blocks';
-          $this->name = 'Kadence Blocks';
-          $this->icon_file = 'kadence-blocks.png';
-          $this->gallery_app_link = 'kadence-blocks';
-          $this->plugin_api_page_link = 'kadence-blocks';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'kali-forms' === $service_id ){
-          $this->id = 'kali-forms';
-          $this->name = 'Kali Forms';
-          $this->icon_file = 'kali-forms.png';
-          $this->gallery_app_link = 'kali-forms';
-          $this->plugin_api_page_link = 'kali-forms';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'wp-polls' === $service_id ){
-          $this->id = 'wp-polls';
-          $this->name = 'WP-Polls';
-          $this->icon_file = 'wp-polls.png';
-          $this->gallery_app_link = 'wp-polls';
-          $this->plugin_api_page_link = 'wp-polls';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'quiz-and-survey-master' === $service_id ){
-          $this->id = 'quiz-and-survey-master';
-          $this->name = 'Quiz And Survey Master';
-          $this->icon_file = 'quiz-and-survey-master.png';
-          $this->gallery_app_link = 'quiz-and-survey-master';
-          $this->plugin_api_page_link = 'quiz-and-survey-master';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'download-manager' === $service_id ){
-          $this->id = 'download-manager';
-          $this->name = 'Download Manager';
-          $this->icon_file = 'download-manager.png';
-          $this->gallery_app_link = 'download-manager';
-          $this->plugin_api_page_link = 'download-manager';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'tutor-lms' === $service_id ){
-          $this->id = 'tutor-lms';
-          $this->name = 'Tutor LMS';
-          $this->icon_file = 'tutor-lms.png';
-          $this->gallery_app_link = 'tutor-lms';
-          $this->plugin_api_page_link = 'tutor-lms';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'lifter-lms' === $service_id ){
-          $this->id = 'lifter-lms';
-          $this->name = 'LifterLMS';
-          $this->icon_file = 'lifter-lms.png';
-          $this->gallery_app_link = 'lifterlms';
-          $this->plugin_api_page_link = 'lifter-lms';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'popup-maker' === $service_id ){
-          $this->id = 'popup-maker';
-          $this->name = 'Popup Maker';
-          $this->icon_file = 'popup-maker.png';
-          $this->gallery_app_link = 'popup-maker';
-          $this->plugin_api_page_link = 'popup-maker';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'super-socializer' === $service_id ){
-          $this->id = 'super-socializer';
-          $this->name = 'Super Socializer';
-          $this->icon_file = 'super-socializer.png';
-          $this->gallery_app_link = 'super-socializer';
-          $this->plugin_api_page_link = 'super-socializer';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'the-events-calendar' === $service_id ){
-          $this->id = 'the-events-calendar';
-          $this->name = 'The Events Calendar';
-          $this->icon_file = 'the-events-calendar.png';
-          $this->gallery_app_link = 'the-events-calendar';
-          $this->plugin_api_page_link = 'the-events-calendar';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'event-tickets' === $service_id ){
-          $this->id = 'event-tickets';
-          $this->name = 'Event Tickets';
-          $this->icon_file = 'event-tickets.png';
-          $this->gallery_app_link = 'event-tickets';
-          $this->plugin_api_page_link = 'event-tickets';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'bookly' === $service_id ){
-          $this->id = 'bookly';
-          $this->name = 'Bookly';
-          $this->icon_file = 'bookly.png';
-          $this->gallery_app_link = 'bookly';
-          $this->plugin_api_page_link = 'bookly';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'appointment-hour-booking' === $service_id ){
-          $this->id = 'appointment-hour-booking';
-          $this->name = 'Appointment Hour Booking';
-          $this->icon_file = 'appointment-hour-booking.png';
-          $this->gallery_app_link = 'appointment-hour-booking';
-          $this->plugin_api_page_link = 'appointment-hour-booking';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'events-manager' === $service_id ){
-          $this->id = 'events-manager';
-          $this->name = 'Events Manager';
-          $this->icon_file = 'events-manager.png';
-          $this->gallery_app_link = 'events-manager';
-          $this->plugin_api_page_link = 'events-manager';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'wp-simple-booking-calendar' === $service_id ){
-          $this->id = 'wp-simple-booking-calendar';
-          $this->name = 'WP Simple Booking Calendar';
-          $this->icon_file = 'wp-simple-booking-calendar.png';
-          $this->gallery_app_link = 'wp-simple-booking-calendar';
-          $this->plugin_api_page_link = 'wp-simple-booking-calendar';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'wp-booking-system' === $service_id ){
-          $this->id = 'wp-booking-system';
-          $this->name = 'WP Booking System';
-          $this->icon_file = 'wp-booking-system.png';
-          $this->gallery_app_link = 'wp-booking-system';
-          $this->plugin_api_page_link = 'wp-booking-system';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'vikbooking' === $service_id ){
-          $this->id = 'vikbooking';
-          $this->name = 'VikBooking';
-          $this->icon_file = 'vikbooking.png';
-          $this->gallery_app_link = 'vikbooking';
-          $this->plugin_api_page_link = 'vikbooking';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'bookit' === $service_id ){
-          $this->id = 'bookit';
-          $this->name = 'Bookit';
-          $this->icon_file = 'bookit.png';
-          $this->gallery_app_link = 'bookit';
-          $this->plugin_api_page_link = 'bookit';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'booking-package' === $service_id ){
-          $this->id = 'booking-package';
-          $this->name = 'Booking Package';
-          $this->icon_file = 'booking-package.png';
-          $this->gallery_app_link = 'booking-package';
-          $this->plugin_api_page_link = 'booking-package';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'profile-builder' === $service_id ){
-          $this->id = 'profile-builder';
-          $this->name = 'Profile Builder';
-          $this->icon_file = 'profile-builder.png';
-          $this->gallery_app_link = 'profile-builder';
-          $this->plugin_api_page_link = 'profile-builder';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'restrict-user-access' === $service_id ){
-          $this->id = 'restrict-user-access';
-          $this->name = 'Restrict User Access';
-          $this->icon_file = 'restrict-user-access.png';
-          $this->gallery_app_link = 'restrict-user-access';
-          $this->plugin_api_page_link = 'restrict-user-access';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'registrationmagic' === $service_id ){
-          $this->id = 'registrationmagic';
-          $this->name = 'RegistrationMagic';
-          $this->icon_file = 'registrationmagic.png';
-          $this->gallery_app_link = 'registrationmagic';
-          $this->plugin_api_page_link = 'registrationmagic';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'new-user-approve' === $service_id ){
-          $this->id = 'new-user-approve';
-          $this->name = 'New User Approve';
-          $this->icon_file = 'new-user-approve.png';
-          $this->gallery_app_link = 'new-user-approve';
-          $this->plugin_api_page_link = 'new-user-approve';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'feedbackwp' === $service_id ){
-          $this->id = 'feedbackwp';
-          $this->name = 'FeedbackWP';
-          $this->icon_file = 'feedbackwp.png';
-          $this->gallery_app_link = 'feedbackwp';
-          $this->plugin_api_page_link = 'feedbackwp';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'code-snippets' === $service_id ){
-          $this->id = 'code-snippets';
-          $this->name = 'Code Snippets';
-          $this->icon_file = 'code-snippets.png';
-          $this->gallery_app_link = 'code-snippets';
-          $this->plugin_api_page_link = 'code-snippets';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'restrict-content' === $service_id ){
-          $this->id = 'restrict-content';
-          $this->name = 'Restrict Content';
-          $this->icon_file = 'restrict-content.png';
-          $this->gallery_app_link = 'restrict-content';
-          $this->plugin_api_page_link = 'restrict-content';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'sureforms' === $service_id ){
-          $this->id = 'sureforms';
-          $this->name = 'SureForms';
-          $this->icon_file = 'sureforms.png';
-          $this->gallery_app_link = 'sureforms';
-          $this->plugin_api_page_link = 'sureforms';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'romethemeform' === $service_id ){
-          $this->id = 'romethemeform';
-          $this->name = 'RomethemeForm';
-          $this->icon_file = 'romethemeform.png';
-          $this->gallery_app_link = 'romethemeform';
-          $this->plugin_api_page_link = 'romethemeform';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'jetengine' === $service_id ){
-          $this->id = 'jetengine';
-          $this->name = 'JetEngine';
-          $this->icon_file = 'jetengine.png';
-          $this->gallery_app_link = 'jetengine';
-          $this->plugin_api_page_link = 'jetengine';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'wpzoom-forms' === $service_id ){
-          $this->id = 'wpzoom-forms';
-          $this->name = 'WPZOOM Forms';
-          $this->icon_file = 'wpzoom-forms.png';
-          $this->gallery_app_link = 'wpzoom-forms';
-          $this->plugin_api_page_link = 'wpzoom-forms';
-          $this->is_plugin_integration = true;
-      }
-			elseif( 'gravity-forms' === $service_id ){
-          $this->id = 'gravity-forms';
-          $this->name = 'JetEngine';
-          $this->icon_file = 'gravity-forms.png';
-          $this->gallery_app_link = 'gravity-forms';
-          $this->plugin_api_page_link = 'gravity-forms';
-          $this->is_plugin_integration = true;
-      }
-      elseif( 'woocommerce' === $service_id ){
-          $this->id = 'woocommerce';
-          $this->name = 'WooCommerce';
-          $this->icon_file = 'woocommerce.png';
-          $this->gallery_app_link = 'woocommerce';
-          $this->plugin_api_page_link = '';
-          $this->is_plugin_integration = false;
-      }
+    if( 'wordpress-org' === $service_id ){
+        $this->id = 'wordpress-org';
+        $this->name = 'WordPress.org';
+        $this->icon_file = 'wordpress.png';
+        $this->gallery_app_link = 'wordpress-org';
+        $this->plugin_api_page_link = 'wordpress-org';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'contact-form-7' === $service_id ){
+        $this->id = 'contact-form-7';
+        $this->name = 'Contact Form 7';
+        $this->icon_file = 'contact-form-7.png';
+        $this->gallery_app_link = 'contact-form-7';
+        $this->plugin_api_page_link = 'contact-form-7';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'ninja-forms' === $service_id ){
+        $this->id = 'ninja-forms';
+        $this->name = 'Ninja Forms';
+        $this->icon_file = 'ninja-forms.png';
+        $this->gallery_app_link = 'ninja-forms';
+        $this->plugin_api_page_link = 'ninja-forms';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'formidable-forms' === $service_id ){
+        $this->id = 'formidable-forms';
+        $this->name = 'Formidable Forms';
+        $this->icon_file = 'formidable-forms.png';
+        $this->gallery_app_link = 'formidable-forms';
+        $this->plugin_api_page_link = 'formidable-forms';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'ultimate-member' === $service_id ){
+        $this->id = 'ultimate-member';
+        $this->name = 'Ultimate Member';
+        $this->icon_file = 'ultimate-member.png';
+        $this->gallery_app_link = 'ultimate-member';
+        $this->plugin_api_page_link = 'ultimate-member';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'digi-member' === $service_id ){
+        $this->id = 'digi-member';
+        $this->name = 'DigiMember';
+        $this->icon_file = 'digi-member.png';
+        $this->gallery_app_link = 'digimember';
+        $this->plugin_api_page_link = 'digi-member';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'learndash' === $service_id ){
+        $this->id = 'learndash';
+        $this->name = 'LearnDash';
+        $this->icon_file = 'learndash.png';
+        $this->gallery_app_link = 'learndash';
+        $this->plugin_api_page_link = 'learndash';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'planso-forms' === $service_id ){
+        $this->id = 'planso-forms';
+        $this->name = 'PlanSo Forms';
+        $this->icon_file = 'planso-forms.png';
+        $this->gallery_app_link = 'planso-forms';
+        $this->plugin_api_page_link = 'planso-forms';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'simple-membership' === $service_id ){
+        $this->id = 'simple-membership';
+        $this->name = 'Simple Membership';
+        $this->icon_file = 'simple-membership.png';
+        $this->gallery_app_link = 'simple-membership';
+        $this->plugin_api_page_link = 'simple-membership';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'advanced-custom-fields' === $service_id ){
+        $this->id = 'advanced-custom-fields';
+        $this->name = 'Advanced Custom Fields';
+        $this->icon_file = 'acf.png';
+        $this->gallery_app_link = 'advanced-custom-fields';
+        $this->plugin_api_page_link = 'advanced-custom-fields';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'forminator' === $service_id ){
+        $this->id = 'forminator';
+        $this->name = 'Forminator';
+        $this->icon_file = 'forminator.png';
+        $this->gallery_app_link = 'forminator';
+        $this->plugin_api_page_link = 'forminator';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'givewp' === $service_id ){
+        $this->id = 'givewp';
+        $this->name = 'GiveWP';
+        $this->icon_file = 'givewp.png';
+        $this->gallery_app_link = 'givewp';
+        $this->plugin_api_page_link = 'givewp';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'user-registration' === $service_id ){
+        $this->id = 'user-registration';
+        $this->name = 'User Registration';
+        $this->icon_file = 'user-registration.png';
+        $this->gallery_app_link = 'user-registration';
+        $this->plugin_api_page_link = 'user-registration';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'paid-memberships-pro' === $service_id ){
+        $this->id = 'paid-memberships-pro';
+        $this->name = 'Paid Memberships Pro';
+        $this->icon_file = 'paid-memberships-pro.png';
+        $this->gallery_app_link = 'paid-memberships-pro';
+        $this->plugin_api_page_link = 'paid-memberships-pro';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'wp-travel-engine' === $service_id ){
+        $this->id = 'wp-travel-engine';
+        $this->name = 'WP Travel Engine';
+        $this->icon_file = 'wp-travel-engine.png';
+        $this->gallery_app_link = 'wp-travel-engine';
+        $this->plugin_api_page_link = 'wp-travel-engine';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'mailpoet' === $service_id ){
+        $this->id = 'mailpoet';
+        $this->name = 'MailPoet';
+        $this->icon_file = 'mailpoet.png';
+        $this->gallery_app_link = 'mailpoet';
+        $this->plugin_api_page_link = 'mailpoet';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'fluent-forms' === $service_id ){
+        $this->id = 'fluent-forms';
+        $this->name = 'Fluent Forms';
+        $this->icon_file = 'fluent-forms.png';
+        $this->gallery_app_link = 'fluent-forms';
+        $this->plugin_api_page_link = 'fluent-forms';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'fluentcrm' === $service_id ){
+        $this->id = 'fluentcrm';
+        $this->name = 'FluentCRM';
+        $this->icon_file = 'fluentcrm.png';
+        $this->gallery_app_link = 'fluentcrm';
+        $this->plugin_api_page_link = 'fluentcrm';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'fluent-support' === $service_id ){
+        $this->id = 'fluent-support';
+        $this->name = 'Fluent Support';
+        $this->icon_file = 'fluent-support.png';
+        $this->gallery_app_link = 'fluent-support';
+        $this->plugin_api_page_link = 'fluent-support';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'tablepress' === $service_id ){
+        $this->id = 'tablepress';
+        $this->name = 'TablePress';
+        $this->icon_file = 'tablepress.png';
+        $this->gallery_app_link = 'tablepress';
+        $this->plugin_api_page_link = 'tablepress';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'ninja-tables' === $service_id ){
+        $this->id = 'ninja-tables';
+        $this->name = 'Ninja Tables';
+        $this->icon_file = 'ninja-tables.png';
+        $this->gallery_app_link = 'ninja-tables';
+        $this->plugin_api_page_link = 'ninja-tables';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'post-smtp' === $service_id ){
+        $this->id = 'post-smtp';
+        $this->name = 'Post SMTP';
+        $this->icon_file = 'post-smtp.png';
+        $this->gallery_app_link = 'post-smtp';
+        $this->plugin_api_page_link = 'post-smtp';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'akismet' === $service_id ){
+        $this->id = 'akismet';
+        $this->name = 'Akismet';
+        $this->icon_file = 'akismet.png';
+        $this->gallery_app_link = 'akismet';
+        $this->plugin_api_page_link = 'akismet';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'userswp' === $service_id ){
+        $this->id = 'userswp';
+        $this->name = 'UsersWP';
+        $this->icon_file = 'userswp.png';
+        $this->gallery_app_link = 'userswp';
+        $this->plugin_api_page_link = 'userswp';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'buddyboss' === $service_id ){
+        $this->id = 'buddyboss';
+        $this->name = 'BuddyBoss';
+        $this->icon_file = 'buddyboss.png';
+        $this->gallery_app_link = 'buddyboss';
+        $this->plugin_api_page_link = 'buddyboss';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'login-signup-popup' === $service_id ){
+        $this->id = 'login-signup-popup';
+        $this->name = 'Login/Signup Popup';
+        $this->icon_file = 'login-signup-popup.png';
+        $this->gallery_app_link = 'login-signup-popup';
+        $this->plugin_api_page_link = 'login-signup-popup';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'affiliatewp' === $service_id ){
+        $this->id = 'affiliatewp';
+        $this->name = 'AffiliateWP';
+        $this->icon_file = 'affiliatewp.png';
+        $this->gallery_app_link = 'affiliatewp';
+        $this->plugin_api_page_link = 'affiliatewp';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'quiz-maker' === $service_id ){
+        $this->id = 'quiz-maker';
+        $this->name = 'Quiz Maker';
+        $this->icon_file = 'quiz-maker.png';
+        $this->gallery_app_link = 'quiz-maker';
+        $this->plugin_api_page_link = 'quiz-maker';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'hustle' === $service_id ){
+        $this->id = 'hustle';
+        $this->name = 'Hustle';
+        $this->icon_file = 'hustle.png';
+        $this->gallery_app_link = 'hustle';
+        $this->plugin_api_page_link = 'hustle';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'ws-form' === $service_id ){
+        $this->id = 'ws-form';
+        $this->name = 'WS Form';
+        $this->icon_file = 'ws-form.png';
+        $this->gallery_app_link = 'ws-form';
+        $this->plugin_api_page_link = 'ws-form';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'happyforms' === $service_id ){
+        $this->id = 'happyforms';
+        $this->name = 'Happyforms';
+        $this->icon_file = 'happyforms.png';
+        $this->gallery_app_link = 'happyforms';
+        $this->plugin_api_page_link = 'happyforms';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'weforms' === $service_id ){
+        $this->id = 'weforms';
+        $this->name = 'weForms';
+        $this->icon_file = 'weforms.png';
+        $this->gallery_app_link = 'weforms';
+        $this->plugin_api_page_link = 'weforms';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'jetformbuilder' === $service_id ){
+        $this->id = 'jetformbuilder';
+        $this->name = 'JetFormBuilder';
+        $this->icon_file = 'jetformbuilder.png';
+        $this->gallery_app_link = 'jetformbuilder';
+        $this->plugin_api_page_link = 'jetformbuilder';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'amelia' === $service_id ){
+        $this->id = 'amelia';
+        $this->name = 'Amelia';
+        $this->icon_file = 'amelia.png';
+        $this->gallery_app_link = 'amelia';
+        $this->plugin_api_page_link = 'amelia';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'metform' === $service_id ){
+        $this->id = 'metform';
+        $this->name = 'MetForm';
+        $this->icon_file = 'metform.png';
+        $this->gallery_app_link = 'metform';
+        $this->plugin_api_page_link = 'metform';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'wp-booking-calendar' === $service_id ){
+        $this->id = 'wp-booking-calendar';
+        $this->name = 'WP Booking Calendar';
+        $this->icon_file = 'wp-booking-calendar.png';
+        $this->gallery_app_link = 'wp-booking-calendar';
+        $this->plugin_api_page_link = 'wp-booking-calendar';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'kadence-blocks' === $service_id ){
+        $this->id = 'kadence-blocks';
+        $this->name = 'Kadence Blocks';
+        $this->icon_file = 'kadence-blocks.png';
+        $this->gallery_app_link = 'kadence-blocks';
+        $this->plugin_api_page_link = 'kadence-blocks';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'kali-forms' === $service_id ){
+        $this->id = 'kali-forms';
+        $this->name = 'Kali Forms';
+        $this->icon_file = 'kali-forms.png';
+        $this->gallery_app_link = 'kali-forms';
+        $this->plugin_api_page_link = 'kali-forms';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'wp-polls' === $service_id ){
+        $this->id = 'wp-polls';
+        $this->name = 'WP-Polls';
+        $this->icon_file = 'wp-polls.png';
+        $this->gallery_app_link = 'wp-polls';
+        $this->plugin_api_page_link = 'wp-polls';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'quiz-and-survey-master' === $service_id ){
+        $this->id = 'quiz-and-survey-master';
+        $this->name = 'Quiz And Survey Master';
+        $this->icon_file = 'quiz-and-survey-master.png';
+        $this->gallery_app_link = 'quiz-and-survey-master';
+        $this->plugin_api_page_link = 'quiz-and-survey-master';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'download-manager' === $service_id ){
+        $this->id = 'download-manager';
+        $this->name = 'Download Manager';
+        $this->icon_file = 'download-manager.png';
+        $this->gallery_app_link = 'download-manager';
+        $this->plugin_api_page_link = 'download-manager';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'tutor-lms' === $service_id ){
+        $this->id = 'tutor-lms';
+        $this->name = 'Tutor LMS';
+        $this->icon_file = 'tutor-lms.png';
+        $this->gallery_app_link = 'tutor-lms';
+        $this->plugin_api_page_link = 'tutor-lms';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'lifter-lms' === $service_id ){
+        $this->id = 'lifter-lms';
+        $this->name = 'LifterLMS';
+        $this->icon_file = 'lifter-lms.png';
+        $this->gallery_app_link = 'lifterlms';
+        $this->plugin_api_page_link = 'lifter-lms';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'popup-maker' === $service_id ){
+        $this->id = 'popup-maker';
+        $this->name = 'Popup Maker';
+        $this->icon_file = 'popup-maker.png';
+        $this->gallery_app_link = 'popup-maker';
+        $this->plugin_api_page_link = 'popup-maker';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'super-socializer' === $service_id ){
+        $this->id = 'super-socializer';
+        $this->name = 'Super Socializer';
+        $this->icon_file = 'super-socializer.png';
+        $this->gallery_app_link = 'super-socializer';
+        $this->plugin_api_page_link = 'super-socializer';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'the-events-calendar' === $service_id ){
+        $this->id = 'the-events-calendar';
+        $this->name = 'The Events Calendar';
+        $this->icon_file = 'the-events-calendar.png';
+        $this->gallery_app_link = 'the-events-calendar';
+        $this->plugin_api_page_link = 'the-events-calendar';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'event-tickets' === $service_id ){
+        $this->id = 'event-tickets';
+        $this->name = 'Event Tickets';
+        $this->icon_file = 'event-tickets.png';
+        $this->gallery_app_link = 'event-tickets';
+        $this->plugin_api_page_link = 'event-tickets';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'bookly' === $service_id ){
+        $this->id = 'bookly';
+        $this->name = 'Bookly';
+        $this->icon_file = 'bookly.png';
+        $this->gallery_app_link = 'bookly';
+        $this->plugin_api_page_link = 'bookly';
+        $this->is_plugin_integration = true;
+    }
+      elseif( 'appointment-hour-booking' === $service_id ){
+        $this->id = 'appointment-hour-booking';
+        $this->name = 'Appointment Hour Booking';
+        $this->icon_file = 'appointment-hour-booking.png';
+        $this->gallery_app_link = 'appointment-hour-booking';
+        $this->plugin_api_page_link = 'appointment-hour-booking';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'events-manager' === $service_id ){
+        $this->id = 'events-manager';
+        $this->name = 'Events Manager';
+        $this->icon_file = 'events-manager.png';
+        $this->gallery_app_link = 'events-manager';
+        $this->plugin_api_page_link = 'events-manager';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'wp-simple-booking-calendar' === $service_id ){
+        $this->id = 'wp-simple-booking-calendar';
+        $this->name = 'WP Simple Booking Calendar';
+        $this->icon_file = 'wp-simple-booking-calendar.png';
+        $this->gallery_app_link = 'wp-simple-booking-calendar';
+        $this->plugin_api_page_link = 'wp-simple-booking-calendar';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'wp-booking-system' === $service_id ){
+        $this->id = 'wp-booking-system';
+        $this->name = 'WP Booking System';
+        $this->icon_file = 'wp-booking-system.png';
+        $this->gallery_app_link = 'wp-booking-system';
+        $this->plugin_api_page_link = 'wp-booking-system';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'vikbooking' === $service_id ){
+        $this->id = 'vikbooking';
+        $this->name = 'VikBooking';
+        $this->icon_file = 'vikbooking.png';
+        $this->gallery_app_link = 'vikbooking';
+        $this->plugin_api_page_link = 'vikbooking';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'bookit' === $service_id ){
+        $this->id = 'bookit';
+        $this->name = 'Bookit';
+        $this->icon_file = 'bookit.png';
+        $this->gallery_app_link = 'bookit';
+        $this->plugin_api_page_link = 'bookit';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'booking-package' === $service_id ){
+        $this->id = 'booking-package';
+        $this->name = 'Booking Package';
+        $this->icon_file = 'booking-package.png';
+        $this->gallery_app_link = 'booking-package';
+        $this->plugin_api_page_link = 'booking-package';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'profile-builder' === $service_id ){
+        $this->id = 'profile-builder';
+        $this->name = 'Profile Builder';
+        $this->icon_file = 'profile-builder.png';
+        $this->gallery_app_link = 'profile-builder';
+        $this->plugin_api_page_link = 'profile-builder';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'restrict-user-access' === $service_id ){
+        $this->id = 'restrict-user-access';
+        $this->name = 'Restrict User Access';
+        $this->icon_file = 'restrict-user-access.png';
+        $this->gallery_app_link = 'restrict-user-access';
+        $this->plugin_api_page_link = 'restrict-user-access';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'registrationmagic' === $service_id ){
+        $this->id = 'registrationmagic';
+        $this->name = 'RegistrationMagic';
+        $this->icon_file = 'registrationmagic.png';
+        $this->gallery_app_link = 'registrationmagic';
+        $this->plugin_api_page_link = 'registrationmagic';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'new-user-approve' === $service_id ){
+        $this->id = 'new-user-approve';
+        $this->name = 'New User Approve';
+        $this->icon_file = 'new-user-approve.png';
+        $this->gallery_app_link = 'new-user-approve';
+        $this->plugin_api_page_link = 'new-user-approve';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'feedbackwp' === $service_id ){
+        $this->id = 'feedbackwp';
+        $this->name = 'FeedbackWP';
+        $this->icon_file = 'feedbackwp.png';
+        $this->gallery_app_link = 'feedbackwp';
+        $this->plugin_api_page_link = 'feedbackwp';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'code-snippets' === $service_id ){
+        $this->id = 'code-snippets';
+        $this->name = 'Code Snippets';
+        $this->icon_file = 'code-snippets.png';
+        $this->gallery_app_link = 'code-snippets';
+        $this->plugin_api_page_link = 'code-snippets';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'restrict-content' === $service_id ){
+        $this->id = 'restrict-content';
+        $this->name = 'Restrict Content';
+        $this->icon_file = 'restrict-content.png';
+        $this->gallery_app_link = 'restrict-content';
+        $this->plugin_api_page_link = 'restrict-content';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'sureforms' === $service_id ){
+        $this->id = 'sureforms';
+        $this->name = 'SureForms';
+        $this->icon_file = 'sureforms.png';
+        $this->gallery_app_link = 'sureforms';
+        $this->plugin_api_page_link = 'sureforms';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'romethemeform' === $service_id ){
+        $this->id = 'romethemeform';
+        $this->name = 'RomethemeForm';
+        $this->icon_file = 'romethemeform.png';
+        $this->gallery_app_link = 'romethemeform';
+        $this->plugin_api_page_link = 'romethemeform';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'jetengine' === $service_id ){
+        $this->id = 'jetengine';
+        $this->name = 'JetEngine';
+        $this->icon_file = 'jetengine.png';
+        $this->gallery_app_link = 'jetengine';
+        $this->plugin_api_page_link = 'jetengine';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'wpzoom-forms' === $service_id ){
+        $this->id = 'wpzoom-forms';
+        $this->name = 'WPZOOM Forms';
+        $this->icon_file = 'wpzoom-forms.png';
+        $this->gallery_app_link = 'wpzoom-forms';
+        $this->plugin_api_page_link = 'wpzoom-forms';
+        $this->is_plugin_integration = true;
+    }
+          elseif( 'gravity-forms' === $service_id ){
+        $this->id = 'gravity-forms';
+        $this->name = 'Gravity Forms';
+        $this->icon_file = 'gravity-forms.png';
+        $this->gallery_app_link = 'gravity-forms';
+        $this->plugin_api_page_link = 'gravity-forms';
+        $this->is_plugin_integration = true;
+    }
+    elseif( 'snow-monkey-forms' === $service_id ){
+      $this->id = 'snow-monkey-forms';
+      $this->name = 'Snow Monkey Forms';
+      $this->icon_file = 'snow-monkey-forms.png';
+      $this->gallery_app_link = 'snow-monkey-forms';
+      $this->plugin_api_page_link = 'snow-monkey-forms';
+      $this->is_plugin_integration = true;
   }
+  elseif( 'publishpress-blocks' === $service_id ){
+      $this->id = 'publishpress-blocks';
+      $this->name = 'PublishPress Blocks';
+      $this->icon_file = 'publishpress-blocks.png';
+      $this->gallery_app_link = 'publishpress-blocks';
+      $this->plugin_api_page_link = 'publishpress-blocks';
+      $this->is_plugin_integration = true;
+  }
+  elseif( 'buddyforms' === $service_id ){
+    $this->id = 'buddyforms';
+    $this->name = 'BuddyForms';
+    $this->icon_file = 'buddyforms.jpg';
+    $this->gallery_app_link = 'buddyforms';
+    $this->plugin_api_page_link = 'buddyforms';
+    $this->is_plugin_integration = true;
+}
+elseif( 'html-forms' === $service_id ){
+    $this->id = 'html-forms';
+    $this->name = 'HTML Forms';
+    $this->icon_file = 'html-forms.png';
+    $this->gallery_app_link = 'html-forms';
+    $this->plugin_api_page_link = 'html-forms';
+    $this->is_plugin_integration = true;
+}
+    elseif( 'woocommerce' === $service_id ){
+        $this->id = 'woocommerce';
+        $this->name = 'WooCommerce';
+        $this->icon_file = 'woocommerce.png';
+        $this->gallery_app_link = 'woocommerce';
+        $this->plugin_api_page_link = '';
+        $this->is_plugin_integration = false;
+    }
+}
 
   public function permission_to_show(){
       if( ( $this->is_plugin_integration ) && ( !$this->has_api_key ) ){

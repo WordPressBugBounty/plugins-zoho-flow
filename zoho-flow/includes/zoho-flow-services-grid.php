@@ -24,7 +24,7 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
         ),
         menu_page_url( 'zoho_flow', false )
       );
-
+	  
       $output = sprintf(
         '<a class="app-title" href="%1$s" aria-label="%2$s">%3$s</a>',
         esc_url( $edit_link),
@@ -33,6 +33,21 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
           $item['name'] ) ),
         esc_html( $item['name'] )
       );
+
+	  if( isset( $item['is_direct_integration'] ) && $item['is_direct_integration'] === true ){
+		
+		$edit_link = "https://www.zohoflow.com/apps/".$item['gallery_app_link']."/integrations/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_".$item['gallery_app_link'];
+
+		$output = sprintf(
+			'<a target="_blank" class="app-title" href="%1$s" aria-label="%2$s">%3$s</a>',
+			esc_url( $edit_link),
+			// translators: %s refers to the plugin name
+			esc_attr( sprintf( __( 'Edit %s', 'zoho-flow' ),
+			  $item['name'] ) ),
+			esc_html( $item['name'] )
+		  );
+
+	  }
 
       $output = sprintf( '<strong>%s</strong>', $output );
 
@@ -93,10 +108,15 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
 						<?php
 			    }
         }
+		?>
+			</div>
+			<div class="app-list-container" style="display:grid; grid-template-columns:repeat(4, 1fr); padding-top: 0px;" >
+				<?php
 				require_once WP_ZOHO_FLOW_PLUGIN_DIR . '/dir-integrations.php';
 				foreach ($zoho_flow_dir_integrations_config as $service ) {
 					if( class_exists( $service['class_test'] ) ){
 						$service['is_available'] = true;
+						$service['is_direct_integration'] = true;
 						?>
 
 			      	<div id='<?php echo $service['id'] ?>' class="grid-app-wrapper grid-app-available">

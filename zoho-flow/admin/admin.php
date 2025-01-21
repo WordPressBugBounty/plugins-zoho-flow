@@ -37,7 +37,7 @@ function zoho_flow_admin_menu() {
 		add_submenu_page(
 		  'zoho_flow'
 		  ,__( 'Zoho Flow', 'zoho-flow' )
-		  ,__( 'System Info', 'zoho-flow' )
+		  ,__( 'Settings', 'zoho-flow' )
 		  ,'zoho_flow_admin_page'
 		  ,'zoho_flow_system_info'
 		  ,'zoho_flow_show_system_info_page');
@@ -433,6 +433,17 @@ function zoho_flow_show_service_grid(){
 					<a href="https://creatorapp.zohopublic.com/zohointranet/zoho-flow/form-embed/Request_an_App/qqePxZq7ZkzdWKGCYvntEk14O9YqjUGHJUZJHYsMA5zOK6XEC8b6Gh7mrdz2TnYu4AUVBRwu1YzKVU8KAwbn2OurBsJ66FqkT8Rm?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=320&height=440" class="thickbox" title="Integration request"><?php echo esc_html__('Request app/plugin', 'zoho-flow') ?></a>
 				</p>
 			</div>
+			<div class="zflow-feedback">
+				<div class="zicon zicon1"></div>
+				<h2><?php echo esc_html__('How\'s your Zoho Flow experience? ', 'zoho-flow') ?></h2>
+				<p><?php echo esc_html__('We’d love to hear your thoughts on Zoho Flow so far. Share your feedback or leave a review.', 'zoho-flow') ?></p>
+				<p>
+					<p class="zflow-cta">
+						<a href="https://creatorapp.zohopublic.com/zohointranet/zoho-flow/form-embed/Wordpress_showcase_page_feedback_form/dfxN3WHea2J0EyvNYkC6QyuUSMQWVhww2wYVXky75rRSNp9a3pPq0P5b6v2y3ZjUCgMZMDYRwM6Z6hhu8tFfWnJkmdrPZYk6TCOe?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=320&height=280" class="thickbox" title="Share your feedback"><?php echo esc_html__('Give us feedback', 'zoho-flow') ?></a> | 
+						<a target="_blank" href="https://wordpress.org/support/plugin/zoho-flow/reviews?rate=5#new-post"><?php echo esc_html__('Write a review', 'zoho-flow') ?></a>
+					</p>
+				</p>
+			</div>
 			<div class="flow-webinar-section">
 				<h2><?php echo esc_html__('Register for live webinar') ?></h2>
 				<div class="zwebinar-registration-wrap">
@@ -667,7 +678,17 @@ function zoho_flow_show_system_info_page(){
 		echo zoho_flow_review_banner();
 	?>
 		<div class="system-info-wrapper">
-			<h2><?php echo esc_html__('System info', 'zoho-flow') ?></h2>
+			<h2><?php echo esc_html__('Settings', 'zoho-flow') ?></h2>
+
+				<?php
+					$site_info_table = new Zoho_Flow_Settings_Menue();
+					$site_info_table->prepare_items();
+					$site_info_table->display();
+				?>
+
+		</div>
+		<div class="system-info-wrapper">
+			<h2><?php echo esc_html__('System Info', 'zoho-flow') ?></h2>
 
 				<?php
 					$site_info_table = new Zoho_Flow_System_Info_Menue();

@@ -243,7 +243,25 @@ function zoho_flow_execute_webhook($url, $post_params, $file_params){
 
 	}
 	$args['timeout'] = '5';
-	$hook_status_code = zoho_flow_invoke_webhook_url( $url, $args );
+    $zf_boost_speed_state = get_option('zf_boost_speed', 'off');
+
+    if ( ( defined('DISABLE_WP_CRON') && DISABLE_WP_CRON ) || ( 'off' === $zf_boost_speed_state ) ) {
+        zoho_flow_run_webhook( $url, $args );
+    }
+    // elseif ( !wp_next_scheduled('zoho_flow_run_webhook', array( $url, $args ) ) ) { 
+    //     wp_schedule_single_event(time(), 'zoho_flow_run_webhook', array( $url, $args ) );
+    // }
+    else{
+        wp_schedule_single_event(time(), 'zoho_flow_run_webhook', array( $url, $args ) );
+    }
+
+    
+}
+
+add_action('zoho_flow_run_webhook', 'zoho_flow_run_webhook', 10, 2);
+
+function zoho_flow_run_webhook( $url, $args ){
+    $hook_status_code = zoho_flow_invoke_webhook_url( $url, $args );
 	if( 200 !== $hook_status_code ){
 	    if( 410 === $hook_status_code ){
 	        zoho_flow_delete_webhook( $url );

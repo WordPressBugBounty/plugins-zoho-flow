@@ -201,4 +201,19 @@ jQuery(document).ready(function(){
     jQuery(this).find('.grid-app-direct-integration').css('visibility', 'hidden'); //NO I18N
 	});
 
+	jQuery(document).on('thickbox:iframe:loaded', function () { //NO I18N
+        const tbWindow = jQuery('#TB_window'); //NO I18N
+        const iframeSrc = jQuery('#TB_iframeContent').attr('src'); //NO I18N
+
+        if (iframeSrc && iframeSrc.includes('Wordpress_showcase_page_feedback_form')) { //NO I18N
+            tbWindow.addClass('zf-feedback-popup'); //NO I18N
+        }
+		else if (iframeSrc && iframeSrc.includes('Request_an_App')) { //NO I18N
+            tbWindow.addClass('zf-app-request-popup'); //NO I18N
+        }
+		else if (iframeSrc && iframeSrc.includes('68JFXlpm6iI')) { //NO I18N
+            tbWindow.addClass('zf-youtube-popup'); //NO I18N
+        }
+    });
+
 });
