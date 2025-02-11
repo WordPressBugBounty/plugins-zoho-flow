@@ -1330,7 +1330,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
                 FROM ' . $wpdb->base_prefix . 'postmeta m
                 INNER JOIN ' . $wpdb->base_prefix . 'posts p ON p.ID = m.post_id
                 WHERE p.post_type = %s
-                LIMIT 1400',
+                LIMIT 450',
 		    $post_type
 		    );
 		
@@ -1359,7 +1359,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 		$query     = $wpdb->prepare('
 			SELECT
 				DISTINCT meta_key
-			    FROM ' . $wpdb->base_prefix . 'usermeta LIMIT 500
+			    FROM ' . $wpdb->base_prefix . 'usermeta LIMIT 450
             ');
 		$meta_keys = $wpdb->get_results( $query );
 		return rest_ensure_response($meta_keys);

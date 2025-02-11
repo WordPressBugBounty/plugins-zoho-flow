@@ -842,7 +842,6 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
      * @return WP_REST_Response Success message with deleted webhook ID | WP_Error Error details 
      */
     public function delete_webhook($request) {
-        //TODO Delete webhooks
         $webhook_id = $request['webhook_id'];
         if(!ctype_digit($webhook_id)){
             return new WP_Error( 'rest_bad_request', esc_html__( 'The Webhook ID is invalid.', 'zoho-flow' ), array( 'status' => 400 ) );

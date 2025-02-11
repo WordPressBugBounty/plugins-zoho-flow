@@ -127,6 +127,29 @@ class Zoho_Flow_BuddyBoss extends Zoho_Flow_Service
         }
     }
 
+    public function remove_friendship($request){
+        $data = array();
+        
+        if((empty($request['initiator_id']) || !ctype_digit($request['initiator_id'])) || (empty($request['friend_id']) || !ctype_digit($request['friend_id']))){
+            return new WP_Error( 'rest_bad_request', esc_html__( 'Friend ID is invalid.', 'zoho-flow' ), array( 'status' => 400 ) );
+        }
+        
+        $initiator_id = $request['initiator_id'];        
+        if('not_friends' === BP_Friends_Friendship::check_is_friend($initiator_id, $request['friend_id'])){
+            return new WP_Error('rest_bad_request',esc_html__( 'Friendship does not exist.', 'zoho-flow' ), array( 'status' => 400 ) );
+        }
+        $item = friends_remove_friend($initiator_id, $request['friend_id']);
+        
+        if(isset($item->errors)){
+            return rest_ensure_response($item);
+        }else{
+            $data['data'] = $item;
+            $data['initiator'] = get_user_by("ID", $initiator_id)->data;
+            $data['friend'] = get_user_by("ID", $request['friend_id'])->data;
+            return rest_ensure_response($data);
+        }
+    }
+
     public function send_invite($request){
 
         $invites = new BP_REST_Invites_Endpoint();

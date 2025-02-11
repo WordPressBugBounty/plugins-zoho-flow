@@ -1015,6 +1015,57 @@ $zoho_flow_services_config = array (
         )
     ),
     array(
+        'name' => esc_html__("Divi"),
+        'api_path' => 'divi',
+        'class_name' => 'Zoho_Flow_Divi',
+        'gallery_app_link' => 'divi',
+        'description' => esc_html__('Use Divi to enhance your WordPress webpages with no-code editing, advanced design systems, and AI tools. By integrating Divi with other applications you can track form entries on your webpages easily.', 'zoho-flow'),
+        'icon_file' => 'divi.png',
+        'class_test' => 'ET_Builder_Element',
+        'app_documentation_link' => '',
+        'embed_link' => 'divi',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/post/(?\'post_id\'[\\d]+)/form/(?\'form_id\'[0-9a-zA-Z-]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'et_pb_contact_form_submit',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 3,
+            )
+        )
+    ),
+    array(
         'name' => esc_html__("Spectra"),
         'api_path' => 'spectra',
         'class_name' => 'Zoho_Flow_Spectra',
@@ -1537,6 +1588,57 @@ $zoho_flow_services_config = array (
                 'action' => 'forminator_quiz_mail_before_send_mail',
                 'method' => 'payload_quiz_added',
                 'args_count' => 4,
+            )
+        )
+    ),
+    array(
+        'name' => esc_html__("SiteOrigin Widgets Bundle"),
+        'api_path' => 'siteorigin-widgets-bundle',
+        'class_name' => 'Zoho_Flow_SiteOrigin_Widgets_Bundle',
+        'gallery_app_link' => 'siteorigin-widgets-bundle',
+        'description' => esc_html__('Use SiteOrigin Widgets Bundle to build modern, responsive, and engaging widgets on your WordPress site. By integrating SiteOrigin Widgets Bundle with your favourite applications, you can get notified when someone fills out a form on your website.', 'zoho-flow'),
+        'icon_file' => 'siteorigin-widgets-bundle.png',
+        'class_test' => 'SiteOrigin_Widgets_ContactForm_Widget',
+        'app_documentation_link' => '',
+        'embed_link' => 'siteorigin_widgets_bundle',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/post/(?\'post_id\'[\\d]+)/form/(?\'form_id\'[0-9a-zA-Z]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'siteorigin_widgets_contact_sent',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 2,
             )
         )
     ),
@@ -3954,6 +4056,12 @@ $zoho_flow_services_config = array (
                 'method' => 'create_friendship',
                 'capability' => 'manage_options',
             ),
+	    array(
+                'type' => 'create',
+                'path' => '/remove_friendship',
+                'method' => 'remove_friendship',
+                'capability' => 'manage_options',
+            ),
             array(
                 'type' => 'create',
                 'path' => '/sendinvite',
@@ -4035,6 +4143,57 @@ $zoho_flow_services_config = array (
                 'method' => 'trigger_new_forum',
                 'args_count' => 1,
             ),
+        ),
+    ),
+    array (
+        'name' => esc_html__("SureForms"),
+        'api_path' => 'sureforms',
+        'class_name' => 'Zoho_Flow_SureForms',
+        'gallery_app_link' => 'sureforms',
+        'description' => esc_html__('Use SureForms to build different types of forms on your WordPress site. By integrating SureForms with your favourite applications, you\'ll be able to kickstart automated workflows based on form entries.', 'zoho-flow'),
+        'icon_file' => 'sureforms.png',
+        'class_test' => 'SRFM\Inc\Form_Submit',
+        'app_documentation_link' => '',
+        'embed_link' => 'sureforms',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'srfm_form_submit',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 1,
+            )
         ),
     ),
     array(
@@ -5579,6 +5738,57 @@ $zoho_flow_services_config = array (
         )
     ),
     array (
+        'name' => esc_html__("NEX-Forms"),
+        'api_path' => 'nex-forms',
+        'class_name' => 'Zoho_Flow_NEX_Forms',
+        'gallery_app_link' => 'nex-forms',
+        'description' => esc_html__('Use Nex-Forms to build a wide range of customizable and flexible forms on your WordPress site. By integrating Nex-Forms with CRM applications, you can automatically move form data to your CRM.', 'zoho-flow'),
+        'icon_file' => 'nex-forms.png',
+        'class_test' => 'NEXForms5_Config',
+        'app_documentation_link' => '',
+        'embed_link' => 'nex_forms',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'NEXForms_submit_form_data',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 0,
+            )
+        ),
+    ),
+    array (
         'name' => esc_html__("RomethemeForm"),
         'api_path' => 'romethemeform',
         'class_name' => 'Zoho_Flow_RomethemeForm',
@@ -7084,34 +7294,40 @@ $zoho_flow_services_config = array (
         ),
     ),
     array (
-        'name' => esc_html__("SureForms"),
-        'api_path' => 'sureforms',
-        'class_name' => 'Zoho_Flow_SureForms',
-        'gallery_app_link' => 'sureforms',
-        'description' => esc_html__('Use SureForms to build different types of forms on your WordPress site. By integrating SureForms with your favourite applications, you\'ll be able to kickstart automated workflows based on form entries.', 'zoho-flow'),
-        'icon_file' => 'sureforms.png',
-        'class_test' => 'SRFM\Inc\Form_Submit',
+        'name' => esc_html__("SureMembers"),
+        'api_path' => 'suremembers',
+        'class_name' => 'Zoho_Flow_SureMembers',
+        'gallery_app_link' => 'suremembers',
+        'description' => esc_html__('Use SureMembers to restrict and manage content on your WordPress site. By integrating SureMembers with other applications, you can automate membership management more efficiently.', 'zoho-flow'),
+        'icon_file' => 'suremembers.png',
+        'class_test' => 'SureMembers\Inc\Access',
         'app_documentation_link' => '',
-        'embed_link' => 'sureforms',
+        'embed_link' => 'suremembers',
         'version' => 'v1',
         'rest_apis' => array(
             array(
                 'type' => 'list',
-                'path' => '/forms',
-                'method' => 'list_forms',
-                'capability' => 'edit_posts',
+                'path' => '/groups',
+                'method' => 'list_groups',
+                'capability' => 'list_users',
             ),
             array(
-                'type' => 'list',
-                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
-                'method' => 'list_form_fields',
-                'capability' => 'edit_posts',
+                'type' => 'create',
+                'path' => '/user/(?\'user_id\'[\\d]+)/group/(?\'access_group_id\'[\\d]+)/add',
+                'method' => 'add_user_to_group',
+                'capability' => 'edit_users',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/user/(?\'user_id\'[\\d]+)/group/(?\'access_group_id\'[\\d]+)/remove',
+                'method' => 'remove_user_to_group',
+                'capability' => 'edit_users',
             ),
             array(
                 'type' => 'create',
                 'path' => '/webhooks',
                 'method' => 'create_webhook',
-                'capability' => 'edit_posts',
+                'capability' => 'list_users',
             ),
             array(
                 'type' => 'delete',
@@ -7128,9 +7344,14 @@ $zoho_flow_services_config = array (
         ),
         'hooks' => array(
             array (
-                'action' => 'srfm_form_submit',
-                'method' => 'payload_form_entry_submitted',
-                'args_count' => 1,
+                'action' => 'suremembers_after_access_grant',
+                'method' => 'payload_user_added_to_group',
+                'args_count' => 2,
+            ),
+            array (
+                'action' => 'suremembers_after_access_revoke',
+                'method' => 'payload_user_removed_from_group',
+                'args_count' => 2,
             )
         ),
     ),
@@ -7454,6 +7675,57 @@ $zoho_flow_services_config = array (
                 'method' => 'payload_form_entry_submitted',
                 'args_count' => 1,
             ),
+        ),
+    ),
+    array (
+        'name' => esc_html__("AIO Forms"),
+        'api_path' => 'aio-forms',
+        'class_name' => 'Zoho_Flow_AIO_Forms',
+        'gallery_app_link' => 'aio-forms',
+        'description' => esc_html__('Use AIO Forms to build different types of contact forms on your WordPress site. By integrating AIO Forms with other applications, you will be able to trigger workflows based on form entries.', 'zoho-flow'),
+        'icon_file' => 'aio-forms.png',
+        'class_test' => 'rednaoeasycalculationforms\core\Managers\EntrySaver\FormEntrySaver',
+        'app_documentation_link' => '',
+        'embed_link' => 'aio_forms',
+        'version' => 'v1',
+        'rest_apis' => array(
+            array(
+                'type' => 'list',
+                'path' => '/forms',
+                'method' => 'list_forms',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/form/(?\'form_id\'[\\d]+)/fields',
+                'method' => 'list_form_fields',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'create',
+                'path' => '/webhooks',
+                'method' => 'create_webhook',
+                'capability' => 'edit_posts',
+            ),
+            array(
+                'type' => 'delete',
+                'path' => '/webhooks/(?\'webhook_id\'[\\d]+)',
+                'method' => 'delete_webhook',
+                'capability' => 'read',
+            ),
+            array(
+                'type' => 'list',
+                'path' => '/systeminfo',
+                'method' => 'get_system_info',
+                'capability' => 'read',
+            )
+        ),
+        'hooks' => array(
+            array (
+                'action' => 'allinoneforms_after_creating_entry',
+                'method' => 'payload_form_entry_submitted',
+                'args_count' => 1,
+            )
         ),
     )
 );

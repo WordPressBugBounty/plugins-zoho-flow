@@ -15,7 +15,7 @@ class Zoho_Flow_Service_Suggestion{
 
   /**
    * admin notice blocked services:
-   * WPForms,Formidable Forms,everest-forms, Mailster, Bitform, Ninja Tables, Akismet,WP Mail, SMTP, Fluent SMTP, The Newsletter Plugin, UserFeedback, Jetpack CRM, Fluent Booking, BookingPress, Easy Digital Downloads, Simply Schedule Appointments, Quill Forms, Paid Member Subscriptions, ARMember, ARForms, Spectra, Wappointment, Form Maker, gutena-forms, Otter Blocks, Essential Blocks, CoBlocks
+   * WPForms,Formidable Forms,everest-forms, Mailster, Bitform, Ninja Tables, Akismet,WP Mail, SMTP, Fluent SMTP, The Newsletter Plugin, UserFeedback, Jetpack CRM, Fluent Booking, BookingPress, Easy Digital Downloads, Simply Schedule Appointments, Quill Forms, Paid Member Subscriptions, ARMember, ARForms, Spectra, Wappointment, Form Maker, gutena-forms, Otter Blocks, Essential Blocks, CoBlocks, SureMembers, SiteOrigin Widgets Bundle, NEX-Forms
    */
   public function __construct() {
       global $pagenow;
@@ -291,7 +291,14 @@ class Zoho_Flow_Service_Suggestion{
             'advgb_block_controls' => 'publishpress-blocks',
             'advgb_settings' => 'publishpress-blocks',
             'html-forms' => 'html-forms',
-            'html-forms-settings' => 'html-forms'
+            'html-forms-settings' => 'html-forms',
+            'rednao_calculation_form' => 'aio-forms',
+            'support' => 'aio-forms',
+            'rednao_calculation_form_settings' => 'aio-forms',
+            'et_divi_options' => 'divi',
+            'et_theme_builder' => 'divi',
+            'et_divi_role_editor' => 'divi',
+            'et_support_center_divi' => 'divi'
 
 	    );
 	    if( isset( $page ) ){
@@ -337,7 +344,8 @@ class Zoho_Flow_Service_Suggestion{
             'wpzf-submission' => 'wpzoom-forms',
             'snow-monkey-forms' => 'snow-monkey-forms',
             'wp_block' => 'publishpress-blocks',
-            'buddyforms' => 'buddyforms'
+            'buddyforms' => 'buddyforms',
+            'et_pb_layout' => 'divi'
 	    );
 	    if( isset( $post_type ) ){
 	        if( array_key_exists( $post_type, $post_type_service_map ) ){
@@ -913,6 +921,22 @@ elseif( 'html-forms' === $service_id ){
     $this->icon_file = 'html-forms.png';
     $this->gallery_app_link = 'html-forms';
     $this->plugin_api_page_link = 'html-forms';
+    $this->is_plugin_integration = true;
+}
+elseif( 'aio-forms' === $service_id ){
+    $this->id = 'aio-forms';
+    $this->name = 'AIO Forms';
+    $this->icon_file = 'aio-forms.png';
+    $this->gallery_app_link = 'aio-forms';
+    $this->plugin_api_page_link = 'aio-forms';
+    $this->is_plugin_integration = true;
+}
+elseif( 'divi' === $service_id ){
+    $this->id = 'divi';
+    $this->name = 'Divi';
+    $this->icon_file = 'divi.png';
+    $this->gallery_app_link = 'divi';
+    $this->plugin_api_page_link = 'divi';
     $this->is_plugin_integration = true;
 }
     elseif( 'woocommerce' === $service_id ){

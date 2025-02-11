@@ -29,7 +29,7 @@ function zoho_flow_load(){
 		do_action('wp_zoho_flow_init');
 	}
 }
-add_action( 'plugins_loaded', 'zoho_flow_load', 10, 0 );
+add_action( 'wp_loaded', 'zoho_flow_load', 10, 0 );
 
 function zoho_flow_init(){
     load_plugin_textdomain( 'zoho-flow', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
