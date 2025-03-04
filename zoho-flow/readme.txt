@@ -1,11 +1,11 @@
-=== Zoho Flow – Integrate 100+ plugins with 1000+ business apps, no-code workflow automation ===
+=== Zoho Flow ===
 
 Contributors: zohoflow
 Tags: integration, automation, workflow, webhook, notification
 Requires at least: 4.4
 Requires PHP: 7.0.0
-Tested up to: 6.7.1
-Stable tag: 2.13.0
+Tested up to: 6.7.2
+Stable tag: 2.13.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,10 +162,17 @@ Yes, starting from version 2.0.0, the Zoho Flow plugin supports custom post type
 
 == Upgrade Notice ==
 
+= 2.13.1 =
+IMPORTANT: Security update - Broken access control vulnerability has been fixed. Upgrade immediately.
+
 = 2.8.1 =
 IMPORTANT: Security update - SQL injection vulnerability has been fixed. Upgrade immediately.
 
 == Changelog ==
+
+= 2.13.1 =
+
+* Security fix for a broken access control vulnerability in the "Enable asynchronous trigger process" feature. This is a mandatory update for all users.
 
 = 2.13.0 =
 

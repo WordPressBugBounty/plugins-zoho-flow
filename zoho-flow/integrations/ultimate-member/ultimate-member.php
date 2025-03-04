@@ -33,7 +33,7 @@ class Zoho_Flow_Ultimate_Member extends Zoho_Flow_Service
     //Deprecated in version 2.9.1
     public function get_form_schema() {
         $schema = array(
-            '$schema'              => 'http://json-schema.org/draft-04/schema#',
+            '$schema'              => 'https://json-schema.org/draft-04/schema#',
             'title'                => 'form',
             'type'                 => 'form',
             'properties'           => array(
@@ -183,7 +183,7 @@ class Zoho_Flow_Ultimate_Member extends Zoho_Flow_Service
     //Deprecated in version 2.9.1
     public function get_form_webhook_schema() {
         $schema = array(
-            '$schema'              => 'http://json-schema.org/draft-04/schema#',
+            '$schema'              => 'https://json-schema.org/draft-04/schema#',
             'title'                => 'webhook',
             'type'                 => 'webhook',
             'properties'           => array(

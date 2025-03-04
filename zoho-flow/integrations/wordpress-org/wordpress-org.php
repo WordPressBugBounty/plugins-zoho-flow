@@ -907,7 +907,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 
 	public function get_post_schema() {
 	    $schema = array(
-	        '$schema'              => 'http://json-schema.org/draft-04/schema#',
+	        '$schema'              => 'https://json-schema.org/draft-04/schema#',
 	        'title'                => 'posts',
 	        'type'                 => 'post',
 	        'properties'           => array(
@@ -951,7 +951,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 
 	public function get_user_schema() {
 	    $schema = array(
-	        '$schema'              => 'http://json-schema.org/draft-04/schema#',
+	        '$schema'              => 'https://json-schema.org/draft-04/schema#',
 	        'title'                => 'users',
 	        'type'                 => 'user',
 	        'properties'           => array(
@@ -1000,7 +1000,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 
 	public function get_comment_schema() {
 	    $schema = array(
-	        '$schema'              => 'http://json-schema.org/draft-04/schema#',
+	        '$schema'              => 'https://json-schema.org/draft-04/schema#',
 	        'title'                => 'posts',
 	        'type'                 => 'post',
 	        'properties'           => array(

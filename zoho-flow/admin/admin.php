@@ -100,7 +100,7 @@ function zoho_flow_generate_api_key(){
         return new WP_Error( 'ajax_forbidden', esc_html__( 'You are not allowed to perform the operation.', 'zoho-flow'), array( 'status' => 403 ) );
     }
 	if(isset($_POST['service_id'])) {
-	  if(!wp_verify_nonce($_POST['api_key_generation_nonce'],'generate_api_key')){
+	  if(!wp_verify_nonce(sanitize_key($_POST['api_key_generation_nonce']),'generate_api_key')){
 	      wp_send_json_error(__('Unable to generate API Key. Please try after refreshing the page.', 'zoho-flow'), 403);
 	   }else{
 	      $service_id = sanitize_key($_POST['service_id']);
@@ -136,7 +136,7 @@ function zoho_flow_remove_api_key(){
         return new WP_Error( 'ajax_forbidden', esc_html__( 'You are not allowed to perform the operation.', 'zoho-flow'), array( 'status' => 403 ) );
     }
 	if(isset($_POST['service_id'])) {
-	  if(!wp_verify_nonce($_POST['api_key_removal_nonce'],'remove_api_key')){
+	  if(!wp_verify_nonce(sanitize_key($_POST['api_key_removal_nonce']),'remove_api_key')){
 	      wp_send_json_error(__('Unable to remove API Key. Please try after refreshing the page.', 'zoho-flow'), 403);
 	   }else{
 	   	$api_key_id = sanitize_key($_POST['api_key_id']);
@@ -172,7 +172,7 @@ function zoho_flow_remove_api_key(){
 add_action( 'wp_ajax_zoho_flow_remove_api_key', 'zoho_flow_remove_api_key' );
 
 function zoho_flow_api_key_table(){
-	$service_id = $_POST['service_id'];
+	$service_id = sanitize_key( $_POST['service_id'] );
 	$api_keys_table = new Zoho_Flow_API_Key_List_Table();
 	$api_keys_table->set_service_id($service_id);
 	$api_keys_table->prepare_items();
@@ -259,7 +259,7 @@ add_action( 'admin_notices', 'zoho_flow_review_banner' );
 function zoho_flow_change_next_review_date(){
 	if(!empty($_POST['days_to_increase']) && (is_numeric($_POST['days_to_increase']))){
 		$option_slug = "zoho_flow_next_review_date_".get_current_user_id();
-		update_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string($_POST['days_to_increase']." days")), '', 'yes' );
+		update_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string( sanitize_key($_POST['days_to_increase'])." days")), '', 'yes' );
 	}
 }
 add_action( 'wp_ajax_zoho_flow_change_next_review_date', 'zoho_flow_change_next_review_date' );
@@ -285,11 +285,11 @@ add_action( 'admin_notices', 'zoho_flow_integration_suggestion_banner' );
 
 function zoho_flow_change_next_suggestion_date(){
 	if(!empty($_POST['days_to_increase']) && (is_numeric($_POST['days_to_increase'])) && (!empty($_POST['flow_service_id']))){
-		$option_slug = "zoho_flow_next_suggestion_date_".$_POST['flow_service_id']."_".get_current_user_id();
+		$option_slug = "zoho_flow_next_suggestion_date_".sanitize_key($_POST['flow_service_id'])."_".get_current_user_id();
 		if(empty(get_option($option_slug))){
-			add_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string($_POST['days_to_increase']." days")), '', 'yes' );
+			add_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string(sanitize_key($_POST['days_to_increase'])." days")), '', 'yes' );
 		}
-		update_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string($_POST['days_to_increase']." days")), '', 'yes' );
+		update_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string(sanitize_key($_POST['days_to_increase'])." days")), '', 'yes' );
 	}
 }
 add_action( 'wp_ajax_zoho_flow_change_next_suggestion_date', 'zoho_flow_change_next_suggestion_date' );

@@ -25,7 +25,11 @@ class Zoho_Flow_WP_Booking_Calendar extends Zoho_Flow_Service{
      * @return WP_REST_Response|WP_Error    WP_REST_Response array of field details | WP_Error object with error details.
      */
     public function list_fields( $request ){
-        if ( class_exists( 'WPBC_Page_SettingsFormFieldsFree' ) ) {
+        if( function_exists( 'wpbc_simple_form__db__get_visual_form_structure' ) ){
+            $form_fields = wpbc_simple_form__db__get_visual_form_structure();
+            return rest_ensure_response( $form_fields );
+        }
+        elseif ( class_exists( 'WPBC_Page_SettingsFormFieldsFree' ) ) {
             $form_free = New WPBC_Page_SettingsFormFieldsFree();
             $form_fields = $form_free->get_booking_form_structure_for_visual();
             return rest_ensure_response( $form_fields );

@@ -19,17 +19,21 @@ $zf_boost_speed_state = get_option('zf_boost_speed', 'off');
 
 function update_zf_boost_speed() {
 
-
-    if (isset($_POST['state'])) {
-        $new_state = sanitize_text_field($_POST['state']);
-
-        update_option('zf_boost_speed', $new_state, true);
-
-        wp_send_json_success(['state' => $new_state]);
-    } else {
-
-        wp_send_json_error('Invalid state');
-    }
+	if( current_user_can( 'zoho_flow_admin_page' ) ){
+		if (isset($_POST['state'])) {
+			$new_state = sanitize_text_field($_POST['state']);
+	
+			update_option('zf_boost_speed', $new_state, true);
+	
+			wp_send_json_success(['state' => $new_state]);
+		} else {
+	
+			wp_send_json_error('Invalid state');
+		}
+	}
+	else{
+		wp_send_json_error('Permission denied!');
+	}
 }
 add_action('wp_ajax_update_zf_boost_speed', 'update_zf_boost_speed');
 

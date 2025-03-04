@@ -286,7 +286,7 @@ class Zoho_Flow_LearnDash extends Zoho_Flow_Service
 	}
 	public function get_course_schema() {
         $schema = array(
-            '$schema'              => 'http://json-schema.org/draft-04/schema#',
+            '$schema'              => 'https://json-schema.org/draft-04/schema#',
             'title'                => 'course',
             'type'                 => 'course',
             'properties'           => array(
@@ -313,7 +313,7 @@ class Zoho_Flow_LearnDash extends Zoho_Flow_Service
     }
 	public function get_group_schema() {
         $schema = array(
-            '$schema'              => 'http://json-schema.org/draft-04/schema#',
+            '$schema'              => 'https://json-schema.org/draft-04/schema#',
             'title'                => 'course',
             'type'                 => 'course',
             'properties'           => array(
@@ -340,7 +340,7 @@ class Zoho_Flow_LearnDash extends Zoho_Flow_Service
     }
 	public function get_user_schema() {
 	    $schema = array(
-	        '$schema'              => 'http://json-schema.org/draft-04/schema#',
+	        '$schema'              => 'https://json-schema.org/draft-04/schema#',
 	        'title'                => 'users',
 	        'type'                 => 'user',
 	        'properties'           => array(
