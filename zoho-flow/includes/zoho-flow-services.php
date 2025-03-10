@@ -35,6 +35,9 @@ class Zoho_Flow_Services {
 		if( !$is_available && isset( $service['function_test'] ) && ( function_exists( $service['function_test'] ) ) ){
 			$is_available = true;
 		}
+		elseif( isset( $service['is_theme'] ) && isset( $service['theme_name'] ) && ( $service['is_theme'] === true ) && ( $service['theme_name'] === wp_get_theme()->__get('name') ) ){
+			$is_available = true;
+		}
 
 		if(!array_key_exists($name, $this->services)){
 			$this->services[$id] = array(

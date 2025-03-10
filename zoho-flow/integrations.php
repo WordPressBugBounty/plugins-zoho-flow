@@ -1021,10 +1021,12 @@ $zoho_flow_services_config = array (
         'gallery_app_link' => 'divi',
         'description' => esc_html__('Use Divi to enhance your WordPress webpages with no-code editing, advanced design systems, and AI tools. By integrating Divi with other applications you can track form entries on your webpages easily.', 'zoho-flow'),
         'icon_file' => 'divi.png',
-        'class_test' => 'ET_Builder_Element',
+        'class_test' => 'ET_Builder_Plugin',
         'app_documentation_link' => '',
         'embed_link' => 'divi',
         'version' => 'v1',
+        'is_theme' => true,
+        'theme_name' => "Divi",
         'rest_apis' => array(
             array(
                 'type' => 'list',

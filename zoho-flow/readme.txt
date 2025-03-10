@@ -1,11 +1,11 @@
-=== Zoho Flow ===
+=== Zoho Flow – Integrate 100+ plugins with 1000+ business apps, no-code workflow automation ===
 
 Contributors: zohoflow
 Tags: integration, automation, workflow, webhook, notification
 Requires at least: 4.4
 Requires PHP: 7.0.0
 Tested up to: 6.7.2
-Stable tag: 2.13.1
+Stable tag: 2.13.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,6 +169,10 @@ IMPORTANT: Security update - Broken access control vulnerability has been fixed.
 IMPORTANT: Security update - SQL injection vulnerability has been fixed. Upgrade immediately.
 
 == Changelog ==
+
+= 2.13.2 =
+
+* Issue fix for triggering issues in a few integrations, such as JetFormBuilder and Contact Form 7.
 
 = 2.13.1 =
 
