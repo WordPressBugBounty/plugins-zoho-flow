@@ -5,7 +5,7 @@ Tags: integration, automation, workflow, webhook, notification
 Requires at least: 4.4
 Requires PHP: 7.0.0
 Tested up to: 6.7.2
-Stable tag: 2.13.2
+Stable tag: 2.13.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -169,6 +169,14 @@ IMPORTANT: Security update - Broken access control vulnerability has been fixed.
 IMPORTANT: Security update - SQL injection vulnerability has been fixed. Upgrade immediately.
 
 == Changelog ==
+
+= 2.13.3 =
+
+= GiveWP Integration =
+* Added new triggers and optimized existing ones.
+
+= Paid Memberships Pro =
+* Fixed an issue with field loading for the latest versions of PM Pro.
 
 = 2.13.2 =
 

@@ -2727,8 +2727,23 @@ $zoho_flow_services_config = array (
                 'args_count' => 2,
             ),
             array (
+                'action' => 'givewp_donation_form_processing_donor_created',
+                'method' => 'payload_donar_added_2_13_3',
+                'args_count' => 2,
+            ),
+            array (
                 'action' => 'give_complete_form_donation',
                 'method' => 'payload_donation_form_complete',
+                'args_count' => 3,
+            ),
+            array (
+                'action' => 'givewp_donate_controller_donation_created',
+                'method' => 'payload_donation_form_submitted',
+                'args_count' => 3,
+            ),
+            array (
+                'action' => 'give_update_payment_status',
+                'method' => 'payload_payment_status_changed',
                 'args_count' => 3,
             ),
         ),

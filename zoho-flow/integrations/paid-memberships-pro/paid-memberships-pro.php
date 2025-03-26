@@ -17,13 +17,15 @@ class Zoho_Flow_Paid_Memberships_Pro extends Zoho_Flow_Service{
 		$field_array = array();
 		foreach ($user_fields as $group => $group_array) {
 			foreach ($group_array as $field_obj) {
-				$field_array_object = array();
-				foreach ($field_obj as $key => $value) {
-					if($key != 'save_function'){
-						$field_array_object[$key] = $value;
-					}
-				}
-				array_push($field_array,$field_array_object);
+				$field_array[] = array(
+					'id' => $field_obj->__get('id'),
+					'label' => $field_obj->__get('label'),
+					'name' => $field_obj->__get('name'),
+					'hint' => $field_obj->__get('hint'),
+					'meta_key' => $field_obj->__get('meta_key'),
+					'type' => $field_obj->__get('type'),
+					'required' => $field_obj->__get('required')
+				);
 			}
 		}
 		return rest_ensure_response($field_array);

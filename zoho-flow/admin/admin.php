@@ -522,7 +522,7 @@ function zoho_flow_api_key_html($current_service){
 		</div>
 		<h3><?php echo esc_html('Base URL', 'zoho-flow') ?></h3>
 		<div style="margin:10px 0">
-			<span id="site-url-span"><?php echo esc_html(site_url(),'zoho-flow')?></span>
+			<span id="site-url-span"><?php echo esc_html(home_url(),'zoho-flow')?></span>
 			<a id="copy-site-url" style="padding: 6px 0px;" class="dashicons dashicons-admin-page"></a>
 		</div>
 		<p id="api-key-ok-button">

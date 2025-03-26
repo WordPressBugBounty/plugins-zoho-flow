@@ -9,7 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Zoho_Flow_GiveWP extends Zoho_Flow_Service{
 
 	//webhook events supported
-  public static $supported_events = array("donation_added","donor_added");
+  public static $supported_events = array(
+			"donation_added",
+			"donor_added",
+			"donation_form_submitted",
+			"payment_status_changed"
+		);
 
 	//To get forms list
   public function get_forms($request){
@@ -138,28 +143,28 @@ class Zoho_Flow_GiveWP extends Zoho_Flow_Service{
     $url = $entry->url;
     $event = $entry->event;
     $form_id = $entry->form_id;
-		if(($event == 'donation_added') && (!$this->is_valid_givewp_form($form_id))){
+		if(( ($event == 'donation_added') || ($event == 'donation_form_submitted') ) && (!$this->is_valid_givewp_form($form_id))){
 			return new WP_Error( 'rest_bad_request', 'Invalid form ID', array( 'status' => 400 ) );
 		}
     $supported_events = self::$supported_events;
     if((!empty($name)) && (!empty($url)) && (!empty($event)) && (in_array($event, self::$supported_events)) && (preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",$url))){
-      $args = array(
-        'name' => $name,
-        'url' => $url,
-        'event' => $event
-      );
-			if($event == 'donation_added'){
-				$args['form_id'] = $form_id;
-			}
-      $post_name = "GiveWP ";
-      $post_id = $this->create_webhook_post($post_name, $args);
-      if(is_wp_error($post_id)){
-        $errors = $post_id->get_error_messages();
-        return new WP_Error( 'rest_bad_request', $errors, array( 'status' => 400 ) );
-      }
-      return rest_ensure_response( array(
-          'webhook_id' => $post_id
-      ) );
+		$args = array(
+			'name' => $name,
+			'url' => $url,
+			'event' => $event
+		);
+		if( ($event == 'donation_added') || ($event == 'donation_form_submitted') ){
+			$args['form_id'] = $form_id;
+		}
+		$post_name = "GiveWP ";
+		$post_id = $this->create_webhook_post($post_name, $args);
+		if(is_wp_error($post_id)){
+			$errors = $post_id->get_error_messages();
+			return new WP_Error( 'rest_bad_request', $errors, array( 'status' => 400 ) );
+		}
+		return rest_ensure_response( array(
+			'webhook_id' => $post_id
+		) );
     }
     else{
       return new WP_Error( 'rest_bad_request', 'Data validation failed', array( 'status' => 400 ) );
@@ -195,35 +200,128 @@ class Zoho_Flow_GiveWP extends Zoho_Flow_Service{
 		if(is_numeric($created)){
 			$donor_details['donor_id'] = $created;
 			$args = array(
-	      'event' => 'donor_added'
-	    );
+				'event' => 'donor_added'
+			);
 	    $webhooks = $this->get_webhook_posts($args);
-	    $event_data = array(
-	      'event' => 'donor_added',
-	      'data' => $donor_details
-	    );
-	    foreach($webhooks as $webhook){
+		if( !empty( $webhooks ) ){
+			$event_data = array(
+					'event' => 'donor_added',
+					'data' => $donor_details
+				);
+			foreach($webhooks as $webhook){
+					$url = $webhook->url;
+					zoho_flow_execute_webhook($url, $event_data,array());
+				}
+			}
+		}
+	}
+
+	/**
+     * Fires after a donor is created during donation form processing.
+     *
+	 * @param integer  						$formId 		Payment ID.
+     * @param Give\Donors\Models\Donor   	$donor    	Donar object.
+     */
+	public function payload_donar_added_2_13_3($donor, $formId){
+		$args = array(
+			'event' => 'donor_added'
+		);
+	    $webhooks = $this->get_webhook_posts($args);
+		if( !empty( $webhooks ) ){
+			$donar_details = $this->get_donor_by_id_or_email( $donor->getAttributes()['id'] );
+			$event_data = array(
+					'event' => 'donor_added',
+					'data' => $donar_details
+				);
+			foreach($webhooks as $webhook){
 				$url = $webhook->url;
 				zoho_flow_execute_webhook($url, $event_data,array());
 			}
 		}
 	}
 
-	//For donation form submission
+	/**
+     * Fires when donation payment status is changed to completed for the first time.
+     *
+     * @param integer   $form_id    	Form ID.
+     * @param integer  	$payment_id 	Payment ID.
+     * @param array  	$payment_meta   Payment details.
+     */
 	public function payload_donation_form_complete($form_id, $payment_id, $payment_meta){
 		$payment_meta['_give_payment_id'] = $payment_id;
 		$args = array(
-      'event' => 'donation_added',
+			'event' => 'donation_added',
 			'form_id' => $form_id
-    );
-    $webhooks = $this->get_webhook_posts($args);
-    $event_data = array(
-      'event' => 'donation_added',
-      'data' => $payment_meta
-    );
-    foreach($webhooks as $webhook){
-			$url = $webhook->url;
-			zoho_flow_execute_webhook($url, $event_data,array());
+		);
+		$webhooks = $this->get_webhook_posts($args);
+		if( !empty( $webhooks ) ){
+			$event_data = array(
+				'event' => 'donation_added',
+				'data' => $payment_meta
+			);
+			foreach($webhooks as $webhook){
+				$url = $webhook->url;
+				zoho_flow_execute_webhook($url, $event_data,array());
+			}
+		}
+	}
+
+	/**
+     * Fires after donation form after is submitted.
+     *
+     * @param Give\DonationForms\DataTransferObjects\DonateControllerData   $formData    Form entry details.
+     * @param Give\Donations\Models\Donation   								$donation Donation details.
+     * @param Give\Subscriptions\Models\Subscription   						$subscription        Subscription details.
+	 * 
+	 * @since 2.13.3
+     */
+	public function payload_donation_form_submitted($formData, $donation, $subscription){
+		$args = array(
+      		'event' => 'donation_form_submitted',
+			'form_id' => $formData->formId
+    	);
+		$webhooks = $this->get_webhook_posts($args);
+		if( !empty( $webhooks ) ){
+			$event_data = array(
+				'event' => 'donation_form_submitted',
+				'data' => $formData
+			);
+			foreach($webhooks as $webhook){
+				$event_data['id'] = $webhook->ID;
+				$url = $webhook->url;
+				zoho_flow_execute_webhook($url, $event_data,array());
+			}
+		}
+	}
+
+	/**
+     * Fires after payment status is changed.
+     *
+     * @param integer   $payment_id    	Payment ID.
+     * @param string  	$status 		New status.
+     * @param string  	$old_status     Old status.
+	 * 
+	 * @since 2.13.3
+     */
+	public function payload_payment_status_changed($payment_id, $status, $old_status){
+		$args = array(
+      		'event' => 'payment_status_changed'
+    	);
+		$webhooks = $this->get_webhook_posts($args);
+		if( !empty( $webhooks ) ){
+			$payment = new Give_Payment( $payment_id );
+			$payment_meta = $payment->payment_meta;
+			$payment_meta['status'] = $status;
+			$payment_meta['old_status'] = $old_status;
+			$event_data = array(
+				'event' => 'payment_status_changed',
+				'data' => $payment_meta
+			);
+			foreach($webhooks as $webhook){
+				$event_data['id'] = $webhook->ID;
+				$url = $webhook->url;
+				zoho_flow_execute_webhook($url, $event_data,array());
+			}
 		}
 	}
 
