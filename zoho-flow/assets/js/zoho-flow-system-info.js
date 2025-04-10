@@ -32,7 +32,8 @@ jQuery(document).ready(function(){
 
       jQuery.post(ajaxurl, {
         action: "update_zf_boost_speed",  //NO I18N
-        state: toggleState
+        state: toggleState,
+        zf_boost_speed_toggle_action_nonce: jQuery(this).closest('.toggle-switch').find('input[name="zf_boost_speed_toggle_action_nonce"]').val()
       })
         .done(function (response) {
         })

@@ -18,8 +18,7 @@ add_action('wp_enqueue_scripts', 'enqueue_toggle_script');
 $zf_boost_speed_state = get_option('zf_boost_speed', 'off');
 
 function update_zf_boost_speed() {
-
-	if( current_user_can( 'zoho_flow_admin_page' ) ){
+	if( ( current_user_can( 'zoho_flow_admin_page' ) ) && wp_verify_nonce(sanitize_key($_POST['zf_boost_speed_toggle_action_nonce']),'zf_boost_speed_toggle_action') ){
 		if (isset($_POST['state'])) {
 			$new_state = sanitize_text_field($_POST['state']);
 	
@@ -51,6 +50,7 @@ class Zoho_Flow_Settings_Menue extends WP_List_Table {
 		// Return the toggle HTML
 		return '
 			<div class="toggle-switch">
+				'. wp_nonce_field( 'zf_boost_speed_toggle_action', 'zf_boost_speed_toggle_action_nonce' ) .'
 				<input type="checkbox" id="zf-boost-speed-toggle" class="toggle-input" ' . $checked . '>
 				<label for="zf-boost-speed-toggle" class="toggle-label"></label>
 			</div>
