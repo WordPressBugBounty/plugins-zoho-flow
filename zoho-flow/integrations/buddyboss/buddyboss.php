@@ -30,11 +30,49 @@ class Zoho_Flow_BuddyBoss extends Zoho_Flow_Service
         return rest_ensure_response($groups);
     }
 
-    public function get_members($request){
-        $membersObj = new BP_REST_Members_Endpoint();
-        $members = $membersObj->get_items($request);
-        return rest_ensure_response($members);
-    }
+	public function get_members($request){
+	    $membersObj = new BP_REST_Members_Endpoint();
+	    $members = $membersObj->get_items($request);
+        
+	    if(isset($request['user_ids'])){
+	    	$memberData = $members;
+	        $xprofile_groups = $memberData->data[0]['xprofile']['groups'];
+			unset($memberData->data[0]['xprofile']);
+	        foreach($xprofile_groups as $group ){
+	        	foreach ($group['fields'] as $field){
+	            	$field = json_decode(json_encode($field));
+	                $fieldName = (string)$field->name;
+	                $fieldValue = (string)$field->value->raw;
+	                $memberData->data[0][$fieldName] =$fieldValue;
+	            }
+			}
+	        return rest_ensure_response($memberData);
+		}else {
+	    	return rest_ensure_response($members);
+	    }
+	}
+    
+	public function get_xprofile_fields($request){
+		$data = array();
+	    if ( function_exists( 'bp_xprofile_get_groups' ) ) {
+			$groups = bp_xprofile_get_groups( array(
+				'fetch_fields' => true,
+	            'user_id' => $request['user_id']
+			) );
+            
+			foreach ( $groups as $group ) {
+	        	foreach ( $group->fields as $field ) {
+	            	$fields = array();
+	                $fields["id"] = $field->id;
+	                $fields['name'] = $field->name;
+					$fields['type'] = $field->type;
+                    
+					array_push($data, $fields);
+				}
+			}
+	        return rest_ensure_response($data);
+		}
+	}
 
     //Actions
     public function activity_post_update($request){

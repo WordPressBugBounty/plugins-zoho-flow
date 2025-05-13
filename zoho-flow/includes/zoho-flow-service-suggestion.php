@@ -298,7 +298,12 @@ class Zoho_Flow_Service_Suggestion{
             'et_divi_options' => 'divi',
             'et_theme_builder' => 'divi',
             'et_divi_role_editor' => 'divi',
-            'et_support_center_divi' => 'divi'
+            'et_support_center_divi' => 'divi',
+            'bricks' => 'bricks',
+            'bricks-settings' => 'bricks',
+            'bricks-sidebars' => 'bricks',
+            'bricks-system-information' => 'bricks',
+            'bricks-license' => 'bricks'
 
 	    );
 	    if( isset( $page ) ){
@@ -345,7 +350,9 @@ class Zoho_Flow_Service_Suggestion{
             'snow-monkey-forms' => 'snow-monkey-forms',
             'wp_block' => 'publishpress-blocks',
             'buddyforms' => 'buddyforms',
-            'et_pb_layout' => 'divi'
+            'et_pb_layout' => 'divi',
+            'bricks_template' => 'bricks',
+            'bricks_fonts' => 'bricks',
 	    );
 	    if( isset( $post_type ) ){
 	        if( array_key_exists( $post_type, $post_type_service_map ) ){
@@ -937,6 +944,14 @@ elseif( 'divi' === $service_id ){
     $this->icon_file = 'divi.png';
     $this->gallery_app_link = 'divi';
     $this->plugin_api_page_link = 'divi';
+    $this->is_plugin_integration = true;
+}
+elseif( 'bricks' === $service_id ){
+    $this->id = 'bricks';
+    $this->name = 'Bricks';
+    $this->icon_file = 'bricks.png';
+    $this->gallery_app_link = 'bricks';
+    $this->plugin_api_page_link = 'bricks';
     $this->is_plugin_integration = true;
 }
     elseif( 'woocommerce' === $service_id ){

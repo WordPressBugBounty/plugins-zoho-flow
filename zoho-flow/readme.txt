@@ -4,8 +4,8 @@ Contributors: zohoflow
 Tags: integration, automation, workflow, webhook, notification
 Requires at least: 4.4
 Requires PHP: 7.0.0
-Tested up to: 6.8.0
-Stable tag: 2.13.4
+Tested up to: 6.7.2
+Stable tag: 2.14.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,13 +75,13 @@ With an intuitive drag-and-drop workflow builder, you can connect all your apps 
 == Anti-spam & Security ==
    - **Spam protection:** Use anti-spam plugins to protect contact forms and comment sections in your WordPress pages from spam submissions.
 
-   **Explore integrations:** [Akismet](https://www.zohoflow.com/apps/akismet/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page)
+   **Explore integrations:** [Akismet](https://www.zohoflow.com/apps/akismet-for-wordpress/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page)
 
 == Website & CMS ==
    - **Auto-generated WordPress posts:** Integrate WordPress with ChatGPT to regularly post articles based on preset inputs and queries.
    - **Scheduled WordPress posts:** Automatically publish content to WordPress from word processing and note-taking tools like Zoho Writer or OneNote.
 
-   **Explore integrations:** [WordPress.com](https://www.zohoflow.com/apps/wordpress-com/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page) (fully-hosted), [WordPress.org](https://www.zohoflow.com/apps/wordpress-org/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page) (self-hosted), [Elementor Pro](https://www.zohoflow.com/apps/elementor-pro/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [Divi](https://www.zohoflow.com/apps/divi/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [Spectra](https://www.zohoflow.com/apps/spectra/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [SiteOrigin Widgets Bundle](https://www.zohoflow.com/apps/siteorigin-widgets-bundle/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [Kadence Blocks](https://www.zohoflow.com/apps/kadence-blocks/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [CoBlocks](https://www.zohoflow.com/apps/coblocks/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [Otter Blocks](https://www.zohoflow.com/apps/otter-blocks/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [Essential Blocks](https://www.zohoflow.com/apps/essential-blocks/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page),
+   **Explore integrations:** [WordPress.com](https://www.zohoflow.com/apps/wordpress-com/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page) (fully-hosted), [WordPress.org](https://www.zohoflow.com/apps/wordpress-org/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page) (self-hosted), [Elementor Pro](https://www.zohoflow.com/apps/elementor-pro/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [Divi](https://www.zohoflow.com/apps/divi/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [Spectra](https://www.zohoflow.com/apps/spectra/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [SiteOrigin Widgets Bundle](https://www.zohoflow.com/apps/siteorigin-widgets-bundle/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [Kadence Blocks](https://www.zohoflow.com/apps/kadence-blocks/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [CoBlocks](https://www.zohoflow.com/apps/coblocks/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [Bricks](https://www.zohoflow.com/apps/bricks/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [Otter Blocks](https://www.zohoflow.com/apps/otter-blocks/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page), [Essential Blocks](https://www.zohoflow.com/apps/essential-blocks/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page),
 [PublishPress Blocks](https://www.zohoflow.com/apps/publishpress-blocks/integrations/?utm_source=wordpress&utm_medium=referral&utm_campaign=showcase_page)
 
 == Others ==
@@ -172,6 +172,17 @@ IMPORTANT: Security update - Broken access control vulnerability has been fixed.
 IMPORTANT: Security update - SQL injection vulnerability has been fixed. Upgrade immediately.
 
 == Changelog ==
+
+= 2.14.0 =
+
+= Added support for the following plugins: =
+>1. Bricks
+
+= FluentCRM Integration =
+* New trigger support enabled.
+
+= BuddyBoss Integration =
+* Code optimization for BuddyBoss integration.
 
 = 2.13.4 =
 

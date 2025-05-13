@@ -234,6 +234,107 @@ class Zoho_Flow_FluentCRM extends Zoho_Flow_Service
         zoho_flow_execute_webhook($url, $subscriber, $files);
       }
     }
+	
+    /**
+     * Triggers when a contact added to lists
+     * @param array $attachedListIds     List Ids
+     * @param object $subscriber         Contact details
+     */
+    public function process_contact_added_to_lists($attachedListIds, $subscriber){
+        $this->handle_add_or_remove_lists_or_tags($attachedListIds, $subscriber, 'contact_added_to_lists');
+    }
+    
+    /**
+     * Triggers when a contact removed from lists
+     * @param array $attachedListIds     List Ids
+     * @param object $subscriber         Contact details
+     */
+    public function process_contact_removed_from_lists($detachedListIds, $subscriber){
+        $this->handle_add_or_remove_lists_or_tags($detachedListIds, $subscriber, 'contact_removed_from_lists');
+    }
+    
+    /**
+     * Triggers when a contact added to tags
+     * @param array $attachedListIds        List of Tag Ids
+     * @param object $subscriber            Contact details
+     */
+    public function process_contact_added_to_tags($attachedListIds, $subscriber){
+        $this->handle_add_or_remove_lists_or_tags($attachedListIds, $subscriber, 'contact_added_to_tags');
+    }
+    
+    /**
+     * Triggers when a contact removed from tags
+     * @param array $attachedListIds     List of Tag Ids
+     * @param object $subscriber         Contact details
+     */
+    public function process_contact_removed_from_tags($detachedListIds, $subscriber){
+        $this->handle_add_or_remove_lists_or_tags($detachedListIds, $subscriber, 'contact_removed_from_tags');
+    }
+    
+    /**
+     * 
+     * @param array $ListIds        Array of List/Tag ids
+     * @param object $subscriber    Contact details
+     * @param string $action        Action to execute trigger
+     */
+    public function handle_add_or_remove_lists_or_tags($ListIds, $subscriber, $action){
+        $data = array();
+        
+        if($action === 'contact_added_to_lists' || $action === 'contact_removed_from_lists')
+        {
+            $type = "list";
+            $listApi = FluentCrmApi('lists');
+            $allLists = $listApi->all();
+        }else {
+            $type = "tag";
+            $listApi = FluentCrmApi('tags');
+            $allLists = $listApi->all();
+        }
+        
+        $listArr = array();
+        foreach ($allLists as $list){
+            $listId = $list->id;
+            if(in_array($listId, $ListIds)){
+                $listDetails = array(
+                    $type."_id" => $list->id,
+                    "title" => $list->title,
+                    "description" => $list->description,
+                    "slug" => $list->slug,
+                    "is_public" => $list->is_public,
+                );
+                array_push($listArr, $listDetails);
+            }
+        }
+        $data[$type."s"] = $listArr;
+        
+        if ($subscriber) {
+            $data['id'] = $subscriber->id;
+            $data['first_name'] = $subscriber->first_name;
+            $data['last_name'] = $subscriber->last_name;
+            $data['email'] = $subscriber->email;
+            $data['address_line_1'] = $subscriber->address_line_1;
+            $data['address_line_2'] = $subscriber->address_line_2;
+            $data['postal_code'] = $subscriber->postal_code;
+            $data['city'] = $subscriber->city;
+            $data['state'] = $subscriber->state;
+            $data['country'] = $subscriber->country;
+            $data['phone'] = $subscriber->phone;
+            $data['status'] = $subscriber->status;
+        } else {
+            return new WP_Error( 'rest_bad_request', esc_html__( 'Contact not found.', 'zoho-flow' ), array( 'status' => 400 ) );
+        }
+        $args = array(
+            'type' => $action
+        );
+        $webhooks = $this->get_webhook_posts($args);
+        
+        $files = array();
+        foreach ( $webhooks as $webhook ) {
+            $url = $webhook->url;
+            zoho_flow_execute_webhook($url, $data, $files);
+        }
+    }
+	
 	//default API
     public function get_system_info(){
 	$system_info = parent::get_system_info();
