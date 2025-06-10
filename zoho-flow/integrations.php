@@ -2231,21 +2231,18 @@ $zoho_flow_services_config = array (
                 'path' => '/forms',
                 'method' => 'list_all_forms',
                 'capability' => 'manage_options',
-                'schema_method' => 'get_form_schema',
             ),
             array ( //Deprecated in version 2.9.1
                 'type' => 'list',
                 'path' => '/forms/(?\'form_id\'[\\d]+)/fields',
                 'method' => 'get_fields',
                 'capability' => 'manage_options',
-                'schema_method' => 'get_field_schema',
             ),
             array ( //Deprecated in version 2.9.1
                 'type' => 'list',
                 'path' => '/forms/(?\'form_id\'[\\d]+)/webhooks',
                 'method' => 'get_webhooks',
                 'capability' => 'manage_options',
-                'schema_method' => 'get_form_webhook_schema',
             ),
             array ( //Deprecated in version 2.9.1
                 'type' => 'create',

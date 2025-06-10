@@ -361,9 +361,8 @@ function zoho_flow_show_service_grid(){
 	<?php
 		}
 		else{
-			$message = $resp['message'];
-			$version = $resp['version'];
-			if($message != 'Connection Success'){
+			if( isset( $resp['status'] ) && ( 200 != $resp['status'] ) ){
+				$version = 'TLSv1.3';
 	?>
 	<div id="tls-connection-fail-notice" class="notice inline notice-warning">
 		<h2><?php echo esc_html__( 'TLS connection failed' ) ?></h2>

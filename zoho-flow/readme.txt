@@ -4,8 +4,8 @@ Contributors: zohoflow
 Tags: integration, automation, workflow, webhook, notification
 Requires at least: 4.4
 Requires PHP: 7.0.0
-Tested up to: 6.7.2
-Stable tag: 2.14.0
+Tested up to: 6.8.1
+Stable tag: 2.14.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -172,6 +172,11 @@ IMPORTANT: Security update - Broken access control vulnerability has been fixed.
 IMPORTANT: Security update - SQL injection vulnerability has been fixed. Upgrade immediately.
 
 == Changelog ==
+
+= 2.14.1 =
+
+= Ultimate Member integration =
+* Fatal errors handled 
 
 = 2.14.0 =
 
