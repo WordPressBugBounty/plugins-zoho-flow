@@ -46,7 +46,8 @@ jQuery(document).ready(function () {
             // Handle deactivation
             deactivateButton.on('click', function () { //NO I18N
                 jQuery.post(zohoFlow.ajaxurl, {
-                    action: 'zoho_flow_deactivate_plugin' //NO I18N
+                    action: 'zoho_flow_deactivate_plugin', //NO I18N
+                    zf_deactivate_nonce: zohoFlow.nonce
                 })
                 .done(function (response) {
                     if (response.success) {

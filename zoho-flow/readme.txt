@@ -5,7 +5,7 @@ Tags: integration, automation, workflow, webhook, notification
 Requires at least: 4.4
 Requires PHP: 7.0.0
 Tested up to: 6.8.1
-Stable tag: 2.14.1
+Stable tag: 2.14.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -162,7 +162,7 @@ Yes, starting from version 2.0.0, the Zoho Flow plugin supports custom post type
 
 == Upgrade Notice ==
 
-= 2.13.4 =
+= 2.14.2 =
 IMPORTANT: Security update - CSRF vulnerability has been fixed. Upgrade immediately.
 
 = 2.13.1 =
@@ -172,6 +172,10 @@ IMPORTANT: Security update - Broken access control vulnerability has been fixed.
 IMPORTANT: Security update - SQL injection vulnerability has been fixed. Upgrade immediately.
 
 == Changelog ==
+
+= 2.14.2 =
+
+* Security fix for CSRF vulnerability. This is a mandatory update for all users.
 
 = 2.14.1 =
 

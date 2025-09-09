@@ -129,6 +129,7 @@ function my_plugin_enqueue_thickbox() {
 
 	wp_localize_script('zoho-flow-deactivation-js', 'zohoFlow', array(
         'ajaxurl' => admin_url('admin-ajax.php'),
+        'nonce'   => wp_create_nonce('zoho_flow_deactivate_nonce'),
     ));
 
 	wp_enqueue_style(
@@ -142,6 +143,8 @@ function my_plugin_enqueue_thickbox() {
 
 add_action('wp_ajax_zoho_flow_deactivate_plugin', 'zoho_flow_deactivate_plugin');
 function zoho_flow_deactivate_plugin() {
+
+    check_ajax_referer('zoho_flow_deactivate_nonce', 'zf_deactivate_nonce');
 
     if (!current_user_can('activate_plugins')) {
         wp_send_json_error('Unauthorized', 403);
