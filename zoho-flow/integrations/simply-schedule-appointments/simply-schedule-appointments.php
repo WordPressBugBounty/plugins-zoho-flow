@@ -50,12 +50,16 @@ class Zoho_Flow_Simply_Schedule_Appointments extends Zoho_Flow_Service{
             'date_modified'
         );
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'date_modified';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed, true))) ? $request['order_by'] : 'date_modified';
+        $order = ($request['order'] && (in_array($request['order'], $order_allowed, true))) ? $request['order'] : 'DESC';
+        $limit = ($request['limit']) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
         $results = $wpdb->get_results(
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- ORDER BY identifiers are allowlisted and escaped before concatenation.
             $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}ssa_appointment_types ORDER BY $order_by $order LIMIT %d",
+                "SELECT * FROM {$wpdb->prefix}ssa_appointment_types ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
                 $limit
             ), 'ARRAY_A'
                 );
@@ -90,6 +94,7 @@ class Zoho_Flow_Simply_Schedule_Appointments extends Zoho_Flow_Service{
     public function fetch_appointment_type( $request ){
         global $wpdb;
         $appointment_type_id = $request->get_url_params()['appointment_type_id'];
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
         $results = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM {$wpdb->prefix}ssa_appointment_types WHERE id = %d ORDER BY date_modified DESC LIMIT 1",
@@ -163,6 +168,7 @@ class Zoho_Flow_Simply_Schedule_Appointments extends Zoho_Flow_Service{
     private function is_valid_appointment_type( $appointment_type_id ){
         if( isset( $appointment_type_id ) && is_numeric( $appointment_type_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}ssa_appointment_types WHERE id = %d LIMIT 1",
@@ -185,6 +191,7 @@ class Zoho_Flow_Simply_Schedule_Appointments extends Zoho_Flow_Service{
     private function is_valid_appointment( $appointment_id ){
         if( isset( $appointment_id ) && is_numeric( $appointment_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}ssa_appointments WHERE id = %d LIMIT 1",

@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action( 'admin_init', 'zoho_flow_admin_init', 10, 0 );
 
 function zoho_flow_admin_init() {
-	do_action( 'wp_zoho_flow_admin_init' );
+	do_action( 'zoho_flow_admin_init' );
 }
 
 add_action( 'admin_menu', 'zoho_flow_admin_menu', 9, 0 );
@@ -44,8 +44,8 @@ function zoho_flow_admin_menu() {
 
 }
 
-add_filter( 'admin_footer_text', 'admin_footer_text', 1 );
-function admin_footer_text( $footer_text ) {
+add_filter( 'admin_footer_text', 'zoho_flow_admin_footer_text', 1 );
+function zoho_flow_admin_footer_text( $footer_text ) {
 	if ( ! current_user_can( 'zoho_flow_admin_page' ) ) {
 		return $footer_text;
 	}
@@ -69,27 +69,46 @@ function zoho_flow_rated(){
 		wp_die( -1 );
 	}
 	update_option( 'zoho_flow_admin_footer_text_rated', 1 );
-	update_option( 'last_review_notice_date', date('Y-m-d', strtotime('+2 Months') ) );
+	update_option( 'last_review_notice_date', gmdate( 'Y-m-d', strtotime( '+2 months', current_time( 'timestamp', true ) ) ) );
 	wp_die();
 }
 
 function zoho_flow_enqueue_scripts(){
+	$admin_js_version             = filemtime( WP_ZOHO_FLOW_PLUGIN_DIR . '/assets/js/zoho-flow-admin.js' );
+	$review_notice_js_version     = filemtime( WP_ZOHO_FLOW_PLUGIN_DIR . '/assets/js/zoho-flow-review-notice.js' );
+	$suggestion_notice_js_version = filemtime( WP_ZOHO_FLOW_PLUGIN_DIR . '/assets/js/zoho-flow-suggestion-notice.js' );
+	$system_info_js_version       = filemtime( WP_ZOHO_FLOW_PLUGIN_DIR . '/assets/js/zoho-flow-system-info.js' );
+	$admin_css_version            = filemtime( WP_ZOHO_FLOW_PLUGIN_DIR . '/assets/css/zoho-flow-admin.css' );
 
-	wp_register_script('zoho-flow-admin', plugins_url('../assets/js/zoho-flow-admin.js', __FILE__), array('jquery'),null, false);
-	wp_register_script('zoho-flow-review-notice', plugins_url('../assets/js/zoho-flow-review-notice.js', __FILE__), array('jquery'),null, false);
-	wp_register_script('zoho-flow-suggestion-notice', plugins_url('../assets/js/zoho-flow-suggestion-notice.js', __FILE__), array('jquery'),null, false);
-	wp_register_script('zoho-flow-system-info', plugins_url('../assets/js/zoho-flow-system-info.js', __FILE__), array('jquery'),null, false);
+	wp_register_script('zoho-flow-admin', plugins_url('../assets/js/zoho-flow-admin.js', __FILE__), array('jquery'), $admin_js_version, false);
+	wp_register_script('zoho-flow-review-notice', plugins_url('../assets/js/zoho-flow-review-notice.js', __FILE__), array('jquery'), $review_notice_js_version, false);
+	wp_register_script('zoho-flow-suggestion-notice', plugins_url('../assets/js/zoho-flow-suggestion-notice.js', __FILE__), array('jquery'), $suggestion_notice_js_version, false);
+	wp_register_script('zoho-flow-system-info', plugins_url('../assets/js/zoho-flow-system-info.js', __FILE__), array('jquery'), $system_info_js_version, false);
+	wp_localize_script(
+		'zoho-flow-review-notice',
+		'zohoFlowReviewNotice',
+		array(
+			'nonce' => wp_create_nonce( 'zoho_flow_change_next_review_date' ),
+		)
+	);
+	wp_localize_script(
+		'zoho-flow-suggestion-notice',
+		'zohoFlowSuggestionNotice',
+		array(
+			'nonce' => wp_create_nonce( 'zoho_flow_change_next_suggestion_date' ),
+		)
+	);
 	$i18n_array = array(
-		'enter_description' => __('Enter description'),
-		'generating' => __('Generating...'),
-		'generate' => __('Generate'),
-		'remove_api_key_confirmation' => __('Remove API key?'),
-		'unable_to_copy_api_key' => __('Unable to copy the API key')
+		'enter_description' => __('Enter description', 'zoho-flow'),
+		'generating' => __('Generating...', 'zoho-flow'),
+		'generate' => __('Generate', 'zoho-flow'),
+		'remove_api_key_confirmation' => __('Remove API key?', 'zoho-flow'),
+		'unable_to_copy_api_key' => __('Unable to copy the API key', 'zoho-flow')
 	);
 	wp_localize_script( 'zoho-flow-admin', 'i18n', $i18n_array );
 	wp_enqueue_script('zoho-flow-admin');
 
-	wp_register_style('zoho-flow-admin', plugins_url('../assets/css/zoho-flow-admin.css', __FILE__));
+	wp_register_style('zoho-flow-admin', plugins_url('../assets/css/zoho-flow-admin.css', __FILE__), array(), $admin_css_version);
 	wp_enqueue_style('zoho-flow-admin');
 
 	add_thickbox();
@@ -99,12 +118,12 @@ function zoho_flow_generate_api_key(){
     if ( ! current_user_can( 'zoho_flow_admin_page' ) ) {
         return new WP_Error( 'ajax_forbidden', esc_html__( 'You are not allowed to perform the operation.', 'zoho-flow'), array( 'status' => 403 ) );
     }
-	if(isset($_POST['service_id'])) {
-	  if(!wp_verify_nonce(sanitize_key($_POST['api_key_generation_nonce']),'generate_api_key')){
+	if(isset($_POST['service_id'], $_POST['api_key_generation_nonce'])) {
+	  if(!wp_verify_nonce(sanitize_key(wp_unslash($_POST['api_key_generation_nonce'])),'generate_api_key')){
 	      wp_send_json_error(__('Unable to generate API Key. Please try after refreshing the page.', 'zoho-flow'), 403);
 	   }else{
-	      $service_id = sanitize_key($_POST['service_id']);
-	      $description = sanitize_text_field($_POST['description']);
+	      $service_id = sanitize_key(wp_unslash($_POST['service_id']));
+	      $description = isset($_POST['description']) ? sanitize_text_field(wp_unslash($_POST['description'])) : '';
 	      $service = Zoho_Flow_Services::get_instance()->get_service($service_id)['instance'];
 	      if(isset($service)){
 	      	$result = $service->generate_api_key($description);
@@ -118,8 +137,8 @@ function zoho_flow_generate_api_key(){
 						}
 			    }
 	      	else{
-						update_option( 'last_review_notice_date', date('Y-m-d', strtotime('-4 Months') ) );
-	      		echo $result;
+						update_option( 'last_review_notice_date', gmdate( 'Y-m-d', strtotime( '-4 months', current_time( 'timestamp', true ) ) ) );
+	      		echo esc_html( $result );
 	      	}
 	      }
 	      else{
@@ -135,17 +154,17 @@ function zoho_flow_remove_api_key(){
     if ( ! current_user_can( 'zoho_flow_admin_page' ) ) {
         return new WP_Error( 'ajax_forbidden', esc_html__( 'You are not allowed to perform the operation.', 'zoho-flow'), array( 'status' => 403 ) );
     }
-	if(isset($_POST['service_id'])) {
-	  if(!wp_verify_nonce(sanitize_key($_POST['api_key_removal_nonce']),'remove_api_key')){
+	if(isset($_POST['service_id'], $_POST['api_key_id'], $_POST['api_key_removal_nonce'])) {
+	  if(!wp_verify_nonce(sanitize_key(wp_unslash($_POST['api_key_removal_nonce'])),'remove_api_key')){
 	      wp_send_json_error(__('Unable to remove API Key. Please try after refreshing the page.', 'zoho-flow'), 403);
 	   }else{
-	   	$api_key_id = sanitize_key($_POST['api_key_id']);
+	   	$api_key_id = sanitize_text_field(wp_unslash($_POST['api_key_id']));
 	   	if(!ctype_digit($api_key_id)){
 	   		wp_send_json_error(__('Invalid API Key ID provided', 'zoho-flow'), 400);
 	   		wp_die();
 	   		return;
 	   	}
-		$service_id = sanitize_key($_POST['service_id']);
+		$service_id = sanitize_key(wp_unslash($_POST['service_id']));
 		$service = Zoho_Flow_Services::get_instance()->get_service($service_id)['instance'];
 		if(isset($service)){
 			$result = $service->remove_api_key($api_key_id);
@@ -159,7 +178,7 @@ function zoho_flow_remove_api_key(){
 				}
 	        }
 	        else{
-				echo __('API key removed', 'zoho-flow');
+				echo esc_html__( 'API key removed', 'zoho-flow' );
 	        }
 		}
 		else{
@@ -172,7 +191,13 @@ function zoho_flow_remove_api_key(){
 add_action( 'wp_ajax_zoho_flow_remove_api_key', 'zoho_flow_remove_api_key' );
 
 function zoho_flow_api_key_table(){
-	$service_id = sanitize_key( $_POST['service_id'] );
+	if ( ! current_user_can( 'zoho_flow_admin_page' ) ) {
+		wp_send_json_error( esc_html__( 'You are not allowed to perform the operation.', 'zoho-flow' ), 403 );
+	}
+	if ( ! isset( $_POST['service_id'], $_POST['api_key_removal_nonce'] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST['api_key_removal_nonce'] ) ), 'remove_api_key' ) ) {
+		wp_send_json_error( esc_html__( 'Unable to load API keys. Please refresh and try again.', 'zoho-flow' ), 403 );
+	}
+	$service_id = sanitize_key( wp_unslash( $_POST['service_id'] ) );
 	$api_keys_table = new Zoho_Flow_API_Key_List_Table();
 	$api_keys_table->set_service_id($service_id);
 	$api_keys_table->prepare_items();
@@ -191,7 +216,14 @@ function zoho_flow_test_tls(){
 }
 
 function zoho_flow_review_banner(){
-	wp_enqueue_script('zoho-flow-review-notice', plugins_url('../assets/js/zoho-flow-review-notice.js', __FILE__), array('jquery'),null, false);
+	wp_enqueue_script('zoho-flow-review-notice', plugins_url('../assets/js/zoho-flow-review-notice.js', __FILE__), array('jquery'), filemtime( WP_ZOHO_FLOW_PLUGIN_DIR . '/assets/js/zoho-flow-review-notice.js' ), false);
+	wp_localize_script(
+		'zoho-flow-review-notice',
+		'zohoFlowReviewNotice',
+		array(
+			'nonce' => wp_create_nonce( 'zoho_flow_change_next_review_date' ),
+		)
+	);
 	global $pagenow;
 	$review_allowed_pages = array(
 		"index.php",
@@ -206,12 +238,14 @@ function zoho_flow_review_banner(){
 				add_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string("1 day")), '', 'yes' );
 			}
 			else if(date_timestamp_get(date_create()) > date_timestamp_get($next_review_notice_date)){
+				$current_screen = get_current_screen();
+				$is_zoho_flow_screen = isset( $current_screen->id ) && in_array( $current_screen->id, array( 'toplevel_page_zoho_flow', 'zoho-flow_page_zoho_flow_system_info' ), true );
 				if(in_array($pagenow,$review_allowed_pages)){
 				?>
-					<div id= "flow-review-notice" style="border: 5px solid transparent;border-bottom: 0;border-left: 0;border-right: 0;padding: 10px;border-image: url('<?php echo plugins_url('../assets/images/zoho-colors.gif', __FILE__); ?>') 100% 1 stretch;" class="notice notice-info is-dismissible">
+					<div id= "flow-review-notice" style="border: 5px solid transparent;border-bottom: 0;border-left: 0;border-right: 0;padding: 10px;border-image: url('<?php echo esc_url( plugins_url('../assets/images/zoho-colors.gif', __FILE__) ); ?>') 100% 1 stretch;" class="notice notice-info is-dismissible">
 				<?php
 				}
-				else if((($pagenow=='admin.php')) && (!empty($_REQUEST['page'])) && (($_REQUEST['page']=='zoho_flow') || ($_REQUEST['page']=='zoho_flow_system_info'))){
+				else if ( ( $pagenow == 'admin.php' ) && $is_zoho_flow_screen ) {
 				?>
 					<div id= "flow-review-notice" style="padding: 10px;" class="notice notice-info is-dismissible">
 				<?php
@@ -222,27 +256,29 @@ function zoho_flow_review_banner(){
 				?>
 						<div style="display:flex">
 							<div style="min-width:8%;margin-top: auto;margin-bottom: auto;padding: 0px 15px;">
-								<img style="max-height: 64px;" src="<?php echo plugins_url('../assets/images/Flow-logo-animation.gif', __FILE__); ?>"/>
+								<img style="max-height: 64px;" src="<?php echo esc_url( plugins_url('../assets/images/Flow-logo-animation.gif', __FILE__) ); ?>"/>
 							</div>
 							<div style="margin-left: auto;margin-right: auto;padding-right: 121px;">
 								<div style="font-size: 17px;padding: 15px;text-align: center;font-weight: 600;">
 									<?php
 									echo sprintf(
-										esc_html__('Happy with %1$s? Please give us a review!'),sprintf('<strong>%s</strong>',esc_html__('Zoho Flow'))
+										/* translators: %s: Zoho Flow. */
+										esc_html__('Happy with %1$s? Please give us a review!','zoho-flow'),sprintf('<strong>%s</strong>',esc_html__('Zoho Flow','zoho-flow'))
 									);
 									?>
 								</div>
 								<div style="font-size: 15px;padding: 10px;padding-top: 5px;text-align: center;">
 									<?php
 									echo sprintf(
-										esc_html__('Your feedback matters. Please leave a %1$s to help us improve. Thank you for being a part of the %2$s community.'), '<a href="https://wordpress.org/support/plugin/zoho-flow/reviews?rate=5#new-post" target="_blank" class="zoho-flow-rating-link" >review</a>',sprintf('<strong>%s</strong>',esc_html__('Zoho Flow'))
+										/* translators: 1: Review link text, 2: Zoho Flow. */
+										esc_html__('Your feedback matters. Please leave a %1$s to help us improve. Thank you for being a part of the %2$s community.','zoho-flow'), '<a href="https://wordpress.org/support/plugin/zoho-flow/reviews?rate=5#new-post" target="_blank" class="zoho-flow-rating-link" >review</a>',sprintf('<strong>%s</strong>',esc_html__('Zoho Flow','zoho-flow'))
 									);
 									?>
 								</div>
 								<div style="text-align:center;">
-									<a id="notice-review-botton" class="button button-primary" style="margin:5px;" href="https://wordpress.org/support/plugin/zoho-flow/reviews?rate=5#new-post" target="_blank"><?php echo 'Review' ?></a>
-									<a id="notice-later-botton" class="button button-secondary" style="margin:5px;"><?php echo 'Maybe later' ?></a>
-									<a id="notice-donot-botton" class="button button-secondary" style="margin:5px;"><?php echo 'Do not show again' ?></a>
+									<a id="notice-review-botton" class="button button-primary" style="margin:5px;" href="https://wordpress.org/support/plugin/zoho-flow/reviews?rate=5#new-post" target="_blank"><?php echo esc_html__('Review', 'zoho-flow') ?></a>
+									<a id="notice-later-botton" class="button button-secondary" style="margin:5px;"><?php echo esc_html__('Maybe later', 'zoho-flow') ?></a>
+									<a id="notice-donot-botton" class="button button-secondary" style="margin:5px;"><?php echo esc_html__('Do not show again', 'zoho-flow') ?></a>
 								</div>
 							</div>
 						</div>
@@ -257,15 +293,32 @@ add_action('zoho-flow-review-notice', 'zoho_flow_review_banner');
 add_action( 'admin_notices', 'zoho_flow_review_banner' );
 
 function zoho_flow_change_next_review_date(){
-	if(!empty($_POST['days_to_increase']) && (is_numeric($_POST['days_to_increase']))){
-		$option_slug = "zoho_flow_next_review_date_".get_current_user_id();
-		update_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string( sanitize_key($_POST['days_to_increase'])." days")), '', 'yes' );
+	if ( ! current_user_can( 'administrator' ) ) {
+		wp_die( -1 );
 	}
+	if ( isset( $_POST['days_to_increase'], $_POST['review_notice_nonce'] ) ) {
+		$days_to_increase  = sanitize_text_field( wp_unslash( $_POST['days_to_increase'] ) );
+		$review_notice_nonce = sanitize_key( wp_unslash( $_POST['review_notice_nonce'] ) );
+
+		if ( empty( $days_to_increase ) || ! is_numeric( $days_to_increase ) || ! wp_verify_nonce( $review_notice_nonce, 'zoho_flow_change_next_review_date' ) ) {
+			wp_die();
+		}
+		$option_slug = "zoho_flow_next_review_date_".get_current_user_id();
+		update_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string( sanitize_key($days_to_increase)." days")), '', 'yes' );
+	}
+	wp_die();
 }
 add_action( 'wp_ajax_zoho_flow_change_next_review_date', 'zoho_flow_change_next_review_date' );
 
 function zoho_flow_integration_suggestion_banner(){
-	wp_enqueue_script('zoho-flow-suggestion-notice', plugins_url('../assets/js/zoho-flow-suggestion-notice.js', __FILE__), array('jquery'),null, false);
+	wp_enqueue_script('zoho-flow-suggestion-notice', plugins_url('../assets/js/zoho-flow-suggestion-notice.js', __FILE__), array('jquery'), filemtime( WP_ZOHO_FLOW_PLUGIN_DIR . '/assets/js/zoho-flow-suggestion-notice.js' ), false);
+	wp_localize_script(
+		'zoho-flow-suggestion-notice',
+		'zohoFlowSuggestionNotice',
+		array(
+			'nonce' => wp_create_nonce( 'zoho_flow_change_next_suggestion_date' ),
+		)
+	);
 	if ( current_user_can('administrator') ) {
 		if( ! class_exists( 'Zoho_Flow_Service_Suggestion' ) ) {
 				require_once( WP_ZOHO_FLOW_PLUGIN_DIR . '/includes/zoho-flow-service-suggestion.php' );
@@ -284,19 +337,33 @@ add_action('zoho-flow-suggestion-notice', 'zoho_flow_suggestion_banner');
 add_action( 'admin_notices', 'zoho_flow_integration_suggestion_banner' );
 
 function zoho_flow_change_next_suggestion_date(){
-	if(!empty($_POST['days_to_increase']) && (is_numeric($_POST['days_to_increase'])) && (!empty($_POST['flow_service_id']))){
-		$option_slug = "zoho_flow_next_suggestion_date_".sanitize_key($_POST['flow_service_id'])."_".get_current_user_id();
-		if(empty(get_option($option_slug))){
-			add_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string(sanitize_key($_POST['days_to_increase'])." days")), '', 'yes' );
-		}
-		update_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string(sanitize_key($_POST['days_to_increase'])." days")), '', 'yes' );
+	if ( ! current_user_can( 'administrator' ) ) {
+		wp_die( -1 );
 	}
+	if ( isset( $_POST['days_to_increase'], $_POST['flow_service_id'], $_POST['suggestion_notice_nonce'] ) ) {
+		$suggestion_notice_nonce = sanitize_key( wp_unslash( $_POST['suggestion_notice_nonce'] ) );
+		$flow_service_id  = sanitize_key( wp_unslash( $_POST['flow_service_id'] ) );
+		$days_to_increase = sanitize_key( wp_unslash( $_POST['days_to_increase'] ) );
+
+		if ( empty( $flow_service_id ) || empty( $days_to_increase ) || ! is_numeric( $days_to_increase ) || ! wp_verify_nonce( $suggestion_notice_nonce, 'zoho_flow_change_next_suggestion_date' ) ) {
+			wp_die();
+		}
+
+		$option_slug = "zoho_flow_next_suggestion_date_".$flow_service_id."_".get_current_user_id();
+		if(empty(get_option($option_slug))){
+			add_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string($days_to_increase." days")), '', 'yes' );
+		}
+		update_option( $option_slug, date_add(date_create(),date_interval_create_from_date_string($days_to_increase." days")), '', 'yes' );
+	}
+	wp_die();
 }
 add_action( 'wp_ajax_zoho_flow_change_next_suggestion_date', 'zoho_flow_change_next_suggestion_date' );
 
 add_action('admin_notices',function() {
 			global $pagenow;
-			if((($pagenow=='admin.php')) && (($_REQUEST['page']=='zoho_flow') || ($_REQUEST['page']=='zoho_flow_system_info'))){
+			$current_screen = get_current_screen();
+			$is_zoho_flow_screen = isset( $current_screen->id ) && in_array( $current_screen->id, array( 'toplevel_page_zoho_flow', 'zoho-flow_page_zoho_flow_system_info' ), true );
+			if((($pagenow=='admin.php')) && $is_zoho_flow_screen){
 				remove_all_actions( 'admin_notices' );
 			}
 	},
@@ -304,14 +371,15 @@ add_action('admin_notices',function() {
 
 function zoho_flow_show_admin_page(){
 	zoho_flow_enqueue_scripts();
-	$zoho_gif = esc_attr(esc_url(plugins_url('../assets/images/Flow-logo-animation.gif', __FILE__)));
+	$zoho_gif = plugins_url('../assets/images/Flow-logo-animation.gif', __FILE__);
 ?>
-<div id="loader" style="position:fixed; width:100%; height:100%; z-index:9999; background: url('<?php echo $zoho_gif ?>') 45% 45% no-repeat white;background-size: 64px 64px, cover;"></div>
+<div id="loader" style="position:fixed; width:100%; height:100%; z-index:9999; background: url('<?php echo esc_url( $zoho_gif ); ?>') 45% 45% no-repeat white;background-size: 64px 64px, cover;"></div>
 <div class="wrap">
 
 <?php
-	if ( ! empty( $_REQUEST['service'] ) ) {
-		$service_param = sanitize_key($_REQUEST['service']);
+	$service_request = filter_input( INPUT_GET, 'service', FILTER_SANITIZE_FULL_SPECIAL_CHARS );
+	if ( ! empty( $service_request ) ) {
+		$service_param = sanitize_key( $service_request );
 		$zoho_flow_services = Zoho_Flow_Services::get_instance();
 		$service = $zoho_flow_services->get_service($service_param);
 		if(is_null($service)){
@@ -320,7 +388,6 @@ function zoho_flow_show_admin_page(){
 		else{
 			zoho_flow_show_service_details($service);
 		}
-		return;
 	}
 	else{
 		zoho_flow_show_service_grid();
@@ -335,18 +402,18 @@ function zoho_flow_show_service_grid(){
 	?>
 		<div class="zoho-flow-header">
 			<h1 class="wp-heading-inline">
-				<img class="zflow-logo" src="<?php echo plugins_url('../assets/images/flow-256.png', __FILE__); ?>"/>
+				<img class="zflow-logo" src="<?php echo esc_url( plugins_url('../assets/images/flow-256.png', __FILE__) ); ?>"/>
 				<?php echo esc_html__('Zoho Flow', 'zoho-flow') ?>
 			</h1>
 			<h3><?php echo esc_html__('Integrate your WordPress plugins with other business applications', 'zoho-flow') ?></h3>
 		</div>
 	<?php
-		echo zoho_flow_review_banner();
+		zoho_flow_review_banner();
 		if ( !get_option('permalink_structure')){
 	?>
 	<div id="permalink-warning-notice" class="notice inline notice-warning">
-		<h2><?php echo esc_html__( 'Permalink is not enabled' ) ?></h2>
-			<p><?php echo esc_html__( 'It appears that permalink has not been enabled for this site. For this plugin to work properly, you need to enable permalinks. ', 'zoho-flow' )?><a href="<?php echo admin_url('options-permalink.php'); ?>">Enable</a></p>
+		<h2><?php echo esc_html__( 'Permalink is not enabled','zoho-flow' ) ?></h2>
+			<p><?php echo esc_html__( 'It appears that permalink has not been enabled for this site. For this plugin to work properly, you need to enable permalinks. ', 'zoho-flow' )?><a href="<?php echo esc_url( admin_url('options-permalink.php') ); ?>">Enable</a></p>
 	</div>
 	<?php
 		}
@@ -354,9 +421,9 @@ function zoho_flow_show_service_grid(){
 		if(is_wp_error($resp)){
 	?>
 	<div id="url-call-fail-notice" class="notice inline notice-warning">
-		<h2><?php echo esc_html__( 'External url call failed' ) ?></h2>
+		<h2><?php echo esc_html__( 'External url call failed', 'zoho-flow' ) ?></h2>
 		<p><?php echo esc_html__( 'This plugin needs to call external url for its functionality. However, it did not work due to the below error.', 'zoho-flow' ) ?></p>
-			<p style="font-weight:bold;"><?php printf(esc_html( '%s' ), $resp->get_error_message())?></p>
+			<p style="font-weight:bold;"><?php echo esc_html( $resp->get_error_message() ); ?></p>
 	</div>
 	<?php
 		}
@@ -365,12 +432,12 @@ function zoho_flow_show_service_grid(){
 				$version = 'TLSv1.3';
 	?>
 	<div id="tls-connection-fail-notice" class="notice inline notice-warning">
-		<h2><?php echo esc_html__( 'TLS connection failed' ) ?></h2>
+		<h2><?php echo esc_html__( 'TLS connection failed', 'zoho-flow' ) ?></h2>
 
 			<p>
 				<?php
 					// translators: %s refers to the minimum TLS version
-					printf(esc_html__( 'This plugins requires at least %s to work properly. Kindly upgrade the TLS version of your wordpress setup.', 'zoho-flow' ), $version)
+					printf(esc_html__( 'This plugins requires at least %s to work properly. Kindly upgrade the TLS version of your wordpress setup.', 'zoho-flow' ), esc_html( $version ))
 				?>
 			</p>
 	</div>
@@ -400,8 +467,8 @@ function zoho_flow_show_service_grid(){
 		</div>
 		<div class="plugin-gallery-right-side" style="max-width:25%">
 			<div class="why-flow-section">
-				<h2><img class="zflow-logo" src="<?php echo plugins_url('../assets/images/flow-256.png', __FILE__); ?>"><?php echo esc_html__('About Zoho Flow', 'zoho-flow') ?></h2>
-				<p><?php echo esc_html__('Zoho Flow is an integration platform that lets you connect different applications without writing code. It also lets you integrate popular WordPress plugins. Zoho Flow offers a dynamic drag-and-drop builder that can help you build integrations and automated workflows within minutes.') ?></p>
+				<h2><img class="zflow-logo" src="<?php echo esc_url( plugins_url('../assets/images/flow-256.png', __FILE__) ); ?>"><?php echo esc_html__('About Zoho Flow', 'zoho-flow') ?></h2>
+				<p><?php echo esc_html__('Zoho Flow is an integration platform that lets you connect different applications without writing code. It also lets you integrate popular WordPress plugins. Zoho Flow offers a dynamic drag-and-drop builder that can help you build integrations and automated workflows within minutes.','zoho-flow') ?></p>
 				<p class="zflow-cta">
 					<a target="_blank" href="//www.zoho.com/flow/features.html?utm_source=wordpress&utm_medium=link&utm_campaign=zoho-flow-plugin"><?php echo esc_html__('Features', 'zoho-flow') ?></a> |
 					<a target="_blank" href="//www.zoho.com/flow/help/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho-flow-plugin"><?php echo esc_html__('Help', 'zoho-flow') ?></a> |
@@ -409,17 +476,17 @@ function zoho_flow_show_service_grid(){
 				</p>
 			</div>
 			<div class="flow-gallery-section">
-				<h2><?php echo esc_html__('Gallery') ?></h2>
-				<p><?php echo esc_html__('Check out Zoho Flow\'s gallery page to integrate your favorite applications and build automated workflows.') ?></p>
+				<h2><?php echo esc_html__('Gallery', 'zoho-flow') ?></h2>
+				<p><?php echo esc_html__('Check out Zoho Flow\'s gallery page to integrate your favorite applications and build automated workflows.', 'zoho-flow') ?></p>
 				<p>
 					<a target="_blank" href="//www.zohoflow.com/apps/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho-flow-plugin"><?php echo esc_html__('Access Gallery', 'zoho-flow') ?></a>
 				</p>
 			</div>
 			<div class="flow-video-section">
-				<h2><?php echo esc_html__('Watch Zoho Flow in action') ?></h2>
+				<h2><?php echo esc_html__('Watch Zoho Flow in action', 'zoho-flow') ?></h2>
 				<div class="zvideo-thumb-wrap zcpopup-controller">
 					<a id="open-video-popup"  href="https://www.youtube.com/embed/68JFXlpm6iI?autoplay=1&TB_iframe=true" class="thickbox" title="Getting started with Zoho Flow">
-					<img src="<?php echo plugins_url('../assets/images/flow-video-thumb.png', __FILE__); ?>">
+					<img src="<?php echo esc_url( plugins_url('../assets/images/flow-video-thumb.png', __FILE__) ); ?>">
 					<span class="zarrow"></span>
 					</a>
 				</div>
@@ -429,7 +496,7 @@ function zoho_flow_show_service_grid(){
 				<h2><?php echo esc_html__('Can\'t find an app or plugin? ', 'zoho-flow') ?></h2>
 				<p><?php echo esc_html__('If you aren\'t able to find the app or plugin that you need in our gallery, let us know and we\'ll try our best to add them!', 'zoho-flow') ?></p>
 				<p>
-					<a href="https://creatorapp.zohopublic.com/zohointranet/zoho-flow/form-embed/Request_an_App/qqePxZq7ZkzdWKGCYvntEk14O9YqjUGHJUZJHYsMA5zOK6XEC8b6Gh7mrdz2TnYu4AUVBRwu1YzKVU8KAwbn2OurBsJ66FqkT8Rm?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=320&height=440" class="thickbox" title="Integration request"><?php echo esc_html__('Request app/plugin', 'zoho-flow') ?></a>
+					<a href="https://creatorapp.zohopublic.in/zohointranet/zoho-flow/form-embed/Request_an_App/qqePxZq7ZkzdWKGCYvntEk14O9YqjUGHJUZJHYsMA5zOK6XEC8b6Gh7mrdz2TnYu4AUVBRwu1YzKVU8KAwbn2OurBsJ66FqkT8Rm?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=320&height=440" class="thickbox" title="Integration request"><?php echo esc_html__('Request app/plugin', 'zoho-flow') ?></a>
 				</p>
 			</div>
 			<div class="zflow-feedback">
@@ -438,38 +505,45 @@ function zoho_flow_show_service_grid(){
 				<p><?php echo esc_html__('We’d love to hear your thoughts on Zoho Flow so far. Share your feedback or leave a review.', 'zoho-flow') ?></p>
 				<p>
 					<p class="zflow-cta">
-						<a href="https://creatorapp.zohopublic.com/zohointranet/zoho-flow/form-embed/Wordpress_showcase_page_feedback_form/dfxN3WHea2J0EyvNYkC6QyuUSMQWVhww2wYVXky75rRSNp9a3pPq0P5b6v2y3ZjUCgMZMDYRwM6Z6hhu8tFfWnJkmdrPZYk6TCOe?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=320&height=280" class="thickbox" title="Share your feedback"><?php echo esc_html__('Give us feedback', 'zoho-flow') ?></a> | 
+						<a href="https://creatorapp.zohopublic.in/zohointranet/zoho-flow/form-embed/Wordpress_showcase_page_feedback_form/dfxN3WHea2J0EyvNYkC6QyuUSMQWVhww2wYVXky75rRSNp9a3pPq0P5b6v2y3ZjUCgMZMDYRwM6Z6hhu8tFfWnJkmdrPZYk6TCOe?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=320&height=280" class="thickbox" title="Share your feedback"><?php echo esc_html__('Give us feedback', 'zoho-flow') ?></a> | 
 						<a target="_blank" href="https://wordpress.org/support/plugin/zoho-flow/reviews?rate=5#new-post"><?php echo esc_html__('Write a review', 'zoho-flow') ?></a>
 					</p>
 				</p>
 			</div>
 			<div class="flow-webinar-section">
-				<h2><?php echo esc_html__('Register for live webinar') ?></h2>
+				<h2><?php echo esc_html__('Register for live webinar', 'zoho-flow') ?></h2>
 				<div class="zwebinar-registration-wrap">
 					<a href="https://www.zoho.com/flow/webinars.html?utm_source=wordpress&utm_medium=link&utm_campaign=zoho-flow-plugin" target="_blank">
-						 <img src="<?php echo plugins_url('../assets/images/zoho-flow-webinar.png', __FILE__); ?>">
+						 <img src="<?php echo esc_url( plugins_url('../assets/images/zoho-flow-webinar.png', __FILE__) ); ?>">
 					</a>
 				</div>
 			</div>
 			<div class="flow-social-media-section">
-				<p style="margin:0px !important;height: 20px !important;"><?php echo esc_html__('Follow us on') ?></p>
+				<p style="margin:0px !important;height: 20px !important;"><?php echo esc_html__('Follow us on', 'zoho-flow') ?></p>
 				<div class="social-media-icons">
 					<a href="https://www.linkedin.com/company/zoho-flow" style="text-decoration:none !important; outline: 0 !important;" target="_blank">
-						<img src="<?php echo plugins_url('../assets/images/logos/linkedin.png', __FILE__); ?>" style="height: 20px;">
+						<img src="<?php echo esc_url( plugins_url('../assets/images/logos/linkedin.png', __FILE__) ); ?>" style="height: 20px;">
 					</a>
 					<a href="https://twitter.com/ZohoFlow" style="text-decoration:none !important; outline: 0 !important;" target="_blank">
-						<img src="<?php echo plugins_url('../assets/images/logos/twitter.png', __FILE__); ?>" style="height: 20px;">
+						<img src="<?php echo esc_url( plugins_url('../assets/images/logos/twitter.png', __FILE__) ); ?>" style="height: 20px;">
 					</a>
 					<a href="https://www.facebook.com/ZohoFlow/" style="text-decoration:none !important; outline: 0 !important;" target="_blank">
-						<img src="<?php echo plugins_url('../assets/images/logos/facebook.png', __FILE__); ?>" style="height: 20px;">
+						<img src="<?php echo esc_url( plugins_url('../assets/images/logos/facebook.png', __FILE__) ); ?>" style="height: 20px;">
 					</a>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div style="padding-top: 4px;">
-	   	<script type="text/javascript" src="https://flow.zoho.com/embed/flow-widget.js?services=zoho_flow&limit=3"></script>
-	</div>
+	<?php
+		$flow_widget_url = add_query_arg(
+			array(
+				'services' => 'zoho_flow',
+				'limit'    => '3',
+			),
+			'https://flow.zoho.com/embed/flow-widget.js'
+		);
+		wp_print_script_tag( array( 'src' => $flow_widget_url ) );
+	?>
 	<?php
 
 }
@@ -477,17 +551,17 @@ function zoho_flow_show_service_grid(){
 function zoho_flow_show_unavailable_service(){
 ?>
 	<div class="unavailable-zoho-flow-service">
-		<img src="<?php echo plugins_url('../assets/images/no-result-found.svg', __FILE__); ?>"/>
+		<img src="<?php echo esc_url( plugins_url('../assets/images/no-result-found.svg', __FILE__) ); ?>"/>
 		<h2><?php echo esc_html__( 'The plugin was not found!', 'zoho-flow' )?></h2>
 	</div>
 <?php
 }
 
-function service_not_available_popup($service_name, $service_description){
+function zoho_flow_service_not_available_popup($service_name, $service_description){
 	?>
 	<div id="service_details_popup" style="display:none;">
-		<h1><?php echo $service_name ?></h1>
-		<p><?php echo $service_description ?></p>
+		<h1><?php echo esc_html( $service_name ); ?></h1>
+		<p><?php echo esc_html( $service_description ); ?></p>
 	</div>
 <?php
 }
@@ -502,13 +576,13 @@ function zoho_flow_api_key_html($current_service){
 		<?php wp_nonce_field( 'generate_api_key', 'api_key_generation_nonce' );?>
 		<input type="hidden" name="action" value="zoho_flow_generate_api_key">
 		<input type="hidden" name="service_id" value="<?php echo esc_attr($service_id) ?>">
-		<label style="font-size: 13px;" for="description"><?php echo esc_html__('Provide a label for this API key') ?></label>
+		<label style="font-size: 13px;" for="description"><?php echo esc_html__('Provide a label for this API key', 'zoho-flow') ?></label>
 		<input id="api-key-description" type="text" maxlength="100" name="description" style="display: block;
 		    margin: 10px 0;
 		    height: 40px;
 		    width: 95%;"/>
 		<span>
-			<input type="button" id="generate-api-key" class="button button-primary" value="<?php echo $button_label ?>"></button>
+			<input type="button" id="generate-api-key" class="button button-primary" value="<?php echo esc_attr( $button_label ); ?>"></button>
 			<span style="display:none;"><?php echo esc_html__('Generating API key...', 'zoho-flow') ?></span>
 		</span>
 	</form>
@@ -525,7 +599,7 @@ function zoho_flow_api_key_html($current_service){
 			<a id="copy-site-url" style="padding: 6px 0px;" class="dashicons dashicons-admin-page"></a>
 		</div>
 		<p id="api-key-ok-button">
-			<button id="ok-api-key-popup" class="button button-primary"><?php echo $ok_button_label ?></button>
+			<button id="ok-api-key-popup" class="button button-primary"><?php echo esc_html( $ok_button_label ); ?></button>
 			<span id='copy-sucess'>Copied!</span>
 		</p>
 	</div>
@@ -544,26 +618,26 @@ function zoho_flow_show_service_details($service){
 	$service_name
 ?>
 	<span>
-		<a style="text-decoration:none;box-shadow: none;" href="<?php echo menu_page_url( 'zoho_flow', false ); ?>">&larr; <?php echo esc_html__( 'Back', 'zoho-flow' )?></a>
+		<a style="text-decoration:none;box-shadow: none;" href="<?php echo esc_url( menu_page_url( 'zoho_flow', false ) ); ?>">&larr; <?php echo esc_html__( 'Back', 'zoho-flow' )?></a>
 	</span>
 	<div class="service-details-header-wrapper">
 		<div style="display:grid;">
 			<div class="service-details-logo-wrapper">
 				<div style="display:inline-flex;">
-					<img class="service-details-logo" src="<?php echo plugins_url('../assets/images/flow-256.png', __FILE__); ?>"/>
+					<img class="service-details-logo" src="<?php echo esc_url( plugins_url('../assets/images/flow-256.png', __FILE__) ); ?>"/>
 					<div class="service-details-logo-arrow" >&#8644;</div>
-					<img class="service-details-logo" src="<?php echo plugins_url('../assets/images/logos/' . $service['icon_file'], __FILE__); ?>"/>
+					<img class="service-details-logo" src="<?php echo esc_url( plugins_url('../assets/images/logos/' . $service['icon_file'], __FILE__) ); ?>"/>
 				</div>
 			</div>
 			<div class="service-details-title">
 				<?php
-					echo $service['name']." Integration";
+					echo esc_html( $service['name'] . ' Integration' );
 				?>
 			</div>
 			<div>
 				<div class="service-details-description">
 					<?php
-						echo $service['description'];
+						echo esc_html( $service['description'] );
 					?>
 				</div>
 			</div>
@@ -579,7 +653,7 @@ function zoho_flow_show_service_details($service){
 					<p>
 						<?php
 							// translators: %s refers to the plugin name
-							printf(esc_html__( 'You can use any of the active API keys to connect %s to Zoho Flow. Generate one if you don\'t have any.', 'zoho-flow' ), $service_name)
+							printf(esc_html__( 'You can use any of the active API keys to connect %s to Zoho Flow. Generate one if you don\'t have any.', 'zoho-flow' ), esc_html( $service_name ))
 						?>
 					</p>
 
@@ -604,11 +678,11 @@ function zoho_flow_show_service_details($service){
 			<h3 style="width:100%;">
 				<?php
 					// translators: %s refers to the plugin name
-					printf(esc_html__('How to integrate %s with other apps via Zoho Flow?', 'zoho-flow') , $service_name)
+					printf(esc_html__('How to integrate %s with other apps via Zoho Flow?', 'zoho-flow') , esc_html( $service_name ))
 				?>
 			</h3>
 			<h4><?php echo esc_html__('Step 1', 'zoho-flow') ?></h4>
-			<p><a href="https://www.zoho.com/flow/signup.html?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_<?php echo $gallery_app_link ?>" target="_blank"><?php echo esc_html__('Register', 'zoho-flow') ?></a><?php echo esc_html__(' for a Zoho Flow account or log in if you already have one.', 'zoho-flow') ?></p>
+			<p><a href="<?php echo esc_url( 'https://www.zoho.com/flow/signup.html?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_' . $gallery_app_link ); ?>" target="_blank"><?php echo esc_html__('Register', 'zoho-flow') ?></a><?php echo esc_html__(' for a Zoho Flow account or log in if you already have one.', 'zoho-flow') ?></p>
 			<h4><?php echo esc_html__('Step 2', 'zoho-flow') ?></h4>
 			<p><a id= "open-api-key-generation-popup-from-right-panel" href="#TB_inline?width=600&height=150&inlineId=api_key_details" class="thickbox" title="<?php echo esc_attr($service_name) ?> - <?php echo esc_attr__('Generate new API key', 'zoho-flow') ?>"><?php echo esc_html__('Generate', 'zoho-flow') ?></a><?php echo esc_html__(' an API Key for the plugin. Keep it safe as it can\'t be retrieved again.', 'zoho-flow') ?></p>
 			<h4><?php echo esc_html__('Step 3', 'zoho-flow') ?></h4>
@@ -619,38 +693,47 @@ function zoho_flow_show_service_details($service){
 			<p><?php echo esc_html__('Configure the trigger and actions of your workflow. Once set up, switch the flow on.', 'zoho-flow') ?></p>
 			<p>
 				<strong>
-						<?php echo esc_html__('Note:') ?>
+						<?php echo esc_html__('Note:', 'zoho-flow') ?>
 				</strong>
 				<?php
-					echo __(' If there\'s a specific trigger, action, or app/plugin you\'d like to connect that isn\'t currently available, or if you have feedback about the existing integrations, please contact Zoho Flow support. We\'re always looking to enhance our platform based on user feedback.', 'zoho-flow' )
+					echo esc_html__(' If there\'s a specific trigger, action, or app/plugin you\'d like to connect that isn\'t currently available, or if you have feedback about the existing integrations, please contact Zoho Flow support. We\'re always looking to enhance our platform based on user feedback.', 'zoho-flow' )
 				?>
 			</p>
-			<h3 style="width:100%;"><?php printf(esc_html__('More information')) ?></h3>
+			<h3 style="width:100%;"><?php printf(esc_html__('More information', 'zoho-flow')) ?></h3>
 			<p>
-			<a target="_blank" href="https://www.zohoflow.com/apps/<?php echo $gallery_app_link ?>/integrations/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_<?php echo $gallery_app_link ?>">
+			<a target="_blank" href="<?php echo esc_url( 'https://www.zohoflow.com/apps/' . $gallery_app_link . '/integrations/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_' . $gallery_app_link ); ?>">
 				<?php
-					// translators; %s refers to the plugin name
-					printf(esc_html__('%s integrations', 'zoho-flow') , $service_name)
+					// translators: %s refers to the plugin name
+					printf(esc_html__('%s integrations', 'zoho-flow') , esc_html( $service_name ))
 				?>
 			</a></p>
 			<p>
-			<a target="_blank" href="https://help.zoho.com/portal/en/kb/flow/user-guide/app-specific-documentation/articles/<?php echo $app_documentation_link ?>/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_<?php echo $gallery_app_link ?>">
+			<a target="_blank" href="<?php echo esc_url( 'https://help.zoho.com/portal/en/kb/flow/user-guide/app-specific-documentation/articles/' . $app_documentation_link . '/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_' . $gallery_app_link ); ?>">
 				<?php
 				if(!empty($app_documentation_link)){
-					// translators; %s refers to the plugin name
-					printf(esc_html__('%s app documentation', 'zoho-flow') , $service_name) ;
+					// translators: %s refers to the plugin name
+					printf(esc_html__('%s app documentation', 'zoho-flow') , esc_html( $service_name )) ;
 				}
 				?>
 			</a></p>
-			<p><a target="_blank" href="https://www.zoho.com/flow/help/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_<?php echo $gallery_app_link ?>">Help resources</a>
-			<h3 style="width:100%;"><?php printf(esc_html__('Support')) ?></h3>
+			<p><a target="_blank" href="<?php echo esc_url( 'https://www.zoho.com/flow/help/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_' . $gallery_app_link ); ?>">Help resources</a>
+			<h3 style="width:100%;"><?php printf(esc_html__('Support','zoho-flow')) ?></h3>
 			<p><a href="mailto:support@zohoflow.com">support@zohoflow.com</a></p>
 			<p><a href="mailto:support@zohoflow.eu">support@zohoflow.eu</a> (for EU Customers)</p>
 		</div>
 	</div>
-	<div style="padding-top: 4px;">
-       	<script type="text/javascript" src="https://flow.zoho.com/embed/flow-widget.js?services=<?php echo esc_attr($embed_link) ?>&limit=3"></script>
-    </div>
+	<div class="service-embed-wrapper">
+	<?php
+		$flow_widget_url = add_query_arg(
+			array(
+				'services' => $embed_link,
+				'limit'    => '3',
+			),
+			'https://flow.zoho.com/embed/flow-widget.js'
+		);
+		wp_print_script_tag( array( 'src' => $flow_widget_url ) );
+	?>
+	</div>
 <?php
 
 
@@ -658,23 +741,23 @@ function zoho_flow_show_service_details($service){
 
 function zoho_flow_show_system_info_page(){
 	zoho_flow_enqueue_scripts();
-	wp_enqueue_script('zoho-flow-system-info', plugins_url('../assets/js/zoho-flow-system-info.js', __FILE__), array('jquery'),null, false);
-	$zoho_gif = esc_attr(esc_url(plugins_url('../assets/images/Flow-logo-animation.gif', __FILE__)));
+	wp_enqueue_script('zoho-flow-system-info', plugins_url('../assets/js/zoho-flow-system-info.js', __FILE__), array('jquery'), filemtime( WP_ZOHO_FLOW_PLUGIN_DIR . '/assets/js/zoho-flow-system-info.js' ), false);
+	$zoho_gif = plugins_url('../assets/images/Flow-logo-animation.gif', __FILE__);
 ?>
-<div id="loader" style="position:fixed; width:100%; height:100%; z-index:9999; background: url('<?php echo $zoho_gif ?>') 45% 45% no-repeat white;background-size: 64px 64px, cover;"></div>
+<div id="loader" style="position:fixed; width:100%; height:100%; z-index:9999; background: url('<?php echo esc_url( $zoho_gif ); ?>') 45% 45% no-repeat white;background-size: 64px 64px, cover;"></div>
 <div class="wrap">
 
 <?php
 	?>
 		<div class="zoho-flow-header">
 			<h1 class="wp-heading-inline">
-				<img class="zflow-logo" src="<?php echo plugins_url('../assets/images/flow-256.png', __FILE__); ?>"/>
+				<img class="zflow-logo" src="<?php echo esc_url( plugins_url('../assets/images/flow-256.png', __FILE__) ); ?>"/>
 				<?php echo esc_html__('Zoho Flow', 'zoho-flow') ?>
 			</h1>
 			<!--<h3><?php echo esc_html__('Integrate your WordPress plugins with other business applications', 'zoho-flow') ?></h3>-->
 		</div>
 	<?php
-		echo zoho_flow_review_banner();
+		zoho_flow_review_banner();
 	?>
 		<div class="system-info-wrapper">
 			<h2><?php echo esc_html__('Settings', 'zoho-flow') ?></h2>

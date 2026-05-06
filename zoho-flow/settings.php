@@ -26,16 +26,10 @@ function zoho_flow_load(){
 		foreach ($zoho_flow_services_config as $service) {
 			$zoho_flow_services->add_service($service);
 		}
-		do_action('wp_zoho_flow_init');
+        do_action('zoho_flow_init_services');
 	}
 }
 add_action( 'plugins_loaded', 'zoho_flow_load', 10, 0 );
-
-function zoho_flow_init(){
-    load_plugin_textdomain( 'zoho-flow', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
-}
-
-add_action( 'init', 'zoho_flow_init', 10, 0 );
 
 function zoho_flow_activation(){
 
@@ -79,42 +73,36 @@ register_activation_hook( __FILE__, 'zoho_flow_activation' );
 
 function zoho_flow_uninstall(){
 	if(post_type_exists(WP_ZOHO_FLOW_WEBHOOK_POST_TYPE)){
-	    global $wpdb;
-	    $result = $wpdb->query(
-	        $wpdb->prepare("
-	            DELETE posts,pt,pm
-	            FROM wp_posts posts
-	            LEFT JOIN wp_term_relationships pt ON pt.object_id = posts.ID
-	            LEFT JOIN wp_postmeta pm ON pm.post_id = posts.ID
-	            WHERE posts.post_type = %s
-	            ",
-	            WP_ZOHO_FLOW_WEBHOOK_POST_TYPE
-	        )
-	    );
+        $webhook_post_ids = get_posts( array(
+            'post_type'      => WP_ZOHO_FLOW_WEBHOOK_POST_TYPE,
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+            'no_found_rows'  => true,
+        ) );
+        foreach ( $webhook_post_ids as $post_id ) {
+            wp_delete_post( $post_id, true );
+        }
 	    unregister_post_type(WP_ZOHO_FLOW_WEBHOOK_POST_TYPE);
 
 	}
 	if(post_type_exists(WP_ZOHO_FLOW_API_KEY_POST_TYPE)){
-	    global $wpdb;
-	    $result = $wpdb->query(
-	        $wpdb->prepare("
-	            DELETE posts,pt,pm
-	            FROM wp_posts posts
-	            LEFT JOIN wp_term_relationships pt ON pt.object_id = posts.ID
-	            LEFT JOIN wp_postmeta pm ON pm.post_id = posts.ID
-	            WHERE posts.post_type = %s
-	            ",
-	            WP_ZOHO_FLOW_API_KEY_POST_TYPE
-	        )
-	    );
+        $api_key_post_ids = get_posts( array(
+            'post_type'      => WP_ZOHO_FLOW_API_KEY_POST_TYPE,
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+            'no_found_rows'  => true,
+        ) );
+        foreach ( $api_key_post_ids as $post_id ) {
+            wp_delete_post( $post_id, true );
+        }
 	    unregister_post_type( WP_ZOHO_FLOW_API_KEY_POST_TYPE );
 	}
 
 }
 register_uninstall_hook(__FILE__, 'zoho_flow_uninstall');
 
-add_action('admin_enqueue_scripts', 'my_plugin_enqueue_thickbox');
-function my_plugin_enqueue_thickbox() {
+add_action('admin_enqueue_scripts', 'zoho_flow_enqueue_thickbox');
+function zoho_flow_enqueue_thickbox() {
 
     wp_enqueue_script('thickbox');
     wp_enqueue_style('thickbox');
@@ -156,10 +144,10 @@ function zoho_flow_deactivate_plugin() {
     wp_send_json_success('Plugin deactivated');
 }
 
-add_filter('plugin_action_links_' . WP_ZOHO_FLOW_PLUGIN_NAME . '/zoho-flow.php', 'my_plugin_deactivation_link');
-function my_plugin_deactivation_link($links) {
+add_filter('plugin_action_links_' . WP_ZOHO_FLOW_PLUGIN_NAME . '/zoho-flow.php', 'zoho_flow_deactivation_link');
+function zoho_flow_deactivation_link($links) {
 
-    $form_url = 'https://creatorapp.zohopublic.com/zohointranet/zoho-flow/form-embed/Wordpress_showcase_page_deactivation_form/vmkOy5mh2201nr0Odr4KxVsHZgr9M0NQveBR57Kuk2wTkJ1yOSpCpWuGZRxObxaT9SXZhu7bkbAYyZMdx1D25rOzP2qqx22Mgwk1';
+    $form_url = 'https://creatorapp.zohopublic.in/zohointranet/zoho-flow/form-embed/Wordpress_showcase_page_deactivation_form/vmkOy5mh2201nr0Odr4KxVsHZgr9M0NQveBR57Kuk2wTkJ1yOSpCpWuGZRxObxaT9SXZhu7bkbAYyZMdx1D25rOzP2qqx22Mgwk1';
     
     $links['deactivate'] = '<a href="' . esc_url($form_url) . '?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=320&height=440" class="thickbox zf-deactivation-popup" title="Deactivate Zoho Flow?">Deactivate</a>';
     return $links;

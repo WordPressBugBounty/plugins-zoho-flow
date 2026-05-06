@@ -48,7 +48,7 @@ class Zoho_Flow_Divi extends Zoho_Flow_Service{
             'orderby'        => $order_by,
             //'s'              => 'et_pb_contact_form',
             'order'          => $order,
-            'meta_query'     => array(
+            'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
                 'relation' => 'AND',
                 array(
                     'key'     => '_et_dynamic_cached_shortcodes',

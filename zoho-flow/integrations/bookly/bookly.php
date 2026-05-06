@@ -32,12 +32,16 @@ class Zoho_Flow_Bookly extends Zoho_Flow_Service{
             'position'
         );
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'id';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed, true))) ? $request['order_by'] : 'id';
+        $order = ($request['order'] && (in_array($request['order'], $order_allowed, true))) ? $request['order'] : 'DESC';
+        $limit = ($request['limit']) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
         $results = $wpdb->get_results(
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- ORDER BY identifiers are allowlisted and escaped before concatenation.
             $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}bookly_services ORDER BY $order_by $order LIMIT %d",
+                "SELECT * FROM {$wpdb->prefix}bookly_services ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
                 $limit
             ), 'ARRAY_A'
             );
@@ -68,19 +72,34 @@ class Zoho_Flow_Bookly extends Zoho_Flow_Service{
             'created_at'
         );
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ( isset( $request['order_by'] ) && ( in_array($request['order_by'], $order_by_allowed ) ) ) ? $request['order_by'] : 'created_at';
-        $order = ( isset( $request['order'] ) && ( in_array( $request['order'], $order_allowed ) ) ) ? $request['order'] : 'DESC';
-        $limit = isset( $request['limit'] ) ? $request['limit'] : '200';
+        $order_by = ( isset( $request['order_by'] ) && ( in_array($request['order_by'], $order_by_allowed, true ) ) ) ? $request['order_by'] : 'created_at';
+        $order = ( isset( $request['order'] ) && ( in_array( $request['order'], $order_allowed, true ) ) ) ? $request['order'] : 'DESC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
         $created_since = $request['created_since'];
-        $query = "SELECT * FROM {$wpdb->prefix}bookly_customers";
         if (!empty($created_since)) {
-            $query .= $wpdb->prepare(" WHERE created_at > %s", $created_since);
-        }
-        $query .= $wpdb->prepare(
-            " ORDER BY $order_by $order LIMIT %d",
-            $limit
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
+            $results = $wpdb->get_results(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- ORDER BY identifiers are allowlisted and escaped before concatenation.
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}bookly_customers WHERE created_at > %s ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
+                    $created_since,
+                    $limit
+                ),
+                'ARRAY_A'
             );
-        $results = $wpdb->get_results( $query, 'ARRAY_A' );
+        } else {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
+            $results = $wpdb->get_results(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- ORDER BY identifiers are allowlisted and escaped before concatenation.
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}bookly_customers ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
+                    $limit
+                ),
+                'ARRAY_A'
+            );
+        }
         foreach ($results as $index => $row ){
             unset( $results[$index]['token'], $results[$index]['collaborative_token'], $results[$index]['compound_token'] );
             $results[$index]['full_address'] = maybe_unserialize( $results[$index]['full_address'] );
@@ -115,22 +134,45 @@ class Zoho_Flow_Bookly extends Zoho_Flow_Service{
             'updated_at'
         );
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ( isset( $request['order_by'] ) && ( in_array($request['order_by'], $order_by_allowed ) ) ) ? $request['order_by'] : 'created_at';
-        $order = ( isset( $request['order'] ) && ( in_array( $request['order'], $order_allowed ) ) ) ? $request['order'] : 'DESC';
-        $limit = isset( $request['limit'] ) ? $request['limit'] : '200';
-        $query = "SELECT * FROM {$wpdb->prefix}bookly_appointments";
+        $order_by = ( isset( $request['order_by'] ) && ( in_array($request['order_by'], $order_by_allowed, true ) ) ) ? $request['order_by'] : 'created_at';
+        $order = ( isset( $request['order'] ) && ( in_array( $request['order'], $order_allowed, true ) ) ) ? $request['order'] : 'DESC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
         if (!empty( $request['created_since'] ) ) {
-            $query .= $wpdb->prepare(" WHERE created_at > %s",  $request['created_since'] );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
+            $results = $wpdb->get_results(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- ORDER BY identifiers are allowlisted and escaped before concatenation.
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}bookly_appointments WHERE created_at > %s ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
+                    $request['created_since'],
+                    $limit
+                ),
+                'ARRAY_A'
+            );
         }
         elseif (!empty( $request['updated_since'] ) ) {
-            $query .= $wpdb->prepare(" WHERE updated_at > %s",  $request['updated_since'] );
-        }
-        $query .= $wpdb->prepare(
-            " ORDER BY $order_by $order LIMIT %d",
-            $limit
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
+            $results = $wpdb->get_results(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- ORDER BY identifiers are allowlisted and escaped before concatenation.
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}bookly_appointments WHERE updated_at > %s ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
+                    $request['updated_since'],
+                    $limit
+                ),
+                'ARRAY_A'
             );
-        
-        $results = $wpdb->get_results( $query, 'ARRAY_A');
+        } else {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
+            $results = $wpdb->get_results(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- ORDER BY identifiers are allowlisted and escaped before concatenation.
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}bookly_appointments ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
+                    $limit
+                ),
+                'ARRAY_A'
+            );
+        }
         foreach ($results as $index => $row ){
             $results[$index]['customers'] = $this->get_appointment_customers( $row['id'] );
             if( !empty( $row['staff_id'] ) ){
@@ -151,6 +193,7 @@ class Zoho_Flow_Bookly extends Zoho_Flow_Service{
      */
     private function get_appointment_customers( $appointment_id ){
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
         $results = $wpdb->get_results(
             $wpdb->prepare("
                     SELECT bca.*,
@@ -181,6 +224,7 @@ class Zoho_Flow_Bookly extends Zoho_Flow_Service{
      */
     private function get_staff( $staff_id ){
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
         $results = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT * FROM {$wpdb->prefix}bookly_staff WHERE id = %d LIMIT 1",
@@ -205,6 +249,7 @@ class Zoho_Flow_Bookly extends Zoho_Flow_Service{
      */
     private function get_service( $service_id ){
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
         $results = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT * FROM {$wpdb->prefix}bookly_services WHERE id = %d LIMIT 1",

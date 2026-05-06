@@ -47,13 +47,16 @@ class Zoho_Flow_JetEngine extends Zoho_Flow_Service{
         );
         $order_allowed = array('ASC', 'DESC');
         
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'id';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ( isset( $request['order_by'] ) && in_array( $request['order_by'], $order_by_allowed, true ) ) ? $request['order_by'] : 'id';
+        $order = ( isset( $request['order'] ) && in_array( $request['order'], $order_allowed, true ) ) ? $request['order'] : 'DESC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
         
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here and must return live content type data.
         $results = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT id, slug, status, labels, args FROM {$wpdb->prefix}jet_post_types WHERE status = %s ORDER BY $order_by $order LIMIT %d",
+                "SELECT id, slug, status, labels, args FROM {$wpdb->prefix}jet_post_types WHERE status = %s ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic ORDER BY identifiers are allowlisted and escaped.
                 'content-type',
                 $limit
             ), 'ARRAY_A'
@@ -184,6 +187,7 @@ class Zoho_Flow_JetEngine extends Zoho_Flow_Service{
         if( isset( $cct_slug ) && is_string( $cct_slug )){
             
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current content type.
             $result = $wpdb->get_row(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}jet_post_types WHERE `slug` = %s AND `status` = %s",
@@ -227,13 +231,16 @@ class Zoho_Flow_JetEngine extends Zoho_Flow_Service{
         );
         $order_allowed = array('ASC', 'DESC');
         
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'id';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ( isset( $request['order_by'] ) && in_array( $request['order_by'], $order_by_allowed, true ) ) ? $request['order_by'] : 'id';
+        $order = ( isset( $request['order'] ) && in_array( $request['order'], $order_allowed, true ) ) ? $request['order'] : 'DESC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
         
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here and must return live post type data.
         $results = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT id, slug, status, labels, args FROM {$wpdb->prefix}jet_post_types WHERE status = %s ORDER BY $order_by $order LIMIT %d",
+                "SELECT id, slug, status, labels, args FROM {$wpdb->prefix}jet_post_types WHERE status = %s ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic ORDER BY identifiers are allowlisted and escaped.
                 'publish',
                 $limit
             ), 'ARRAY_A'
@@ -274,6 +281,7 @@ class Zoho_Flow_JetEngine extends Zoho_Flow_Service{
         if( isset( $cpt_slug ) && is_string( $cpt_slug )){
             
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current post type.
             $result = $wpdb->get_row(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}jet_post_types WHERE `slug` = %s AND `status` = %s",

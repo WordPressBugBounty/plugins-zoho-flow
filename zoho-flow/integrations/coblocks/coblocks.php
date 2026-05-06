@@ -102,20 +102,20 @@ class Zoho_Flow_CoBlocks extends Zoho_Flow_Service{
                 if('coblocks/field-name' === $block['blockName'] ){
                     //static $name_count = 1;
                     $atts = $block['attrs'];
-                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Name', 'coblocks' );
+                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Name', 'zoho-flow' );
                     $return_array[] = array(
                         'label' => $label,
                         'type' => 'name',
                         'label_slug' => $name_count > 1 ? sanitize_title( $label . '-' . $name_count ) : sanitize_title( $label ),
                         'has_last_name' => ( isset( $atts['hasLastName'] ) && $atts['hasLastName'] ),
-                        'label_first_name' => isset( $atts['labelFirstName'] ) ? $atts['labelFirstName'] : __( 'First', 'coblocks' ),
-                        'label_last_name' => isset( $atts['labelLastName'] ) ? $atts['labelLastName'] : __( 'Last', 'coblocks' )
+                        'label_first_name' => isset( $atts['labelFirstName'] ) ? $atts['labelFirstName'] : __( 'First', 'zoho-flow' ),
+                        'label_last_name' => isset( $atts['labelLastName'] ) ? $atts['labelLastName'] : __( 'Last', 'zoho-flow' )
                     );
                     $name_count++;
                 }
                 elseif('coblocks/field-email' === $block['blockName'] ){
                     $atts = $block['attrs'];
-                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Email', 'coblocks' );
+                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Email', 'zoho-flow' );
                     $return_array[] = array(
                         'label' => $label,
                         'type' => 'email',
@@ -125,7 +125,7 @@ class Zoho_Flow_CoBlocks extends Zoho_Flow_Service{
                 elseif('coblocks/field-textarea' === $block['blockName'] ){
                     //static $textarea_count = 1;
                     $atts = $block['attrs'];
-                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Message', 'coblocks' );
+                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Message', 'zoho-flow' );
                     $return_array[] = array(
                         'label' => $label,
                         'type' => 'textarea',
@@ -136,7 +136,7 @@ class Zoho_Flow_CoBlocks extends Zoho_Flow_Service{
                 elseif('coblocks/field-text' === $block['blockName'] ){
                     //static $text_count = 1;
                     $atts = $block['attrs'];
-                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Text', 'coblocks' );
+                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Text', 'zoho-flow' );
                     $return_array[] = array(
                         'label' => $label,
                         'type' => 'text',
@@ -147,7 +147,7 @@ class Zoho_Flow_CoBlocks extends Zoho_Flow_Service{
                 elseif('coblocks/field-date' === $block['blockName'] ){
                     //static $date_count = 1;
                     $atts = $block['attrs'];
-                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Date', 'coblocks' );
+                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Date', 'zoho-flow' );
                     $return_array[] = array(
                         'label' => $label,
                         'type' => 'date',
@@ -158,7 +158,7 @@ class Zoho_Flow_CoBlocks extends Zoho_Flow_Service{
                 elseif('coblocks/field-phone' === $block['blockName'] ){
                     //static $phone_count = 1;
                     $atts = $block['attrs'];
-                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Phone', 'coblocks' );
+                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Phone', 'zoho-flow' );
                     $return_array[] = array(
                         'label' => $label,
                         'type' => 'phone',
@@ -169,7 +169,7 @@ class Zoho_Flow_CoBlocks extends Zoho_Flow_Service{
                 elseif('coblocks/field-radio' === $block['blockName'] ){
                     //static $radio_count = 1;
                     $atts = $block['attrs'];
-                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Choose one', 'coblocks' );
+                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Choose one', 'zoho-flow' );
                     $label_desc    = sanitize_title( $label ) !== 'choose-one' ? sanitize_title( $label ) : 'choose-one';
                     $return_array[] = array(
                         'label' => $label,
@@ -181,7 +181,7 @@ class Zoho_Flow_CoBlocks extends Zoho_Flow_Service{
                 elseif('coblocks/field-select' === $block['blockName'] ){
                     //static $select_count = 1;
                     $atts = $block['attrs'];
-                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Select', 'coblocks' );
+                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Select', 'zoho-flow' );
                     $return_array[] = array(
                         'label' => $label,
                         'type' => 'select',
@@ -192,7 +192,7 @@ class Zoho_Flow_CoBlocks extends Zoho_Flow_Service{
                 elseif('coblocks/field-checkbox' === $block['blockName'] ){
                     //static $checkbox_count = 1;
                     $atts = $block['attrs'];
-                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Checkbox', 'coblocks' );
+                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Checkbox', 'zoho-flow' );
                     $return_array[] = array(
                         'label' => $label,
                         'type' => 'checkbox',
@@ -203,7 +203,7 @@ class Zoho_Flow_CoBlocks extends Zoho_Flow_Service{
                 elseif('coblocks/field-website' === $block['blockName'] ){
                     //static $website_count = 1;
                     $atts = $block['attrs'];
-                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Website', 'coblocks' );
+                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Website', 'zoho-flow' );
                     $return_array[] = array(
                         'label' => $label,
                         'type' => 'website',
@@ -214,7 +214,7 @@ class Zoho_Flow_CoBlocks extends Zoho_Flow_Service{
                 elseif('coblocks/field-hidden' === $block['blockName'] ){
                     //static $hidden_count = 1;
                     $atts = $block['attrs'];
-                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Hidden', 'coblocks' );
+                    $label = isset( $atts['label'] ) ? $atts['label'] : __( 'Hidden', 'zoho-flow' );
                     $return_array[] = array(
                         'label' => $label,
                         'type' => 'hidden',

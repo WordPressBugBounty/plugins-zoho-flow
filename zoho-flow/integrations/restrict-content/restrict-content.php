@@ -33,10 +33,9 @@ class Zoho_Flow_Restrict_Content extends Zoho_Flow_Service{
      */
     public function list_membership_levels( $request ){
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
         $results = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}restrict_content_pro ORDER BY id DESC LIMIT 500"
-            ), 'ARRAY_A'
+            "SELECT * FROM {$wpdb->prefix}restrict_content_pro ORDER BY id DESC LIMIT 500", 'ARRAY_A'
                 );
         return rest_ensure_response( $results );
     }
@@ -52,6 +51,7 @@ class Zoho_Flow_Restrict_Content extends Zoho_Flow_Service{
             $membership = rcp_get_membership( $membership_id );
             if( $membership ){
                 global $wpdb;
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
                 $results = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT * FROM {$wpdb->prefix}rcp_memberships WHERE id = %d LIMIT 1",
@@ -85,6 +85,7 @@ class Zoho_Flow_Restrict_Content extends Zoho_Flow_Service{
             global $wpdb;
             $customer = rcp_get_customer( $customer_id );
             if( $customer ){
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
                 $results = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT * FROM {$wpdb->prefix}rcp_customers WHERE id = %d LIMIT 1",
@@ -116,6 +117,7 @@ class Zoho_Flow_Restrict_Content extends Zoho_Flow_Service{
     private function fetch_level_details( $level_id ){
         if( isset( $level_id ) && is_numeric( $level_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}restrict_content_pro WHERE id = %d LIMIT 1",

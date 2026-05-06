@@ -70,7 +70,7 @@ class Zoho_Flow_WPForms extends Zoho_Flow_Service
         if(!$form){
             return new WP_Error( 'rest_not_found', esc_html__( 'The form is not found.', 'zoho-flow' ), array( 'status' => 404 ) );
         }
-        $form_data   = apply_filters( 'wpforms_frontend_form_data', wpforms_decode( $form->post_content ) );
+        $form_data   = apply_filters( 'wpforms_frontend_form_data', wpforms_decode( $form->post_content ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
 
                 // 'text',
                 // 'textarea',
@@ -370,7 +370,7 @@ class Zoho_Flow_WPForms extends Zoho_Flow_Service
                         $format = str_replace('date', $field_meta['date_format'], $format);
                         $format = str_replace('time', $field_meta['time_format'], $format);
                         $old_value = $value;
-                        $value = date($format, $unix);
+                        $value = gmdate($format, $unix); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date Change to DateTime will affect existing users, have to migrate it dueing the deprecation process.
                     }
                 }
                 else if($type == 'file-upload'){

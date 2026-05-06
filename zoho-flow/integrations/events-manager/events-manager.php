@@ -47,19 +47,33 @@ class Zoho_Flow_Events_Manager extends Zoho_Flow_Service{
             'event_date_modified'
         );
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'event_date_modified';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
-        $query = "SELECT * FROM {$wpdb->prefix}em_events";
+        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed, true))) ? $request['order_by'] : 'event_date_modified';
+        $order = ($request['order'] && (in_array($request['order'], $order_allowed, true))) ? $request['order'] : 'DESC';
+        $limit = ($request['limit']) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
         if ( isset( $request['event_rsvp'] ) && !empty( $request['event_rsvp'] ) ) {
-            $query .= $wpdb->prepare(" WHERE event_rsvp = %d",  $request['event_rsvp'] );
-        }
-        $query .= $wpdb->prepare(
-            " ORDER BY $order_by $order LIMIT %d",
-            $limit
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
+            $results = $wpdb->get_results(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- ORDER BY identifiers are allowlisted and escaped before concatenation.
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}em_events WHERE event_rsvp = %d ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
+                    $request['event_rsvp'],
+                    $limit
+                ),
+                'ARRAY_A'
             );
-        
-        $results = $wpdb->get_results( $query, 'ARRAY_A');
+        } else {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
+            $results = $wpdb->get_results(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- ORDER BY identifiers are allowlisted and escaped before concatenation.
+                $wpdb->prepare(
+                    "SELECT * FROM {$wpdb->prefix}em_events ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
+                    $limit
+                ),
+                'ARRAY_A'
+            );
+        }
         return rest_ensure_response( $results );
     }
     
@@ -76,6 +90,7 @@ class Zoho_Flow_Events_Manager extends Zoho_Flow_Service{
     public function list_tickets( $request ){
         global $wpdb;
         $event_id = $request->get_url_params()['event_id'];
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
         $results = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT * FROM {$wpdb->prefix}em_tickets WHERE event_id = %d ORDER BY ticket_order ASC LIMIT 500",

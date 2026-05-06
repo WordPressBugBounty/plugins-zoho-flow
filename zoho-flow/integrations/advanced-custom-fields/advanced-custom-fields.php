@@ -4,8 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-global $gen_array;
-$gen_array = array('post' => array('post_type','post_template','post_status','post_format','post_category','post_taxonomy','post'), 'user' => array('current_user','current_user_role','user_form','user_role'));
+global $zoho_flow_gen_array;
+$zoho_flow_gen_array = array('post' => array('post_type','post_template','post_status','post_format','post_category','post_taxonomy','post'), 'user' => array('current_user','current_user_role','user_form','user_role'));
 
 class Zoho_Flow_Advanced_Custom_Fields extends Zoho_Flow_Service
 {
@@ -197,7 +197,11 @@ class Zoho_Flow_Advanced_Custom_Fields extends Zoho_Flow_Service
 
     public function process_save_post($id){
 
-    	$data = $_POST['acf'];
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- This callback runs after ACF request handling where nonce validation is performed by the plugin.
+        if ( ! isset( $_POST['acf'] ) || ! is_array( $_POST['acf'] ) ) {
+            return;
+        }
+        $data = map_deep( wp_unslash( $_POST['acf'] ), 'sanitize_text_field' ); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- This callback runs after ACF request handling where nonce validation is performed by the plugin.
     	$field_group_ids = $this->get_field_groupids($data);
 			if( strstr( $id, 'user') !== false ){
     	   $id = explode("_",$id)[1];
@@ -271,7 +275,7 @@ class Zoho_Flow_Advanced_Custom_Fields extends Zoho_Flow_Service
 					foreach ($locations as $location){
 							$param = $location[0]['param'];
 
-							if(in_array($param, $GLOBALS['gen_array'][$type])){
+                            if(in_array($param, $GLOBALS['zoho_flow_gen_array'][$type])){
 									$query_args = array(
 											'post_type'         =>   'acf-field',
 											'posts_per_page'    =>   -1,

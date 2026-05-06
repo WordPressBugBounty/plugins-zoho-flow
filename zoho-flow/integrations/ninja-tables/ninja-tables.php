@@ -111,13 +111,15 @@ class Zoho_Flow_NinjaTables extends Zoho_Flow_Service{
   private function is_valid_table_row($table_id, $row_id){
       if((is_numeric($table_id)) || (is_numeric($row_id))){
           global $wpdb;
-          $tableName = $wpdb->prefix . ninja_tables_db_table_name();
-          $fetch_q = $wpdb->prepare(
-              "SELECT * FROM {$tableName} WHERE table_id = %d AND id = %d",
-              $table_id,
-              $row_id
-          );
-          return $wpdb->query($fetch_q);
+        $table_name_sql = esc_sql( $wpdb->prefix . ninja_tables_db_table_name() );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is prepared below; custom table read is required and must return live data.
+        return $wpdb->query(
+          $wpdb->prepare(
+            "SELECT * FROM " . $table_name_sql . " WHERE table_id = %d AND id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic table name is escaped.
+            $table_id,
+            $row_id
+          )
+        );
           
       }
       return false;
@@ -126,13 +128,15 @@ class Zoho_Flow_NinjaTables extends Zoho_Flow_Service{
   private function get_table_row($table_id, $row_id){
       if($this->is_valid_table_row($table_id, $row_id)){
           global $wpdb;
-          $tableName = $wpdb->prefix . ninja_tables_db_table_name();
-          $fetch_q = $wpdb->prepare(
-              "SELECT * FROM {$tableName} WHERE table_id = %d AND id = %d",
-              $table_id,
-              $row_id
-          );
-          return $wpdb->get_row($fetch_q);
+        $table_name_sql = esc_sql( $wpdb->prefix . ninja_tables_db_table_name() );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is prepared below; custom table read is required and must return live data.
+        return $wpdb->get_row(
+          $wpdb->prepare(
+            "SELECT * FROM " . $table_name_sql . " WHERE table_id = %d AND id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic table name is escaped.
+            $table_id,
+            $row_id
+          )
+        );
       }
   }
 

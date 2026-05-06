@@ -70,7 +70,7 @@ function reloadApiKeyTable(){
 	var paramArray = jQuery("#remove-api-key-form").serializeArray(); //No I18N
 	var data = {};
 	for(var paramObj in paramArray){
-		if(paramArray[paramObj].name == "service_id"){
+		if(paramArray[paramObj].name == "service_id" || paramArray[paramObj].name == "api_key_removal_nonce"){
 			data[paramArray[paramObj].name] = paramArray[paramObj].value;
 		}
 	}

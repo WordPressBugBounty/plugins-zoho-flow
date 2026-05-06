@@ -25,11 +25,10 @@ class Zoho_Flow_WP_Polls extends Zoho_Flow_Service{
      */
     public function list_polls( $request ){
         global $wpdb;
-        $table_name = $wpdb->prefix .'pollsq';
+        $table_name_sql = esc_sql( $wpdb->prefix . 'pollsq' );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Table name is plugin-controlled and escaped before concatenation; live custom-table read is required.
         $results = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT * FROM $table_name ORDER BY pollq_id DESC LIMIT 1000"
-                    )
+            "SELECT * FROM " . $table_name_sql . " ORDER BY pollq_id DESC LIMIT 1000" // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Escaped table identifier.
         );
         return rest_ensure_response( $results );
     }
@@ -67,10 +66,12 @@ class Zoho_Flow_WP_Polls extends Zoho_Flow_Service{
         global $wpdb;
         $poll_id = $request['poll_id'];
         if( $this->is_valid_poll( $poll_id ) ){
-            $table_name = $wpdb->prefix .'pollsa';
+            $table_name_sql = esc_sql( $wpdb->prefix . 'pollsa' );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Live custom-table read is required.
             $results = $wpdb->get_results(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Table name is plugin-controlled and escaped before concatenation.
                 $wpdb->prepare(
-                    "SELECT * FROM $table_name WHERE polla_qid = %s ORDER BY polla_qid ASC LIMIT 1000",
+                    "SELECT * FROM " . $table_name_sql . " WHERE polla_qid = %d ORDER BY polla_qid ASC LIMIT 1000", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Escaped table identifier.
                     $poll_id
                 )
                 );
@@ -88,10 +89,12 @@ class Zoho_Flow_WP_Polls extends Zoho_Flow_Service{
     private function is_valid_poll( $poll_id ){
         if( ( isset( $poll_id ) )  && ( is_numeric( $poll_id ) ) ){
             global $wpdb;
-            $table_name = $wpdb->prefix .'pollsq';
+            $table_name_sql = esc_sql( $wpdb->prefix . 'pollsq' );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Live custom-table read is required.
             $results = $wpdb->get_results(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Table name is plugin-controlled and escaped before concatenation.
                 $wpdb->prepare(
-                    "SELECT * FROM $table_name WHERE pollq_id = %s",
+                    "SELECT * FROM " . $table_name_sql . " WHERE pollq_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Escaped table identifier.
                     $poll_id
                 )
                 );
@@ -109,10 +112,12 @@ class Zoho_Flow_WP_Polls extends Zoho_Flow_Service{
     private function is_valid_option( $option_id ){
         if( ( isset( $option_id ) )  && ( is_numeric( $option_id ) ) ){
             global $wpdb;
-            $table_name = $wpdb->prefix .'pollsa';
+            $table_name_sql = esc_sql( $wpdb->prefix . 'pollsa' );
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Live custom-table read is required.
             $results = $wpdb->get_results(
+                // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Table name is plugin-controlled and escaped before concatenation.
                 $wpdb->prepare(
-                    "SELECT * FROM $table_name WHERE polla_aid = %s",
+                    "SELECT * FROM " . $table_name_sql . " WHERE polla_aid = %d", // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Escaped table identifier.
                     $option_id
                     )
                 );
@@ -191,6 +196,7 @@ class Zoho_Flow_WP_Polls extends Zoho_Flow_Service{
         );
         $webhooks = $this->get_webhook_posts( $args );
         if( !empty( $webhooks ) ){
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Data comes from WP-Polls internal action callback, not from a custom form endpoint.
             $poll_data = $_POST;
             $payload_data = array(
                 'poll_id' => $poll_data['poll_id']

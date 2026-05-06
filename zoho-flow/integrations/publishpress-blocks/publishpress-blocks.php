@@ -89,6 +89,7 @@ class Zoho_Flow_PublishPress_Blocks extends Zoho_Flow_Service{
         );
         $webhooks = $this->get_webhook_posts( $args );
         if( !empty( $webhooks ) ){
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a plugin callback consuming submitted payload, not a user-authenticated admin form action.
             $contact = $_POST;
             unset( $contact['nonce'], $contact['action'] );
             $event_data = array(
@@ -112,6 +113,7 @@ class Zoho_Flow_PublishPress_Blocks extends Zoho_Flow_Service{
         );
         $webhooks = $this->get_webhook_posts( $args );
         if( !empty( $webhooks ) ){
+            // phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a plugin callback consuming submitted payload, not a user-authenticated admin form action.
             $subscriber = $_POST;
             unset( $subscriber['nonce'], $subscriber['action'] );
             $event_data = array(

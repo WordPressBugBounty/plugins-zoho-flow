@@ -18,12 +18,10 @@ class Zoho_Flow_Login_Signup_Popup extends Zoho_Flow_Service
     public function get_user_meta_keys($request)
     {
         global $wpdb;
-        $query = $wpdb->prepare('
-                  SELECT
-                    DISTINCT meta_key
-                    FROM ' . $wpdb->base_prefix . 'usermeta
-                ');
-        $meta_keys = $wpdb->get_results($query);
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Live read from core usermeta table is required for meta-key discovery.
+        $meta_keys = $wpdb->get_results(
+            "SELECT DISTINCT meta_key FROM {$wpdb->base_prefix}usermeta"
+        );
         return rest_ensure_response($meta_keys);
     }
 

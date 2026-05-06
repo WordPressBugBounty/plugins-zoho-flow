@@ -22,7 +22,6 @@ class Zoho_Flow_Code_Snippets extends Zoho_Flow_Service{
         $all_snippet_objects = Code_Snippets\get_snippets();
         $all_snippets = array();
         foreach( $all_snippet_objects as $snippet_object ){
-            error_log(print_r($snippet_object->get_fields(),true));
             $snippet = $snippet_object->get_fields();
             unset( $snippet['code'] );
             $all_snippets[] = $snippet;

@@ -7,6 +7,7 @@ if (!class_exists('SwpmMembershipLevel')) {
     require_once ABSPATH . 'wp-content/plugins/simple-membership/classes/class.swpm-membership-level.php';
 }
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
 {
     private static $tables = array(
@@ -56,7 +57,7 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
             if(empty($request['role'])) {
                 $msg = "Role is required.";
             }
-            return new WP_Error( 'rest_bad_request', esc_html__( $msg, 'zoho-flow' ), array( 'status' => 400 ) );
+            return new WP_Error( 'rest_bad_request', esc_html( $msg ), array( 'status' => 400 ) );
         }
 
         $level_info = $request->get_params();
@@ -67,7 +68,7 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
             $errors = $membership_id->get_error_messages();
             $error_code = $membership_id->get_error_code();
             foreach ($errors as $error) {
-                return new WP_Error( $error_code, esc_html__( $error, 'zoho-flow' ), array('status' => 400) );
+                return new WP_Error( $error_code, esc_html( $error ), array('status' => 400) );
             }
         }
         $response = $this->Fetch_Query_Details('getmembership', array('id'=>$membership_id));
@@ -97,11 +98,13 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
             if(empty($request['role'])) {
                 $msg = "Role is required.";
             }
-            return new WP_Error( 'rest_bad_request', esc_html__( $msg, 'zoho-flow' ), array( 'status' => 400 ) );
+            return new WP_Error( 'rest_bad_request', esc_html( $msg ), array( 'status' => 400 ) );
         }
 
-        $query = $wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "swpm_membership_tbl WHERE " . ' id=%d', $membership_id);
-        $level = $wpdb->get_row($query, ARRAY_A);
+        $level = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}swpm_membership_tbl WHERE id = %d", $membership_id),
+            ARRAY_A
+        );
         $level = (array) $level;
 
         if(empty($level)){
@@ -118,7 +121,7 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
                 if(is_wp_error($membership_id)){
                     //DB error occurred
                     $errormsg = 'Update membership level - DB error occurred: ' . json_encode( $wpdb->last_result );
-                    return new WP_Error('rest_bad_request', esc_html__($errormsg, 'zoho-flow'), array('status' => 400));
+                    return new WP_Error('rest_bad_request', esc_html($errormsg), array('status' => 400));
                 }
             }
         }
@@ -132,8 +135,10 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
         SwpmMemberUtils::check_and_die_if_email_belongs_to_admin_user($request['email']);
         SwpmMemberUtils::check_and_die_if_username_belongs_to_admin_user($request['user_name']);
 
-        $query = $wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "swpm_members_tbl WHERE " . ' user_name=%s', $request['user_name']);
-        $profile = $wpdb->get_row($query, ARRAY_A);
+        $profile = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}swpm_members_tbl WHERE user_name = %s", $request['user_name']),
+            ARRAY_A
+        );
         $profile = (array) $profile;
 
         if (!empty($profile)) {
@@ -149,7 +154,7 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
             $errors = $member_id->get_error_messages();
             $error_code = $member_id->get_error_code();
             foreach ($errors as $error) {
-                return new WP_Error( $error_code, esc_html__( $error, 'zoho-flow' ), array('status' => 400) );
+                return new WP_Error( $error_code, esc_html( $error ), array('status' => 400) );
             }
         }
 
@@ -166,8 +171,10 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
             return new WP_Error( 'rest_bad_request', esc_html__( 'The Member ID is invalid.', 'zoho-flow' ), array( 'status' => 400 ) );
         }
 
-        $query = $wpdb->prepare("SELECT * FROM " . $wpdb->prefix . "swpm_members_tbl WHERE " . ' member_id=%d', $member_id);
-        $profile = $wpdb->get_row($query, ARRAY_A);
+        $profile = $wpdb->get_row(
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}swpm_members_tbl WHERE member_id = %d", $member_id),
+            ARRAY_A
+        );
         $profile = (array) $profile;
 
         if(empty($profile)){
@@ -179,7 +186,7 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
                 if(is_wp_error($member_id)){
                     //DB error occurred
                     $errormsg = 'Update member - DB error occurred: ' . json_encode( $wpdb->last_result );
-                    return new WP_Error('rest_bad_request', esc_html__($errormsg, 'zoho-flow'), array('status' => 400));
+                    return new WP_Error('rest_bad_request', esc_html($errormsg), array('status' => 400));
                 }
             }
         }
@@ -204,28 +211,37 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
      */
     private function Fetch_Query_Details( $action, $request){
         global $wpdb;
+        $members = array();
 
         if($action==='getmember'){
-            $table = $this->gettable('members');
             $login = esc_attr($request['login']);
             if(isset($login) && filter_var($request['login'], FILTER_VALIDATE_EMAIL)){
-                $query = $wpdb->prepare("SELECT * FROM " . $wpdb->prefix . $table . " WHERE  email = %s", $login);
+                $members = $wpdb->get_results(
+                    $wpdb->prepare("SELECT * FROM {$wpdb->prefix}swpm_members_tbl WHERE email = %s", $login),
+                    ARRAY_A
+                );
             } else if(isset($request['member_id'])){
-                $query = $wpdb->prepare("SELECT * FROM " . $wpdb->prefix . $table . " WHERE  member_id = %d", $request['member_id']);
+                $members = $wpdb->get_results(
+                    $wpdb->prepare("SELECT * FROM {$wpdb->prefix}swpm_members_tbl WHERE member_id = %d", $request['member_id']),
+                    ARRAY_A
+                );
             }else if(isset($request['login'])){
-                $query = $wpdb->prepare("SELECT * FROM " . $wpdb->prefix . $table . " WHERE  user_name = %s", $login);
+                $members = $wpdb->get_results(
+                    $wpdb->prepare("SELECT * FROM {$wpdb->prefix}swpm_members_tbl WHERE user_name = %s", $login),
+                    ARRAY_A
+                );
             }
         }else {
-            $table = $this->gettable($action);
             if($action === 'getmembership'){
-                $query = $wpdb->prepare("SELECT * FROM " . $wpdb->prefix . $table . " WHERE id=%d", $request['id']);
+                $members = $wpdb->get_results(
+                    $wpdb->prepare("SELECT * FROM {$wpdb->prefix}swpm_membership_tbl WHERE id = %d", $request['id']),
+                    ARRAY_A
+                );
             } else {
-                $query = $wpdb->prepare("SELECT * FROM " . $wpdb->prefix . $table);
+                $members = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}swpm_membership_tbl", ARRAY_A);
             }
         }
-        $totalitems = $wpdb->query($query);
-        if($totalitems > 0){
-            $members = $wpdb->get_results($query, ARRAY_A);
+        if(!empty($members)){
             return rest_ensure_response($members);
         }else {
             return rest_ensure_response(array());
@@ -369,11 +385,7 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
      */
     public function list_members( $request ){
         global $wpdb;
-        $results = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}swpm_members_tbl ORDER BY member_id DESC LIMIT 1000"
-            )
-        );
+        $results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}swpm_members_tbl ORDER BY member_id DESC LIMIT 1000");
         $member_array = array();
         foreach ( $results as $member_obj ){
             $member_details = json_decode(json_encode($member_obj), true);
@@ -391,16 +403,23 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
      * @return WP_REST_Response|WP_Error|WP_Error WP_REST_Response member details| WP_Error Error details.
      */
     public function fetch_member( $request ){
-        $fetch_field = esc_sql( $request['fetch_field'] );
+        $fetch_field = sanitize_key( $request['fetch_field'] );
         $fetch_value = esc_sql( $request['fetch_value'] );
+        $allowed_fields = array( 'member_id', 'user_name', 'email', 'membership_level' );
         if( !empty( $fetch_field ) && !empty( $fetch_value ) ){
+            if ( ! in_array( $fetch_field, $allowed_fields, true ) ) {
+                return new WP_Error( 'rest_bad_request', 'Invalid fetch field', array( 'status' => 400 ) );
+            }
             global $wpdb;
-            $results = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT * FROM {$wpdb->prefix}swpm_members_tbl WHERE $fetch_field = %s ORDER BY member_id DESC LIMIT 1000",
-                    $fetch_value
-                )
+            $column_map = array(
+                'member_id' => 'member_id',
+                'user_name' => 'user_name',
+                'email' => 'email',
+                'membership_level' => 'membership_level',
             );
+            $column = $column_map[ $fetch_field ];
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $column is validated against a strict allowlist above.
+            $results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}swpm_members_tbl WHERE {$column} = %s ORDER BY member_id DESC LIMIT 1000", $fetch_value ) );
             $member_array = array();
             foreach ( $results as $member_obj ){
                 $member_details = json_decode(json_encode($member_obj), true);
@@ -423,11 +442,7 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
      */
     public function list_membership_levels( $request ){
         global $wpdb;
-        $results = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}swpm_membership_tbl ORDER BY id DESC LIMIT 1000"
-            )
-            );
+        $results = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}swpm_membership_tbl ORDER BY id DESC LIMIT 1000");
         $membership_level_array = array();
         foreach ( $results as $membrship_level_obj ){
             $membership_level_details = json_decode(json_encode($membrship_level_obj), true);
@@ -444,16 +459,22 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
      * @return WP_REST_Response|WP_Error|WP_Error WP_REST_Response membership level details| WP_Error Error details.
      */
     public function fetch_membership_level( $request ){
-        $fetch_field = esc_sql( $request['fetch_field'] );
+        $fetch_field = sanitize_key( $request['fetch_field'] );
         $fetch_value = esc_sql( $request['fetch_value'] );
+        $allowed_fields = array( 'id', 'alias', 'role' );
         if( !empty( $fetch_field ) && !empty( $fetch_value ) ){
+            if ( ! in_array( $fetch_field, $allowed_fields, true ) ) {
+                return new WP_Error( 'rest_bad_request', 'Invalid fetch field', array( 'status' => 400 ) );
+            }
             global $wpdb;
-            $results = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT * FROM {$wpdb->prefix}swpm_membership_tbl WHERE $fetch_field = %s ORDER BY id DESC LIMIT 1000",
-                    $fetch_value
-                )
-                );
+            $column_map = array(
+                'id' => 'id',
+                'alias' => 'alias',
+                'role' => 'role',
+            );
+            $column = $column_map[ $fetch_field ];
+            // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $column is validated against a strict allowlist above.
+            $results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}swpm_membership_tbl WHERE {$column} = %s ORDER BY id DESC LIMIT 1000", $fetch_value ) );
             $membership_level_array = array();
             foreach ( $results as $membership_level_obj ){
                 $membership_level_details = json_decode(json_encode($membership_level_obj), true);
@@ -805,3 +826,4 @@ class Zoho_Flow_Simple_Membership extends Zoho_Flow_Service
         return rest_ensure_response( $system_info );
     }
 }
+// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching

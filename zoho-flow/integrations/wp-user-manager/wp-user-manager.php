@@ -28,10 +28,9 @@ class Zoho_Flow_WP_User_Manager extends Zoho_Flow_Service{
      */
     public function list_registration_forms( $request ){
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Reading plugin-owned custom table for API response.
         $results = $wpdb->get_results(
-                    $wpdb->prepare(
-                        "SELECT * FROM {$wpdb->prefix}wpum_registration_forms ORDER BY id DESC LIMIT 500"
-                    ), 'ARRAY_A'
+                    "SELECT * FROM {$wpdb->prefix}wpum_registration_forms ORDER BY id DESC LIMIT 500", 'ARRAY_A'
                 );
         return rest_ensure_response( $results );
     }
@@ -45,8 +44,9 @@ class Zoho_Flow_WP_User_Manager extends Zoho_Flow_Service{
      */
     public function list_all_fields( $request ){
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Reading plugin-owned custom tables for API response.
         $results = $wpdb->get_results(
-            $wpdb->prepare("
+            "
         SELECT
             f.id,
             f.group_id,
@@ -58,7 +58,7 @@ class Zoho_Flow_WP_User_Manager extends Zoho_Flow_Service{
             fm.meta_value
         FROM {$wpdb->prefix}wpum_fields f
         LEFT JOIN {$wpdb->prefix}wpum_fieldmeta fm ON f.id = fm.wpum_field_id
-    "),
+    ",
     'ARRAY_A'
             );
         $final_results = [];
@@ -95,6 +95,7 @@ class Zoho_Flow_WP_User_Manager extends Zoho_Flow_Service{
         $form_id = $request->get_url_params()['form_id'];
         if( isset( $form_id ) && $this->is_valid_form( $form_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Reading plugin-owned custom table for API response.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}wpum_registration_formmeta
@@ -106,29 +107,33 @@ class Zoho_Flow_WP_User_Manager extends Zoho_Flow_Service{
                             );
             if( !empty( $results ) ){
                 $fields = maybe_unserialize( $results[0]['meta_value']);
-                
-                $fields_placeholders = implode(',', array_fill(0, count($fields), '%d')); // Prepare placeholders for the IN clause
-                
-                $query = $wpdb->prepare(
-                    "
-                    SELECT *
-                    FROM {$wpdb->prefix}wpum_fields
-                    WHERE id IN ($fields_placeholders)
-                    ",
-                    ...$fields // Spread the $fields array to match the placeholders
-                                );
-                
-                $fields_results = $wpdb->get_results($query, 'ARRAY_A');
-                
-                
+
+                $fields = array_map( 'absint', (array) $fields );
+                $fields = array_values( array_filter( $fields ) );
+                if ( empty( $fields ) ) {
+                    return rest_ensure_response( array() );
+                }
+
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Reading plugin-owned custom table for API response.
+                $fields_results = $wpdb->get_results(
+                    $wpdb->prepare(
+                        "SELECT *
+                        FROM {$wpdb->prefix}wpum_fields
+                        WHERE id IN (" . implode( ',', array_fill( 0, count( $fields ), '%d' ) ) . ')',
+                        $fields
+                    ),
+                    'ARRAY_A'
+                );
+
+
                 return rest_ensure_response( $fields_results );
             }
             return new WP_Error( 'rest_bad_request', 'Fiields not found!', array( 'status' => 404 ) );
         }
         return new WP_Error( 'rest_bad_request', 'Form does not exist!', array( 'status' => 404 ) );
     }
-    
-    
+
+
     /**
      * Check the given form id is valid or not
      *
@@ -138,6 +143,7 @@ class Zoho_Flow_WP_User_Manager extends Zoho_Flow_Service{
     private function is_valid_form( $form_id ){
         if( isset( $form_id ) && is_numeric( $form_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Validation lookup against plugin-owned custom table.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}wpum_registration_forms WHERE id = %d LIMIT 1",
@@ -150,7 +156,7 @@ class Zoho_Flow_WP_User_Manager extends Zoho_Flow_Service{
         }
        return false; 
     }
-    
+
     /**
      * Creates a webhook entry
      * The events available in $supported_events array only accepted
@@ -190,7 +196,7 @@ class Zoho_Flow_WP_User_Manager extends Zoho_Flow_Service{
             return new WP_Error( 'rest_bad_request', 'Data validation failed', array( 'status' => 400 ) );
         }
     }
-    
+
     /**
      * Deletes a webhook entry
      * Webhook ID returned from webhook create event should be used. Use minimum user scope.

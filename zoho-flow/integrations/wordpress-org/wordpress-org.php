@@ -130,7 +130,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
         }
 	    }
 	    else{
-	    	return new WP_Error( 'rest_bad_request', esc_html__( $upload_file['error'], 'zoho-flow' ), array( 'status' => 400 ));
+	    	return new WP_Error( 'rest_bad_request', esc_html( $upload_file['error'] ), array( 'status' => 400 ));
 	    }
 		   return rest_ensure_response($response_object);
 		}
@@ -147,7 +147,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	    }
 	    $attachment_data = wp_delete_attachment($attachment_id);
 	    if(empty($attachment_data) || $attachment_data == false){
-	    	return new WP_Error( 'rest_bad_request', esc_html__( 'Unable to remove attachment' ), array( 'status' => 400 ) );
+	    	return new WP_Error( 'rest_bad_request', esc_html__( 'Unable to remove attachment', 'zoho-flow' ), array( 'status' => 400 ) );
 	    }
 	    return rest_ensure_response( $attachment_data);
 	}
@@ -254,7 +254,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	public function get_users( $request ){
 	    $data = array();
 			$users = array();
-			$params = $_GET;
+			$params = $request->get_query_params();
 			$custom_args = array();
 			foreach ($params as $param => $value) {
 				if(!empty($value)){
@@ -367,7 +367,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	        'post_status'  =>  $request['post_status'],
 	        'post_author'  =>  get_current_user_id(),
 	        'post_type'    =>  'post',
-	        'post_date'    =>  date( 'Y-m-d H:i:s', time() ),
+	        'post_date'    =>  gmdate( 'Y-m-d H:i:s' ),
 	        'comment_status'   =>  $request['comment_status'],
 	        'ping_status'  =>  $request['ping_status']
 	    );
@@ -380,7 +380,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
                 $errors = $post_id->get_error_messages();
                 $error_code = $post_id->get_error_code();
                 foreach ($errors as $error) {
-                    return new WP_Error( $error_code, esc_html__( $error, 'zoho-flow' ), array('status' => 400) );
+					return new WP_Error( $error_code, esc_html( $error ), array('status' => 400) );
                 }
             }
 	    $request['post_id'] = $post_id;
@@ -459,7 +459,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
                 $errors = $post_id->get_error_messages();
                 $error_code = $post_id->get_error_code();
                 foreach ($errors as $error) {
-                    return new WP_Error( $error_code, esc_html__( $error, 'zoho-flow' ), array('status' => 400) );
+					return new WP_Error( $error_code, esc_html( $error ), array('status' => 400) );
                 }
             }
 	    $request['post_id'] = $post_id;
@@ -496,7 +496,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	        'post_status'  =>  $request['post_status'],
 	        'post_author'  =>  $request['post_author'],
 	        'post_type'    =>  'post',
-	        'post_date'    =>  date( 'Y-m-d H:i:s', time() )
+	        'post_date'    =>  gmdate( 'Y-m-d H:i:s' )
 	    );
 	    $post_id = wp_update_post($post_arr);
 	    wp_set_post_tags($post_id, wp_strip_all_tags($request['tags']), true);
@@ -505,7 +505,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	        $errors = $post_id->get_error_messages();
 	        $error_code = $post_id->get_error_code();
 	        foreach ($errors as $error) {
-	            return new WP_Error( $error_code, esc_html__( $error, 'zoho-flow' ) , array('status' => 400));
+	            return new WP_Error( $error_code, esc_html( $error ) , array('status' => 400));
 	        }
 	    }
 	    $this->call_webhook_for_post($post_id, $post_arr['post_type']);
@@ -527,7 +527,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	        'user_email'   =>  $request['user_email'],
 	        'last_name'    =>  $request['last_name'],
 	        'first_name'   =>  $request['first_name'],
-	        'user_registered'  =>  date( 'Y-m-d H:i:s', time()),
+	        'user_registered'  =>  gmdate( 'Y-m-d H:i:s' ),
 	        'role'         =>  $request['role'],
 	        'user_url'     =>  $request['user_url'],
 	        'description'  =>  $request['description'],
@@ -540,7 +540,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	        $errors = $user_id->get_error_messages();
 	        $error_code = $user_id->get_error_code();
 	        foreach ($errors as $error) {
-	            return new WP_Error($error_code, esc_html__( $error, 'zoho-flow' ), array( 'status' => 400 )  );
+	            return new WP_Error($error_code, esc_html( $error ), array( 'status' => 400 )  );
 	        }
 	    }
 	    return rest_ensure_response(get_user_by('ID', $user_id));
@@ -566,7 +566,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	        'user_email'   =>  (isset($request['user_email']) && !empty($request['user_email'])) ? $request['user_email'] : $olddata->user_email,
 	        'last_name'    =>  (isset($request['last_name']) && !empty($request['last_name'])) ? $request['last_name'] : $olddata->last_name,
 	        'first_name'   =>  (isset($request['first_name']) && !empty($request['first_name'])) ? $request['first_name'] : $olddata->first_name,
-	        'user_registered'  =>  date( 'Y-m-d H:i:s', time()),
+	        'user_registered'  =>  gmdate( 'Y-m-d H:i:s' ),
 	        'user_url'     =>  (isset($request['user_url']) && !empty($request['user_url'])) ? $request['user_url'] : $olddata->user_url,
 	        'description'  =>  (isset($request['description']) && !empty($request['description'])) ? $request['description'] : $olddata->description,
 	        'nickname'     =>  (isset($request['nickname']) && !empty($request['nickname'])) ? $request['nickname'] : $olddata->nickname
@@ -576,7 +576,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	    if ( is_wp_error( $data ) ) {
 	        $errors = $data->get_error_messages();
 	        foreach ($errors as $error) {
-	            return new WP_Error( 'rest_bad_request', esc_html__( $error, 'zoho-flow' ), array('status' => 400) );
+	            return new WP_Error( 'rest_bad_request', esc_html( $error ), array('status' => 400) );
 	        }
 	    }
 	    $user_data = $this->update_meta_values($request, $user_id, $userdata);
@@ -773,7 +773,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	    if(empty(post_type_exists('users'))){
     	    $args = array(
     	        'public'    => true,
-    	        'label'     => __( 'Users', 'textdomain' ),
+	    	    'label'     => __( 'Users', 'zoho-flow' ),
     	        'capability_type' => 'users'
     	    );
     	    register_post_type( 'users', $args );
@@ -1097,7 +1097,7 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	    $metadata = array();
 	    foreach ($meta as $key => $value){
 	        $data = array(
-	            'meta_key' => $key,
+	            'meta_key' => $key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Response payload key name, not a SQL meta query.
 	        );
 	        $metadata[$key] = $value[0];
 	        array_push($usermeta, $data);
@@ -1324,17 +1324,18 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	public function get_post_type_meta_keys($request){
 		global $wpdb;
 		$post_type = $request->get_url_params()['post_type'];
-		
-		$query = $wpdb->prepare(
-		    'SELECT DISTINCT(m.meta_key)
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is prepared inline; custom table read is required and must return live data.
+		$meta_keys = $wpdb->get_results(
+		    $wpdb->prepare(
+		        'SELECT DISTINCT(m.meta_key)
                 FROM ' . $wpdb->base_prefix . 'postmeta m
                 INNER JOIN ' . $wpdb->base_prefix . 'posts p ON p.ID = m.post_id
                 WHERE p.post_type = %s
                 LIMIT 450',
-		    $post_type
-		    );
-		
-		$meta_keys = $wpdb->get_results($query);
+		        $post_type
+		    )
+		);
 		
 		return rest_ensure_response( $meta_keys );
 	}
@@ -1356,24 +1357,24 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	//To get user meta fields
 	public function get_user_meta_keys($request){
 		global $wpdb;
-		$query     = $wpdb->prepare('
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
+		$meta_keys = $wpdb->get_results('
 			SELECT
 				DISTINCT meta_key
 			    FROM ' . $wpdb->base_prefix . 'usermeta LIMIT 450
-            ');
-		$meta_keys = $wpdb->get_results( $query );
+		');
 		return rest_ensure_response($meta_keys);
 	}
 
 	//To get comment meta fields
 	public function get_comment_meta_keys($request){
 		global $wpdb;
-		$query     = $wpdb->prepare('
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
+		$meta_keys = $wpdb->get_results('
 			SELECT
 				DISTINCT meta_key
 			FROM ' . $wpdb->base_prefix . 'commentmeta
 		');
-		$meta_keys = $wpdb->get_results( $query );
 		return rest_ensure_response($meta_keys);
 	}
 
@@ -2046,8 +2047,8 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	            $event_data = array(
 	                'event' => 'post_updated',
 	                "meta_id" => $meta_id,
-	                "meta_key" => $meta_key,
-	                "meta_value" => $meta_value,
+	                "meta_key" => $meta_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Payload field name, not a SQL meta query.
+	                "meta_value" => $meta_value, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Payload field name, not a SQL meta query.
 	                'data' => $post,
 	                'meta' => $this->get_post_meta($post_id),
 	                'taxonomy' => $this->get_post_taxonomy($post_id)
@@ -2074,8 +2075,8 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 	            $event_data = array(
 	                'event' => 'post_created_or_updated',
 	                "meta_id" => $meta_id,
-	                "meta_key" => $meta_key,
-	                "meta_value" => $meta_value,
+	                "meta_key" => $meta_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Payload field name, not a SQL meta query.
+	                "meta_value" => $meta_value, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Payload field name, not a SQL meta query.
 	                'data' => $post,
 	                'meta' => $this->get_post_meta($post_id),
 	                'taxonomy' => $this->get_post_taxonomy($post_id)
@@ -2239,8 +2240,8 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 			$event_data = array(
 				'event' => 'user_created_or_updated',
 				"meta_id" => $meta_id,
-				"meta_key" => $meta_key,
-				"meta_value" => $meta_value,
+				"meta_key" => $meta_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Payload field name, not a SQL meta query.
+				"meta_value" => $meta_value, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Payload field name, not a SQL meta query.
 				'data' => $user_data,
 				'meta' => $user_meta
 			);

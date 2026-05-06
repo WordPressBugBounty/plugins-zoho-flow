@@ -391,6 +391,7 @@ class Zoho_Flow_LearnDash extends Zoho_Flow_Service
 	  $schema = $this->get_user_schema();
 		$query_param=$request->get_query_params();
 		$arg=array();
+		// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Reserved for optional user-meta filters in this endpoint.
 		$arg['meta_query']=array();
 		$users = array();
 		if(!empty($query_param['user_id'])){
@@ -669,7 +670,9 @@ class Zoho_Flow_LearnDash extends Zoho_Flow_Service
 			'no_paging'			=> 	true,
 		);
 		if(!empty($meta)){
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Required to filter posts by LearnDash relationship meta.
 			$query_args['meta_key']=$meta['key'];
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Required to filter posts by LearnDash relationship meta.
 			$query_args['meta_value']=$meta['value'];
 			$query_args['meta_compare']='=';
 		}
@@ -799,7 +802,9 @@ class Zoho_Flow_LearnDash extends Zoho_Flow_Service
 					'posts_per_page'    =>   -1,
 					'orderby'           =>   'date',
 					'order'             =>   'DESC',
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Required to fetch lessons by course_id relationship.
 					'meta_key'          => 'course_id',
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Required to fetch lessons by course_id relationship.
 					'meta_value'        => $course_id,
 					'meta_compare'      => '=',
 					'no_paging'			=> 	true,
@@ -875,7 +880,9 @@ class Zoho_Flow_LearnDash extends Zoho_Flow_Service
 					'posts_per_page'    =>   -1,
 					'orderby'           =>   'date',
 					'order'             =>   'DESC',
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Required to fetch topics by lesson_id relationship.
 					'meta_key'          => 'lesson_id',
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Required to fetch topics by lesson_id relationship.
 					'meta_value'        => $lesson_id,
 					'meta_compare'      => '=',
 					'no_paging'			=> 	true,
@@ -943,7 +950,9 @@ class Zoho_Flow_LearnDash extends Zoho_Flow_Service
 					'posts_per_page'    =>   -1,
 					'orderby'           =>   'title',
 					'order'             =>   'ASC',
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Required to fetch quizzes by course_id relationship.
 					'meta_key'          => 'course_id',
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Required to fetch quizzes by course_id relationship.
 					'meta_value'        => $course_id,
 					'meta_compare'      => '=',
 					'no_paging'			=> 	true,
@@ -1068,7 +1077,8 @@ class Zoho_Flow_LearnDash extends Zoho_Flow_Service
     		}
 
     		if(!$form_data || (!in_array(($form_data->{'post_type'}),LDLMS_Post_Types::get_post_types()))){
-    			return new WP_Error( 'rest_not_found', esc_html__( 'The '.substr($form,0,strrpos($form,'_')).' is not found.', 'zoho-flow' ), array( 'status' => 404 ) );
+				/* translators: %s: LearnDash object type derived from action name. */
+				return new WP_Error( 'rest_not_found', sprintf( esc_html__( 'The %s is not found.', 'zoho-flow' ), esc_html( substr( $form, 0, strrpos( $form, '_' ) ) ) ), array( 'status' => 404 ) );
     		}
         }
 
@@ -1140,7 +1150,8 @@ class Zoho_Flow_LearnDash extends Zoho_Flow_Service
 
 
     		if(!$form_data || (!in_array(($form_data->{'post_type'}),LDLMS_Post_Types::get_post_types()))){
-    			return new WP_Error( 'rest_not_found', esc_html__( 'The '.substr($form,0,strrpos($form,'_')).' is not found.', 'zoho-flow' ), array( 'status' => 404 ) );
+				/* translators: %s: LearnDash object type derived from action name. */
+				return new WP_Error( 'rest_not_found', sprintf( esc_html__( 'The %s is not found.', 'zoho-flow' ), esc_html( substr( $form, 0, strrpos( $form, '_' ) ) ) ), array( 'status' => 404 ) );
     		}
         }
 

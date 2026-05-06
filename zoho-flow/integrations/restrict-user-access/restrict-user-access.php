@@ -152,8 +152,8 @@ class Zoho_Flow_Restrict_User_Access extends Zoho_Flow_Service{
                     $user_details['levels'][] = array(
                         'id' => $level_id,
                         'name' => $level_obj['post_title'],
-                        'start_time' => 0 == $start_time ? null : date('Y-m-d H:i:s', $start_time),
-                        'expiry_time' => 0 == $expiry_time ? null : date('Y-m-d H:i:s', $expiry_time)
+                        'start_time' => 0 == $start_time ? null : gmdate('Y-m-d H:i:s', $start_time),
+                        'expiry_time' => 0 == $expiry_time ? null : gmdate('Y-m-d H:i:s', $expiry_time)
                     );
                 }
                 return $user_details;

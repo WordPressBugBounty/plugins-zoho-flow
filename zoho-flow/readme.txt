@@ -1,11 +1,11 @@
-=== Zoho Flow – Integrate 100+ plugins with 1000+ business apps, no-code workflow automation ===
+=== Zoho Flow ===
 
 Contributors: zohoflow
 Tags: integration, automation, workflow, webhook, notification
-Requires at least: 4.4
+Requires at least: 5.0
 Requires PHP: 7.0.0
-Tested up to: 6.8.1
-Stable tag: 2.14.2
+Tested up to: 6.9
+Stable tag: 2.14.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -127,6 +127,62 @@ If your site has IP restrictions enabled, you can whitelist [Zoho Flow's IP addr
 
 Yes, starting from version 2.0.0, the Zoho Flow plugin supports custom post types and their associated metadata.
 
+== External services ==
+
+This plugin connects to external services provided by Zoho Corporation Pvt. Ltd. to enable integration and automation features using Zoho Flow.
+
+=== Zoho Flow Widget Service (flow.zoho.com) ===
+
+This plugin loads a widget from Zoho Flow (flow.zoho.com) to display integration templates and allow users to create automation workflows from the WordPress admin dashboard.
+
+* What the service does:
+Displays Zoho Flow templates and provides a way to create flows.
+
+* When data is sent:
+A request is made when an admin user opens the Zoho Flow plugin page in the WordPress dashboard.
+
+* What data is sent:
+Selected service identifier (e.g., "contact_form_7" or other integration identifiers)
+
+* Why data is sent:
+To load and display relevant Zoho Flow templates and enable flow creation.
+
+* Service provider:
+Zoho Corporation Pvt. Ltd.
+
+* Terms of Service:
+https://www.zoho.com/legal/terms.html
+
+* Privacy Policy:
+https://www.zoho.com/privacy.html
+
+
+=== Zoho TLS Test Service (tlstest.zoho.com) ===
+
+This plugin performs a TLS capability check using Zoho’s test endpoint (tlstest.zoho.com).
+
+* What the service does:
+Verifies that your server supports secure TLS/SSL connections required for Zoho services.
+
+* When data is sent:
+A request is made during plugin initialization or setup.
+
+* What data is sent:
+- A standard HTTPS request
+- No personal user data or WordPress site content is transmitted
+
+* Why data is sent:
+To confirm that secure communication with Zoho services is possible.
+
+* Service provider:
+Zoho Corporation Pvt. Ltd.
+
+* Terms of Service:
+https://www.zoho.com/legal/terms.html
+
+* Privacy Policy:
+https://www.zoho.com/privacy.html
+
 == Installation ==
 
 = Minimum Requirements =
@@ -172,6 +228,10 @@ IMPORTANT: Security update - Broken access control vulnerability has been fixed.
 IMPORTANT: Security update - SQL injection vulnerability has been fixed. Upgrade immediately.
 
 == Changelog ==
+
+= 2.14.3 =
+
+* Code optimization to comply with WordPress coding standards.
 
 = 2.14.2 =
 

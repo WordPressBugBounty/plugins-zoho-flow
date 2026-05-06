@@ -185,6 +185,7 @@ class Zoho_Flow_Tutor_LMS extends Zoho_Flow_Service{
         $quiz_id = $request['quiz_id'];
         if( $this->is_valid_quiz( $quiz_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here and must return live quiz question data.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}tutor_quiz_questions WHERE quiz_id = %s ORDER BY question_order ASC LIMIT 1000",
@@ -369,6 +370,7 @@ class Zoho_Flow_Tutor_LMS extends Zoho_Flow_Service{
     private function is_valid_attempt( $attempt_id ){
         if( isset( $attempt_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate and fetch live attempt details.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}tutor_quiz_attempts WHERE attempt_id = %s ORDER BY attempt_id ASC LIMIT 10",

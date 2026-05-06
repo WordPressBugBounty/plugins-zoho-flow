@@ -40,15 +40,20 @@ class Zoho_Flow_RegistrationMagic extends Zoho_Flow_Service{
         $order_by_allowed = array(
             'id',
             'title',
-            'position'
+            'position',
+            'created_on'
         );
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'created_on';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed, true))) ? $request['order_by'] : 'created_on';
+        $order = ($request['order'] && (in_array($request['order'], $order_allowed, true))) ? $request['order'] : 'DESC';
+        $limit = ($request['limit']) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
         $results = $wpdb->get_results(
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- ORDER BY identifiers are allowlisted and escaped before concatenation.
             $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}rm_forms ORDER BY $order_by $order LIMIT %d",
+                "SELECT * FROM {$wpdb->prefix}rm_forms ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
                 $limit
             ), 'ARRAY_A'
             );
@@ -75,6 +80,7 @@ class Zoho_Flow_RegistrationMagic extends Zoho_Flow_Service{
         if( isset( $form_id ) && $this->is_valid_form( $form_id ) ){
             global $wpdb;
             
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}rm_fields WHERE form_id=%d LIMIT 500",
@@ -99,6 +105,7 @@ class Zoho_Flow_RegistrationMagic extends Zoho_Flow_Service{
     private function is_valid_form( $form_id ){
         if( isset( $form_id ) && is_numeric( $form_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}rm_forms WHERE form_id = %d LIMIT 1",

@@ -42,12 +42,15 @@ class Zoho_Flow_Wappointment extends Zoho_Flow_Service{
             'updated_at'
         );
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'updated_at';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ( isset( $request['order_by'] ) && in_array( $request['order_by'], $order_by_allowed, true ) ) ? $request['order_by'] : 'updated_at';
+        $order = ( isset( $request['order'] ) && in_array( $request['order'], $order_allowed, true ) ) ? $request['order'] : 'DESC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- ORDER BY identifiers are allowlisted/escaped; custom table read is required and must return live data.
         $results = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}wappo_services ORDER BY $order_by $order LIMIT %d",
+                "SELECT * FROM {$wpdb->prefix}wappo_services ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic ORDER BY identifiers are allowlisted.
                 $limit
             ), 'ARRAY_A'
                 );
@@ -74,6 +77,7 @@ class Zoho_Flow_Wappointment extends Zoho_Flow_Service{
     private function is_valid_service( $service_id ){
         if( isset( $service_id ) && is_numeric( $service_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current service.
             $result = $wpdb->get_row(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}wappo_services WHERE `id` = %d",
@@ -91,6 +95,7 @@ class Zoho_Flow_Wappointment extends Zoho_Flow_Service{
     private function is_valid_client( $client_id ){
         if( isset( $client_id ) && is_numeric( $client_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current client.
             $result = $wpdb->get_row(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}wappo_clients WHERE `id` = %d",
@@ -108,6 +113,7 @@ class Zoho_Flow_Wappointment extends Zoho_Flow_Service{
     private function is_valid_staff( $staff_id ){
         if( isset( $staff_id ) && is_numeric( $staff_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current staff record.
             $result = $wpdb->get_row(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}wappo_calendars WHERE `id` = %d",
@@ -125,6 +131,7 @@ class Zoho_Flow_Wappointment extends Zoho_Flow_Service{
     private function is_valid_location( $location_id ){
         if( isset( $location_id ) && is_numeric( $location_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current location.
             $result = $wpdb->get_row(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}wappo_locations WHERE `id` = %d",

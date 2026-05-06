@@ -8,19 +8,22 @@ if( ! class_exists( 'WP_List_Table' ) ) {
     require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-function enqueue_toggle_script() {
-    wp_enqueue_script('toggle-script', get_template_directory_uri() . '/js/toggle.js', ['jquery'], null, true);
+function zoho_flow_enqueue_toggle_script() {
+	$toggle_script_path = get_template_directory() . '/js/toggle.js';
+	$toggle_script_version = file_exists( $toggle_script_path ) ? filemtime( $toggle_script_path ) : wp_get_theme()->get( 'Version' );
+	wp_enqueue_script('toggle-script', get_template_directory_uri() . '/js/toggle.js', ['jquery'], $toggle_script_version, true);
     wp_localize_script('toggle-script', 'ajaxurl', admin_url('admin-ajax.php'));
 }
-add_action('wp_enqueue_scripts', 'enqueue_toggle_script');
+add_action('wp_enqueue_scripts', 'zoho_flow_enqueue_toggle_script');
 
-
-$zf_boost_speed_state = get_option('zf_boost_speed', 'off');
-
-function update_zf_boost_speed() {
-	if( ( current_user_can( 'zoho_flow_admin_page' ) ) && wp_verify_nonce(sanitize_key($_POST['zf_boost_speed_toggle_action_nonce']),'zf_boost_speed_toggle_action') ){
+function zoho_flow_update_zf_boost_speed() {
+	if(
+		( current_user_can( 'zoho_flow_admin_page' ) )
+		&& isset( $_POST['zf_boost_speed_toggle_action_nonce'] )
+		&& wp_verify_nonce( sanitize_key( wp_unslash( $_POST['zf_boost_speed_toggle_action_nonce'] ) ), 'zf_boost_speed_toggle_action' )
+	){
 		if (isset($_POST['state'])) {
-			$new_state = sanitize_text_field($_POST['state']);
+			$new_state = sanitize_text_field( wp_unslash( $_POST['state'] ) );
 	
 			update_option('zf_boost_speed', $new_state, true);
 	
@@ -34,7 +37,7 @@ function update_zf_boost_speed() {
 		wp_send_json_error('Permission denied!');
 	}
 }
-add_action('wp_ajax_update_zf_boost_speed', 'update_zf_boost_speed');
+add_action('wp_ajax_update_zf_boost_speed', 'zoho_flow_update_zf_boost_speed');
 
 class Zoho_Flow_Settings_Menue extends WP_List_Table {
 
@@ -302,31 +305,35 @@ class Zoho_Flow_Settings_Menue extends WP_List_Table {
 				));
 			}
 			
-			if(!empty($_SERVER['REMOTE_ADDR'])){
+			$remote_addr = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+			if(!empty($remote_addr)){
 				array_push($siteinfo,array(
 					'name' => 'Remote IP Address',
-					'value' => $_SERVER['REMOTE_ADDR']
+					'value' => $remote_addr
 				));
 			}
 			
-			if(!empty($_SERVER['REMOTE_PORT'])){
+			$remote_port = isset( $_SERVER['REMOTE_PORT'] ) ? absint( wp_unslash( $_SERVER['REMOTE_PORT'] ) ) : 0;
+			if(!empty($remote_port)){
 				array_push($siteinfo,array(
 					'name' => 'Remote Port',
-					'value' => $_SERVER['REMOTE_PORT']
+					'value' => $remote_port
 				));
 			}
 			
-			if(!empty($_SERVER['SERVER_NAME'])){
+			$server_name = isset( $_SERVER['SERVER_NAME'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SERVER_NAME'] ) ) : '';
+			if(!empty($server_name)){
 				array_push($siteinfo,array(
 					'name' => 'Server Address',
-					'value' => $_SERVER['SERVER_NAME']
+					'value' => $server_name
 				));
 			}
 			
-			if(!empty($_SERVER['SERVER_PORT'])){
+			$server_port = isset( $_SERVER['SERVER_PORT'] ) ? absint( wp_unslash( $_SERVER['SERVER_PORT'] ) ) : 0;
+			if(!empty($server_port)){
 				array_push($siteinfo,array(
 					'name' => 'Server Port',
-					'value' => $_SERVER['SERVER_PORT']
+					'value' => $server_port
 				));
 			}
 

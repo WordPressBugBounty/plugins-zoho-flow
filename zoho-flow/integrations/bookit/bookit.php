@@ -43,20 +43,23 @@ class Zoho_Flow_Bookit extends Zoho_Flow_Service{
             'category_id'
         );
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'id';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ( isset( $request['order_by'] ) && in_array( $request['order_by'], $order_by_allowed, true ) ) ? $request['order_by'] : 'id';
+        $order = ( isset( $request['order'] ) && in_array( $request['order'], $order_allowed, true ) ) ? $request['order'] : 'DESC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- ORDER BY identifiers are allowlisted/escaped; custom table read is required and must return live data.
         $results = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT s.*, c.name AS category_name
-                 FROM {$wpdb->prefix}bookit_services s
-                 LEFT JOIN {$wpdb->prefix}bookit_categories c
-                 ON s.category_id = c.id
-                 ORDER BY $order_by $order
-                 LIMIT %d",
-                 $limit
-                 ), 'ARRAY_A'
-                );
+                FROM {$wpdb->prefix}bookit_services s
+                LEFT JOIN {$wpdb->prefix}bookit_categories c
+                ON s.category_id = c.id
+                ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
+                $limit
+            ),
+            'ARRAY_A'
+        );
         return rest_ensure_response( $results );
     }
     
@@ -69,6 +72,7 @@ class Zoho_Flow_Bookit extends Zoho_Flow_Service{
     private function is_valid_service( $service_id ){
         if( isset( $service_id ) && is_numeric( $service_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current service.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                 "SELECT s.*, c.name AS category_name
@@ -96,6 +100,7 @@ class Zoho_Flow_Bookit extends Zoho_Flow_Service{
     private function is_valid_customer( $customer_id ){
         if( isset( $customer_id ) && is_numeric( $customer_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current customer.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}bookit_customers WHERE id = %d LIMIT 1",
@@ -118,6 +123,7 @@ class Zoho_Flow_Bookit extends Zoho_Flow_Service{
     private function is_valid_staff( $staff_id ){
         if( isset( $staff_id ) && is_numeric( $staff_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current staff record.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}bookit_staff WHERE id = %d LIMIT 1",
@@ -140,6 +146,7 @@ class Zoho_Flow_Bookit extends Zoho_Flow_Service{
     private function is_valid_appointment( $appointment_id ){
         if( isset( $appointment_id ) && is_numeric( $appointment_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current appointment.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}bookit_appointments WHERE id = %d LIMIT 1",

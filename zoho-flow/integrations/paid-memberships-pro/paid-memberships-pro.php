@@ -22,7 +22,7 @@ class Zoho_Flow_Paid_Memberships_Pro extends Zoho_Flow_Service{
 					'label' => $field_obj->__get('label'),
 					'name' => $field_obj->__get('name'),
 					'hint' => $field_obj->__get('hint'),
-					'meta_key' => $field_obj->__get('meta_key'),
+					'meta_key' => $field_obj->__get('meta_key'), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Response field name, not a database query argument.
 					'type' => $field_obj->__get('type'),
 					'required' => $field_obj->__get('required')
 				);

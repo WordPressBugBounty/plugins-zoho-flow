@@ -39,17 +39,31 @@ class Zoho_Flow_Service
 	}
 
 	public function download_file($file_path){
-		if(file_exists($file_path)){
-	        header('Content-Description: File Transfer');
-	        header('Content-Type: application/octet-stream');
-	        header('Content-Disposition: attachment; filename="'.basename($file_path).'"');
-	        header('Expires: 0');
-	        header('Cache-Control: must-revalidate');
-	        header('Pragma: public');
-	        header('Content-Length: ' . filesize($file_path));
-	        readfile($file_path);
-	        exit;
+		if ( ! function_exists( 'WP_Filesystem' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/file.php';
 		}
+
+		WP_Filesystem();
+		global $wp_filesystem;
+
+		if ( empty( $wp_filesystem ) || ! $wp_filesystem->exists( $file_path ) ) {
+			return;
+		}
+
+		$file_contents = $wp_filesystem->get_contents( $file_path );
+		if ( false === $file_contents ) {
+			return;
+		}
+
+		header('Content-Description: File Transfer');
+		header('Content-Type: application/octet-stream');
+		header('Content-Disposition: attachment; filename="'.basename($file_path).'"');
+		header('Expires: 0');
+		header('Cache-Control: must-revalidate');
+		header('Pragma: public');
+		header('Content-Length: ' . (int) $wp_filesystem->size( $file_path ));
+		echo $file_contents; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Intentional raw binary output for file download response.
+		exit;
 	}
 
 	public function register_apis(){
@@ -149,7 +163,7 @@ class Zoho_Flow_Service
         $args = array(
             'post_type' => WP_ZOHO_FLOW_WEBHOOK_POST_TYPE,
             'posts_per_page' => -1,
-            'meta_query' => $meta_query
+			'meta_query' => $meta_query // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required to scope webhooks to this plugin service and filter payload keys.
         );
         $webhooks = get_posts( $args );
         return $webhooks;
@@ -166,7 +180,7 @@ class Zoho_Flow_Service
 	$args = array(
 			'post_type' => WP_ZOHO_FLOW_WEBHOOK_POST_TYPE,
 			'posts_per_page' => -1,
-			'meta_query' => $meta_query,
+			'meta_query' => $meta_query, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required to verify plugin service ownership for the requested webhook post.
 			'p' => $post_id
 	);
 	$webhooks = get_posts( $args );
@@ -245,44 +259,29 @@ class Zoho_Flow_Service
 	}
 
 	private function has_webhooks(){
-		/*$args = array(
-			'post_type' => WP_ZOHO_FLOW_API_KEY_POST_TYPE,
-			'posts_per_page' => -1,
+		$args = array(
+			'post_type' => WP_ZOHO_FLOW_WEBHOOK_POST_TYPE,
+			'post_status' => 'publish',
+			'posts_per_page' => 1,
 			'fields' => 'ids',
-			'meta_query' => array(
-					'relation' => 'AND',
-							array(
-								'key' => 'plugin_service',
-								'value' => $this->service_id,
-								'compare' => '='
-							)
+			'no_found_rows' => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required to check whether this plugin service has published webhooks.
+				array(
+					'key' => 'plugin_service',
+					'value' => $this->service_id,
+					'compare' => '='
 				)
-		);
-		$api_keys = get_posts( $args );*/
-
-		global $wpdb;
-
-		$post_type = WP_ZOHO_FLOW_WEBHOOK_POST_TYPE;
-		$service_id = $this->service_id;
-
-		$query = $wpdb->prepare(
-			"SELECT p.ID
-			FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id
-			WHERE p.post_type = %s
-			AND p.post_status = 'publish'
-			AND pm.meta_key = %s
-			AND pm.meta_value = %s",
-			$post_type,
-			'plugin_service',
-			$service_id
+			)
 		);
 
-		$webhooks = $wpdb->get_col($query);
-		
-		if( isset( $webhooks ) && ( sizeof( $webhooks ) > 0 ) )	{
+		$webhooks = get_posts( $args );
+
+		if( !empty( $webhooks ) ) {
 			return true;
 		}
+
 		return false;
   }
 
@@ -290,7 +289,7 @@ class Zoho_Flow_Service
         $args = array(
             'post_type' => WP_ZOHO_FLOW_API_KEY_POST_TYPE,
             'posts_per_page' => -1,
-            'meta_query' => array(
+			'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required to isolate API keys for current user and plugin service.
             	'relation' => 'AND',
             	array(
 					'key' => 'user_id',
@@ -326,7 +325,7 @@ class Zoho_Flow_Service
         $args = array(
             'post_type' => WP_ZOHO_FLOW_API_KEY_POST_TYPE,
             'posts_per_page' => 1,
-            'meta_query' => array(
+			'meta_query' => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required to validate API key hash, service, and enabled status.
             	'relation' => 'AND',
 				array(
 					'key' => 'plugin_service',
@@ -376,10 +375,10 @@ class Zoho_Flow_Service
 		$siteinfo['rss2_url'] = get_bloginfo('rss2_url');
 		$siteinfo['comments_atom_url'] = get_bloginfo('comments_atom_url');
 		$siteinfo['comments_rss2_url'] = get_bloginfo('comments_rss2_url');
-		$siteinfo['remote_ip'] = $_SERVER['REMOTE_ADDR'];
-		$siteinfo['remote_port'] = $_SERVER['REMOTE_PORT'];
-		$siteinfo['server_name'] = $_SERVER['SERVER_NAME'];
-		$siteinfo['server_port'] = $_SERVER['SERVER_PORT'];
+		$siteinfo['remote_ip'] = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+		$siteinfo['remote_port'] = isset( $_SERVER['REMOTE_PORT'] ) ? absint( wp_unslash( $_SERVER['REMOTE_PORT'] ) ) : 0;
+		$siteinfo['server_name'] = isset( $_SERVER['SERVER_NAME'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SERVER_NAME'] ) ) : '';
+		$siteinfo['server_port'] = isset( $_SERVER['SERVER_PORT'] ) ? absint( wp_unslash( $_SERVER['SERVER_PORT'] ) ) : 0;
 		if(!empty(wp_get_attachment_image_src( get_theme_mod( 'custom_logo' ), 'full' ))){
 			$logo_url = wp_get_attachment_image_src( get_theme_mod( 'custom_logo' ), 'full' )[0];
 			if(preg_match("/\b(?:(?:https?|ftp):\/\/|www\.)[-a-z0-9+&@#\/%?=~_|!:,.;]*[-a-z0-9+&@#\/%=~_|]/i",$logo_url));{

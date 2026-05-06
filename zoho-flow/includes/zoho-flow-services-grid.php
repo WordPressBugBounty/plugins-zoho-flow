@@ -80,7 +80,7 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
 		if(!file_exists(__DIR__ . '/../assets/images/logos/' . $file)){
 			return '<img>';
 		}
-		return "<img src='" . esc_attr(esc_url(plugins_url('../assets/images/logos/' . $file, __FILE__))) . "' alt='". $item['id'] ."' style='height:64px'>";
+		return "<img src='" . esc_attr(esc_url(plugins_url('../assets/images/logos/' . $file, __FILE__))) . "' alt='" . esc_attr( $item['id'] ) . "' style='height:64px'>";
 	}
 
   public function display(){
@@ -91,16 +91,16 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
 					if(get_option('permalink_structure') && $service['is_available']){
 						?>
 
-			      	<div id='<?php echo $service['id'] ?>' class="grid-app-wrapper grid-app-available">
-								<a href='<?php echo $this->app_link_name($service) ?>'>
+			      	<div id='<?php echo esc_attr( $service['id'] ); ?>' class="grid-app-wrapper grid-app-available">
+							<a href='<?php echo esc_url( $this->app_link_name($service) ); ?>'>
 									<div class="grid-app-icon">
 			              <center>
-			                <?php echo $this->column_icon_file($service) ?>
+			                <?php echo wp_kses_post( $this->column_icon_file($service) ); ?>
 			              </center>
 			            </div>
 			            <div class="grid-app-name">
 			              <center>
-			                <?php echo $this->column_name($service) ?>
+			                <?php echo wp_kses_post( $this->column_name($service) ); ?>
 			              </center>
 			            </div>
 									</a>
@@ -119,16 +119,16 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
 						$service['is_direct_integration'] = true;
 						?>
 
-			      	<div id='<?php echo $service['id'] ?>' class="grid-app-wrapper grid-app-available">
-								<a target="_blank" href="https://www.zohoflow.com/apps/<?php echo $service['gallery_app_link'] ?>/integrations/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_<?php echo $service['gallery_app_link'] ?>">
+			      	<div id='<?php echo esc_attr( $service['id'] ); ?>' class="grid-app-wrapper grid-app-available">
+							<a target="_blank" href="<?php echo esc_url( 'https://www.zohoflow.com/apps/' . $service['gallery_app_link'] . '/integrations/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_' . $service['gallery_app_link'] ); ?>">
 									<div class="grid-app-icon">
 			              <center>
-			                <?php echo $this->column_icon_file($service) ?>
+			                <?php echo wp_kses_post( $this->column_icon_file($service) ); ?>
 			              </center>
 			            </div>
 			            <div class="grid-app-name">
 			              <center>
-			                <?php echo $this->column_name($service) ?>
+			                <?php echo wp_kses_post( $this->column_name($service) ); ?>
 			              </center>
 										<div class="grid-app-direct-integration">
 											<center>
@@ -148,24 +148,24 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
 				foreach ($this->services as $service) {
 					if(get_option('permalink_structure') && !$service['is_available']){
 						?>
-						<div id="service_details_popup_<?php echo $service['id'] ?>" style="display:none;">
+						<div id="service_details_popup_<?php echo esc_attr( $service['id'] ); ?>" style="display:none;">
 							<div class="service-details-popup" style="width:550px;text-align: center;">
 								<center>
 									<div class="service-details-popup-app-icon">
 										<center>
-											<?php echo $this->column_icon_file($service) ?>
+											<?php echo wp_kses_post( $this->column_icon_file($service) ); ?>
 										</center>
 									</div>
 									<div class="service-details-popup-app-name">
 										<center>
 											<strong>
-												<?php echo $service['name'] ?>
+												<?php echo esc_html( $service['name'] ); ?>
 											</strong>
 										</center>
 									</div>
 									<div class="service-details-popup-app-description">
 										<center>
-												<?php echo $service['description'] ?>
+												<?php echo esc_html( $service['description'] ); ?>
 										</center>
 									</div>
 								</center>
@@ -176,16 +176,16 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
 								</center>
 							</div>
 						</div>
-							<div id='<?php echo $service['id'] ?>' class="grid-app-wrapper grid-app-not-available">
-								<a href='<?php echo $this->app_link_name($service) ?>' class='thickbox'>
+							<div id='<?php echo esc_attr( $service['id'] ); ?>' class="grid-app-wrapper grid-app-not-available">
+								<a href='<?php echo esc_url( $this->app_link_name($service) ); ?>' class='thickbox'>
 									<div class="grid-app-icon">
 			              <center>
-			                <?php echo $this->column_icon_file($service) ?>
+			                <?php echo wp_kses_post( $this->column_icon_file($service) ); ?>
 			              </center>
 			            </div>
 			            <div class="grid-app-name">
 			              <center>
-			                <?php echo $this->column_name($service) ?>
+			                <?php echo wp_kses_post( $this->column_name($service) ); ?>
 			              </center>
 			            </div>
 									</a>
@@ -198,24 +198,24 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
 					if( !class_exists( $service['class_test'] ) ){
 						$service['is_available'] = false;
 						?>
-						<div id="service_details_popup_<?php echo $service['id'] ?>" style="display:none;">
+						<div id="service_details_popup_<?php echo esc_attr( $service['id'] ); ?>" style="display:none;">
 							<div class="service-details-popup" style="width:550px;text-align: center;">
 								<center>
 									<div class="service-details-popup-app-icon">
 										<center>
-											<?php echo $this->column_icon_file($service) ?>
+											<?php echo wp_kses_post( $this->column_icon_file($service) ); ?>
 										</center>
 									</div>
 									<div class="service-details-popup-app-name">
 										<center>
 											<strong>
-												<?php echo $service['name'] ?>
+												<?php echo esc_html( $service['name'] ); ?>
 											</strong>
 										</center>
 									</div>
 									<div class="service-details-popup-app-description">
 										<center>
-												<?php echo $service['description'] ?>
+												<?php echo esc_html( $service['description'] ); ?>
 										</center>
 									</div>
 								</center>
@@ -226,16 +226,16 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
 								</center>
 							</div>
 						</div>
-							<div id='<?php echo $service['id'] ?>' class="grid-app-wrapper grid-app-not-available">
-								<a href='<?php echo $this->app_link_name($service) ?>' class='thickbox'>
+							<div id='<?php echo esc_attr( $service['id'] ); ?>' class="grid-app-wrapper grid-app-not-available">
+								<a href='<?php echo esc_url( $this->app_link_name($service) ); ?>' class='thickbox'>
 									<div class="grid-app-icon">
 			              <center>
-			                <?php echo $this->column_icon_file($service) ?>
+			                <?php echo wp_kses_post( $this->column_icon_file($service) ); ?>
 			              </center>
 			            </div>
 			            <div class="grid-app-name">
 			              <center>
-			                <?php echo $this->column_name($service) ?>
+			                <?php echo wp_kses_post( $this->column_name($service) ); ?>
 			              </center>
 			            </div>
 									</a>
@@ -245,7 +245,7 @@ class Zoho_Flow_Services_Grid extends Zoho_Flow_Services{
         }
       ?>
 			<div id='app-request' class="grid-app-wrapper grid-app-request">
-				<a href="https://creatorapp.zohopublic.com/zohointranet/zoho-flow/form-embed/Request_an_App/qqePxZq7ZkzdWKGCYvntEk14O9YqjUGHJUZJHYsMA5zOK6XEC8b6Gh7mrdz2TnYu4AUVBRwu1YzKVU8KAwbn2OurBsJ66FqkT8Rm?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=320&height=440" class="thickbox" title="New integration request">
+				<a href="https://creatorapp.zohopublic.in/zohointranet/zoho-flow/form-embed/Request_an_App/qqePxZq7ZkzdWKGCYvntEk14O9YqjUGHJUZJHYsMA5zOK6XEC8b6Gh7mrdz2TnYu4AUVBRwu1YzKVU8KAwbn2OurBsJ66FqkT8Rm?zc_BdrClr=ffffff&zc_Header=false&TB_iframe=true&width=320&height=440" class="thickbox" title="New integration request">
 					<div class="grid-app-request-icon">
 						<div class="plus alt"> </div>
 					</div>

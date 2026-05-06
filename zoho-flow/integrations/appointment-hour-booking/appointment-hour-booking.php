@@ -39,15 +39,19 @@ class Zoho_Flow_Appointment_Hour_Booking extends Zoho_Flow_Service{
             'form_name'
         );
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'id';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ( isset( $request['order_by'] ) && in_array( $request['order_by'], $order_by_allowed, true ) ) ? $request['order_by'] : 'id';
+        $order = ( isset( $request['order'] ) && in_array( $request['order'], $order_allowed, true ) ) ? $request['order'] : 'DESC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- ORDER BY identifiers are allowlisted/escaped; custom table read is required and must return live data.
         $results = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}cpappbk_forms ORDER BY $order_by $order LIMIT %d",
+                "SELECT * FROM {$wpdb->prefix}cpappbk_forms ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
                 $limit
-            ), 'ARRAY_A'
-                );
+            ),
+            'ARRAY_A'
+        );
         foreach ( $results as $index => $form ){
             unset($results[ $index ]['form_structure']
           );
@@ -68,6 +72,7 @@ class Zoho_Flow_Appointment_Hour_Booking extends Zoho_Flow_Service{
     public function fetch_calendar_form( $request ){
         global $wpdb;
         $calendar_form_id = $request->get_url_params()['calendar_form_id'];
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here and must return live form data.
         $results = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM {$wpdb->prefix}cpappbk_forms WHERE id = %d LIMIT 1",
@@ -145,6 +150,7 @@ class Zoho_Flow_Appointment_Hour_Booking extends Zoho_Flow_Service{
     private function is_valid_calendar_form( $calendar_form_id ){
         if( isset( $calendar_form_id ) && is_numeric( $calendar_form_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current form.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}cpappbk_forms WHERE id = %d LIMIT 1",
@@ -170,6 +176,7 @@ class Zoho_Flow_Appointment_Hour_Booking extends Zoho_Flow_Service{
      */
     private function get_appointment_data( $appointment_id ){
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here and must return live appointment data.
         $results = $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM {$wpdb->prefix}cpappbk_messages WHERE id = %d LIMIT 1",

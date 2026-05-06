@@ -75,35 +75,36 @@ class Zoho_Flow_QuizMaker extends Zoho_Flow_Service
 
       if(!isset($request['modulename'])){
         if($typeofmod === "quiz" || $typeofmod === "get_quiz"){
-          $tablename = $this->gettable("quiz");
-          $sql = $wpdb->prepare("SELECT * FROM ".$wpdb->prefix . $tablename);
+          $tablename_sql = esc_sql( $this->gettable("quiz") );
+          $sql = "SELECT * FROM {$wpdb->prefix}{$tablename_sql}";
           if(isset($request['quiz_id']) && $request['quiz_id'] != null){
-            $condition = $wpdb->prepare(" WHERE id=%d", absint( intval( $request['quiz_id'] )));
-            $sql = $sql . $condition;
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- SQL template is assembled from allowlisted/escaped fragments before prepare.
+            $sql = $wpdb->prepare( $sql . " WHERE id=%d", absint( intval( $request['quiz_id'] ) ) );
           }
         }else if($typeofmod === "question" || $typeofmod === "get_question"){
-          $tablename = $this->gettable("question");
-          $sql = $wpdb->prepare("SELECT * FROM ".$wpdb->prefix . $tablename);
+          $tablename_sql = esc_sql( $this->gettable("question") );
+          $sql = "SELECT * FROM {$wpdb->prefix}{$tablename_sql}";
           if(isset($request['question_id']) && $request['question_id'] != null){
-            $condition = $wpdb->prepare(" WHERE id=%d", absint( intval( $request['question_id'] ) ));
-            $sql = $sql . $condition;
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- SQL template is assembled from allowlisted/escaped fragments before prepare.
+            $sql = $wpdb->prepare( $sql . " WHERE id=%d", absint( intval( $request['question_id'] ) ) );
           }
         }else if($typeofmod === "report"){
-          $tablename = $this->gettable($typeofmod);
-          $sql = $wpdb->prepare("SELECT * FROM ".$wpdb->prefix . $tablename);
+          $tablename_sql = esc_sql( $this->gettable($typeofmod) );
+          $sql = "SELECT * FROM {$wpdb->prefix}{$tablename_sql}";
         }else if($typeofmod === "answers"){
-          $tablename = $this->gettable($typeofmod);
-          $sql = $wpdb->prepare("SELECT * FROM ".$wpdb->prefix . $tablename);
+          $tablename_sql = esc_sql( $this->gettable($typeofmod) );
+          $sql = "SELECT * FROM {$wpdb->prefix}{$tablename_sql}";
           if(isset($request['question_id']) && $request['question_id'] != null){
-            $condition = $wpdb->prepare(" WHERE question_id=%d", absint( intval( $request['question_id'] ) ));
-            $sql = $sql . $condition;
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- SQL template is assembled from allowlisted/escaped fragments before prepare.
+            $sql = $wpdb->prepare( $sql . " WHERE question_id=%d", absint( intval( $request['question_id'] ) ) );
           }
         }
       }else if(isset($request['modulename']) && $request['modulename'] != null){
-        $tablename = ($request['modulename'] === "quiz" ) ? 'aysquiz_quizcategories' : 'aysquiz_categories';//$this->gettable($typeofmod);
-        $sql = $wpdb->prepare("SELECT * FROM ".$wpdb->prefix . $tablename);
+        $tablename_sql = esc_sql( ($request['modulename'] === "quiz" ) ? 'aysquiz_quizcategories' : 'aysquiz_categories' );
+        $sql = "SELECT * FROM {$wpdb->prefix}{$tablename_sql}";
       }
 
+      // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is prepared above where values are present; table names are allowlisted/escaped. Custom table read must return live data.
       $result = $wpdb->get_results( $sql, "ARRAY_A");
       if($typeofmod === 'get_quiz' || $typeofmod === 'get_question'){
         $result = $result[0];
@@ -147,6 +148,7 @@ class Zoho_Flow_QuizMaker extends Zoho_Flow_Service
         }
 
         if($id == null) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table write requires direct DB call.
             $count = $wpdb->insert(
                 $quiz_table,
                 $args
@@ -163,6 +165,7 @@ class Zoho_Flow_QuizMaker extends Zoho_Flow_Service
               }
             }
             //args after inserted the existing values
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table write requires direct DB call; write operations are not cached.
             $count = $wpdb->update(
                 $quiz_table,
                 $args,
@@ -242,6 +245,7 @@ class Zoho_Flow_QuizMaker extends Zoho_Flow_Service
 
         $question_result = null;
         if($id == null) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table write requires direct DB call.
             $question_result = $wpdb->insert(
                 $questions_table,
                 $args,
@@ -262,6 +266,7 @@ class Zoho_Flow_QuizMaker extends Zoho_Flow_Service
                 if (!in_array( $args['type'], $text_types ) && trim($answer_value) == '') {
                     continue;
                 }
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table write requires direct DB call.
                 $answers_results[] = $wpdb->insert(
                     $answers_table,
                     array(
@@ -289,6 +294,7 @@ class Zoho_Flow_QuizMaker extends Zoho_Flow_Service
               }
             }
             //args after inserted the existing values
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table write requires direct DB call; write operations are not cached.
             $question_result = $wpdb->update(
                 $questions_table,
                 $args,
@@ -313,6 +319,7 @@ class Zoho_Flow_QuizMaker extends Zoho_Flow_Service
                     if (!in_array( $type, $text_types ) && trim($answer_value) == '') {
                         continue;
                     }
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table write requires direct DB call; write operations are not cached.
                     $answers_results[] = $wpdb->update(
                         $answers_table,
                         array(
@@ -338,6 +345,7 @@ class Zoho_Flow_QuizMaker extends Zoho_Flow_Service
                         continue;
                     }
                     if( $old_answers_count < ( $index + 1) ){
+                        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Custom table write requires direct DB call.
                         $answers_results[] = $wpdb->insert(
                             $answers_table,
                             array(
@@ -348,6 +356,7 @@ class Zoho_Flow_QuizMaker extends Zoho_Flow_Service
                             ),
                         );
                     }else{
+                        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table write requires direct DB call; write operations are not cached.
                         $answers_results[] = $wpdb->update(
                             $answers_table,
                             array(
@@ -369,6 +378,7 @@ class Zoho_Flow_QuizMaker extends Zoho_Flow_Service
                 $removeable_answers = array_slice( $old_answers, -$diff, $diff );
 
                 foreach ( $removeable_answers as $removeable_answer ){
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table write requires direct DB call; write operations are not cached.
                     $delete_result = $wpdb->delete( $answers_table, array('id' => intval( $removeable_answer["id"] )) );
                 }
 
@@ -383,6 +393,7 @@ class Zoho_Flow_QuizMaker extends Zoho_Flow_Service
                         continue;
                     }
 
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table write requires direct DB call; write operations are not cached.
                     $answers_results[] = $wpdb->update(
                         $answers_table,
                         array(
@@ -412,7 +423,7 @@ class Zoho_Flow_QuizMaker extends Zoho_Flow_Service
             $errors = $question_id->get_error_messages();
             $error_code = $question_id->get_error_code();
             foreach ($errors as $error) {
-                return new WP_Error( $error_code, esc_html__( $error, 'zoho-flow' ), array('status' => 400) );
+                return new WP_Error( $error_code, esc_html( $error ), array('status' => 400) );
             }
         }
 

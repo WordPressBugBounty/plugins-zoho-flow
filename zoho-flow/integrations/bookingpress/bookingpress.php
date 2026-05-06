@@ -33,15 +33,17 @@ class Zoho_Flow_BookingPress extends Zoho_Flow_Service{
         global $wpdb;
         $order_by_allowed = array('bookingpress_category_id', 'bookingpress_category_name', 'bookingpress_category_position', 'bookingpress_categorydate_created');
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'bookingpress_categorydate_created';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
-        $results = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}bookingpress_categories ORDER BY $order_by $order LIMIT %d",
-                $limit
-            )
-            );
+        $order_by = ( $request['order_by'] && ( in_array( $request['order_by'], $order_by_allowed, true ) ) ) ? $request['order_by'] : 'bookingpress_categorydate_created';
+        $order = ( $request['order'] && ( in_array( $request['order'], $order_allowed, true ) ) ) ? $request['order'] : 'DESC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
+        $query = "SELECT * FROM {$wpdb->prefix}bookingpress_categories";
+        $query .= ' ORDER BY ' . $order_by_sql . ' ' . $order_sql . ' LIMIT %d';
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- SQL template is assembled from allowlisted/escaped fragments before prepare.
+        $query = $wpdb->prepare( $query, $limit );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is prepared above; custom table read is required and must return live data.
+        $results = $wpdb->get_results( $query );
         return rest_ensure_response( $results );
     }
     
@@ -61,19 +63,25 @@ class Zoho_Flow_BookingPress extends Zoho_Flow_Service{
         global $wpdb;
         $order_by_allowed = array('bookingpress_service_id', 'bookingpress_service_name', 'bookingpress_service_position', 'bookingpress_servicedate_created');
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'bookingpress_servicedate_created';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ( $request['order_by'] && ( in_array( $request['order_by'], $order_by_allowed, true ) ) ) ? $request['order_by'] : 'bookingpress_servicedate_created';
+        $order = ( $request['order'] && ( in_array( $request['order'], $order_allowed, true ) ) ) ? $request['order'] : 'DESC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
         $category_id = $request['category_id'];
         $query = "SELECT * FROM {$wpdb->prefix}bookingpress_services";
         if (!empty($category_id)) {
-            $query .= $wpdb->prepare(" WHERE bookingpress_category_id = %d", $category_id);
+            $query .= ' WHERE bookingpress_category_id = %d';
+            $query .= ' ORDER BY ' . $order_by_sql . ' ' . $order_sql . ' LIMIT %d';
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- SQL template is assembled from allowlisted/escaped fragments before prepare.
+            $query = $wpdb->prepare( $query, absint( $category_id ), $limit );
+        } else {
+            $query .= ' ORDER BY ' . $order_by_sql . ' ' . $order_sql . ' LIMIT %d';
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- SQL template is assembled from allowlisted/escaped fragments before prepare.
+            $query = $wpdb->prepare( $query, $limit );
         }
-        $query .= $wpdb->prepare(
-            " ORDER BY $order_by $order LIMIT %d",
-            $limit
-            );
-        $results = $wpdb->get_results($query);
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is prepared above; custom table read is required and must return live data.
+        $results = $wpdb->get_results( $query );
         return rest_ensure_response( $results );
     }
     
@@ -88,15 +96,17 @@ class Zoho_Flow_BookingPress extends Zoho_Flow_Service{
         global $wpdb;
         $order_by_allowed = array('bookingpress_form_field_id', 'bookingpress_form_field_name', 'bookingpress_field_label', 'bookingpress_field_position', 'bookingpress_created_at');
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'bookingpress_field_position';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'ASC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
-        $results = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}bookingpress_form_fields ORDER BY $order_by $order LIMIT %d",
-                $limit
-            )
-            );
+        $order_by = ( $request['order_by'] && ( in_array( $request['order_by'], $order_by_allowed, true ) ) ) ? $request['order_by'] : 'bookingpress_field_position';
+        $order = ( $request['order'] && ( in_array( $request['order'], $order_allowed, true ) ) ) ? $request['order'] : 'ASC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
+        $query = "SELECT * FROM {$wpdb->prefix}bookingpress_form_fields";
+        $query .= ' ORDER BY ' . $order_by_sql . ' ' . $order_sql . ' LIMIT %d';
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- SQL template is assembled from allowlisted/escaped fragments before prepare.
+        $query = $wpdb->prepare( $query, $limit );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is prepared above; custom table read is required and must return live data.
+        $results = $wpdb->get_results( $query );
         return rest_ensure_response( $results );
     }
     
@@ -115,20 +125,16 @@ class Zoho_Flow_BookingPress extends Zoho_Flow_Service{
         $fetch_field = $request['fetch_field'];
         $fetch_value = $request['fetch_value'];
         $available_fetch_fields = array ( "bookingpress_customer_id", "bookingpress_wpuser_id", "bookingpress_user_login", "bookingpress_user_name", "bookingpress_user_firstname", "bookingpress_user_lastname", "bookingpress_customer_full_name", "bookingpress_user_email", "bookingpress_user_phone" );
-        if( isset( $fetch_field ) && isset( $fetch_value ) && in_array( $fetch_field, $available_fetch_fields ) ){
+        if( isset( $fetch_field ) && isset( $fetch_value ) && in_array( $fetch_field, $available_fetch_fields, true ) ){
             global $wpdb;
-            $query = "SELECT * FROM {$wpdb->prefix}bookingpress_customers";
-            $query .= $wpdb->prepare(" WHERE  %s = %s ORDER BY bookingpress_user_created DESC LIMIT 100", $fetch_field, $fetch_value);
-            $results = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT * FROM {$wpdb->prefix}bookingpress_customers WHERE $fetch_field = %s ORDER BY bookingpress_user_created DESC LIMIT 100",
-                    $fetch_value
-                )
-                );
+            $fetch_field_sql = esc_sql( $fetch_field );
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is prepared from allowlisted fragments; custom table read is required and must return live data.
+            $results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}bookingpress_customers WHERE " . $fetch_field_sql . ' = %s ORDER BY bookingpress_user_created DESC LIMIT 100', $fetch_value ) );
             if( !empty( $results ) ){
                 $customer_details_array = array();
                 foreach ( $results as $customer_obj){
                     $customer_details = json_decode( json_encode( $customer_obj ), true );
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
                     $customer_meta = $wpdb->get_results(
                         $wpdb->prepare(
                             "SELECT * FROM {$wpdb->prefix}bookingpress_customers_meta WHERE bookingpress_customer_id = %d ORDER BY bookingpress_customersmeta_created_date DESC LIMIT 200",
@@ -164,18 +170,16 @@ class Zoho_Flow_BookingPress extends Zoho_Flow_Service{
         $fetch_field = $request['fetch_field'];
         $fetch_value = $request['fetch_value'];
         $available_fetch_fields = array ( "bookingpress_appointment_booking_id", "bookingpress_booking_id", "bookingpress_entry_id", "bookingpress_payment_id", "bookingpress_customer_id", "bookingpress_customer_name", "bookingpress_username", "bookingpress_customer_phone", "bookingpress_customer_email" );
-        if( isset( $fetch_field ) && isset( $fetch_value ) && in_array( $fetch_field, $available_fetch_fields ) ){
+        if( isset( $fetch_field ) && isset( $fetch_value ) && in_array( $fetch_field, $available_fetch_fields, true ) ){
             global $wpdb;
-            $results = $wpdb->get_results(
-                $wpdb->prepare(
-                    "SELECT * FROM {$wpdb->prefix}bookingpress_appointment_bookings WHERE $fetch_field = %s ORDER BY bookingpress_created_at DESC LIMIT 100",
-                    $fetch_value
-                )
-                );
+            $fetch_field_sql = esc_sql( $fetch_field );
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Query is prepared from allowlisted fragments; custom table read is required and must return live data.
+            $results = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}bookingpress_appointment_bookings WHERE " . $fetch_field_sql . ' = %s ORDER BY bookingpress_created_at DESC LIMIT 100', $fetch_value ) );
             if( !empty( $results ) ){
                 $appointment_details_array = array();
                 foreach ( $results as $appointment_obj){
                     $appointment_details = json_decode( json_encode( $appointment_obj ), true );
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
                     $appointment_meta = $wpdb->get_results(
                         $wpdb->prepare(
                             "SELECT * FROM {$wpdb->prefix}bookingpress_appointment_meta WHERE bookingpress_appointment_id = %d ORDER BY bookingpress_appointment_meta_created_date DESC LIMIT 200",
@@ -205,6 +209,7 @@ class Zoho_Flow_BookingPress extends Zoho_Flow_Service{
     private function is_valid_service( $service_id ){
         if( isset( $service_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}bookingpress_services WHERE bookingpress_service_id = %d ORDER BY bookingpress_servicedate_created DESC LIMIT 1",
@@ -228,6 +233,7 @@ class Zoho_Flow_BookingPress extends Zoho_Flow_Service{
     private function is_valid_appointment( $appointment_id ){
         if( isset( $appointment_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}bookingpress_appointment_bookings WHERE bookingpress_appointment_booking_id = %d ORDER BY bookingpress_created_at DESC LIMIT 1",
@@ -236,6 +242,7 @@ class Zoho_Flow_BookingPress extends Zoho_Flow_Service{
                 );
             if( !empty( $results[0] ) ){
                 $appointment_details = json_decode( json_encode( $results[0] ), true );
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
                 $appointment_meta = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT * FROM {$wpdb->prefix}bookingpress_appointment_meta WHERE bookingpress_entry_id = %d ORDER BY bookingpress_appointment_meta_created_date DESC LIMIT 200",
@@ -263,6 +270,7 @@ class Zoho_Flow_BookingPress extends Zoho_Flow_Service{
     private function is_valid_customer( $customer_id ){
         if( isset( $customer_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}bookingpress_customers WHERE bookingpress_customer_id = %d ORDER BY bookingpress_created_at DESC LIMIT 1",
@@ -271,6 +279,7 @@ class Zoho_Flow_BookingPress extends Zoho_Flow_Service{
                 );
             if( !empty( $results[0] ) ){
                 $customer_details = json_decode( json_encode( $results[0] ), true );
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
                 $customer_meta = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT * FROM {$wpdb->prefix}bookingpress_customers_meta WHERE bookingpress_customer_id = %d ORDER BY bookingpress_customersmeta_created_date DESC LIMIT 200",

@@ -22,8 +22,10 @@ class Zoho_Flow_Service_Suggestion{
       $current_page = $pagenow;
       $_is_admin_page  = 'admin.php' === $current_page ? true : false;
       $_is_edit_page  = 'edit.php' === $current_page ? true : false;
-      $_page = isset( $_REQUEST['page'] ) ? $_REQUEST['page'] : false;
-      $_post_type = isset( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : false;
+      // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Standard WordPress query parameters set by the platform, not user form submissions.
+      $_page = isset( $_REQUEST['page'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['page'] ) ) : false;
+      // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Standard WordPress query parameters set by the platform, not user form submissions.
+      $_post_type = isset( $_REQUEST['post_type'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['post_type'] ) ) : false;
       if( $_is_admin_page && $_page ){
           $service_id = $this->admin_page_plugin_finder( $_page );
           if ( isset( $service_id ) ){
@@ -980,14 +982,13 @@ elseif( 'bricks' === $service_id ){
 							'posts_per_page' => -1,
 							'author' => get_current_user_id(),
 							'fields' => 'ids',
+							'cache_results' => false,
+							'update_post_meta_cache' => false,
+							'update_post_term_cache' => false,
+			        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required to filter API keys by plugin_service; indexed meta key.
 			        'meta_query' => array(
 			              	'relation' => 'AND',
 			              	array(
-			        					'key' => 'user_id',
-			        					'value' => get_current_user_id(),
-			        					'compare' => '='
-			        				),
-			        				array(
 			        					'key' => 'plugin_service',
 			        					'value' => $this->id,
 			        					'compare' => '='
@@ -1008,21 +1009,33 @@ elseif( 'bricks' === $service_id ){
   public function display(){
     if( !empty( $this->id ) ){
       ?>
-      <div id= "flow-suggestion-notice" style="border: 5px solid transparent;border-bottom: 0;border-left: 0;border-right: 0;padding: 10px;border-image: url('<?php echo plugins_url('../assets/images/zoho-colors.gif', __FILE__); ?>') 100% 1 stretch;" class="notice notice-info is-dismissible">
+      <div id= "flow-suggestion-notice" style="border: 5px solid transparent;border-bottom: 0;border-left: 0;border-right: 0;padding: 10px;border-image: url('<?php echo esc_url( plugins_url('../assets/images/zoho-colors.gif', __FILE__) ); ?>') 100% 1 stretch;" class="notice notice-info is-dismissible">
     		<div style="display:flex;">
     			<div style="margin-top: auto;margin-bottom: auto;padding: 15px;display: inline-block;">
-            <p hidden id="flow_service_id"><?php echo $this->id; ?></p>
+            <p hidden id="flow_service_id"><?php echo esc_html( $this->id ); ?></p>
     				<div style="display:inline-flex;">
-    					<img style="max-height: 40px;max-width: 40px;object-fit: contain;padding: 10px;border: solid;border-color: #b8afaf;border-width: thin;border-radius: 10px;-webkit-box-sizing: content-box;" src="<?php echo plugins_url('../assets/images/flow-256.png', __FILE__); ?>"/>
+                        <img style="max-height: 40px;max-width: 40px;object-fit: contain;padding: 10px;border: solid;border-color: #b8afaf;border-width: thin;border-radius: 10px;-webkit-box-sizing: content-box;" src="<?php echo esc_url( plugins_url('../assets/images/flow-256.png', __FILE__) ); ?>"/>
     					<div style="margin-top: auto;margin-bottom: auto;font-size: 25px;font-weight: 400;">&#8644;</div>
-              <img style="max-height: 40px;max-width: 40px;object-fit: contain;padding: 10px;border: solid;border-color: #b8afaf;border-width: thin;border-radius: 10px;-webkit-box-sizing: content-box;" src="<?php echo plugins_url('../assets/images/logos/' . $this->icon_file, __FILE__); ?>"/>
+              <img style="max-height: 40px;max-width: 40px;object-fit: contain;padding: 10px;border: solid;border-color: #b8afaf;border-width: thin;border-radius: 10px;-webkit-box-sizing: content-box;" src="<?php echo esc_url( plugins_url('../assets/images/logos/' . $this->icon_file, __FILE__) ); ?>"/>
     				</div>
     			</div>
     			<div>
     				<div style="font-size: 15px;padding: 10px;padding-top: 5px;text-align: center;margin-left: auto;margin-right: auto;max-width: 90%;">
     					<?php
     					echo sprintf(
-    						esc_html__('Unlock unlimited possibilities with %2$s! Seamlessly integrate your favorite services, including %1$s, with various business applications and experience the true potential of automation.'), sprintf('<strong>'.$this->name.'</strong>'),sprintf('<strong>Zoho Flow</strong>')
+                            /* translators: 1: Current service name, 2: Zoho Flow. */
+    						esc_html__(
+    						'Unlock unlimited possibilities with %2$s! Seamlessly integrate your favorite services, including %1$s, with various business applications and experience the true potential of automation.',
+    						'zoho-flow'
+    						),
+    						sprintf(
+    						'<strong>%s</strong>',
+    						esc_html($this->name)
+    						),
+    						sprintf(
+    						'<strong>%s</strong>',
+    						esc_html__('Zoho Flow', 'zoho-flow')
+    						)
     					);
     					?>
     				</div>
@@ -1036,13 +1049,13 @@ elseif( 'bricks' === $service_id ){
                   menu_page_url( 'zoho_flow', false )
                 );
                 ?>
-                  <a id="suggestion-notice-review-botton" class="button button-primary" style="margin:5px;" href="<?php echo $flow_plugin_api_page_link ?>" target="_blank"><?php echo 'Try now' ?></a>
-                  <a id="suggestion-notice-gallery-botton" class="button button-secondary" style="margin:5px;" href="https://www.zohoflow.com/apps/<?php echo $this->gallery_app_link ?>/integrations/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_integration_suggestion_<?php echo $this->id ?>" target="_blank"><?php echo 'Check how' ?></a>
+                                    <a id="suggestion-notice-review-botton" class="button button-primary" style="margin:5px;" href="<?php echo esc_url( $flow_plugin_api_page_link ); ?>" target="_blank"><?php echo 'Try now' ?></a>
+                                    <a id="suggestion-notice-gallery-botton" class="button button-secondary" style="margin:5px;" href="<?php echo esc_url( 'https://www.zohoflow.com/apps/' . $this->gallery_app_link . '/integrations/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_integration_suggestion_' . $this->id ); ?>" target="_blank"><?php echo 'Check how' ?></a>
                 <?php
               }
               else{
                 ?>
-                  <a id="suggestion-notice-gallery-botton" class="button button-primary" style="margin:5px;" href="https://www.zohoflow.com/apps/<?php echo $this->gallery_app_link ?>/integrations/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_plugin_suggestion" target="_blank"><?php echo 'Check how' ?></a>
+                                    <a id="suggestion-notice-gallery-botton" class="button button-primary" style="margin:5px;" href="<?php echo esc_url( 'https://www.zohoflow.com/apps/' . $this->gallery_app_link . '/integrations/?utm_source=wordpress&utm_medium=link&utm_campaign=zoho_flow_plugin_suggestion' ); ?>" target="_blank"><?php echo 'Check how' ?></a>
                 <?php
               }
                ?>

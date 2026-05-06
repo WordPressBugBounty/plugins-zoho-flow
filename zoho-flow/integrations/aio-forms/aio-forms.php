@@ -40,13 +40,17 @@ class Zoho_Flow_AIO_Forms extends Zoho_Flow_Service{
         );
         $order_allowed = array('ASC', 'DESC');
         
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'update_date';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed, true))) ? $request['order_by'] : 'update_date';
+        $order = ($request['order'] && (in_array($request['order'], $order_allowed, true))) ? $request['order'] : 'DESC';
+        $limit = ($request['limit']) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
         
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
         $results = $wpdb->get_results(
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- ORDER BY identifiers are allowlisted and escaped before concatenation.
             $wpdb->prepare(
-                "SELECT form_id, form_name, creation_date, update_date FROM {$wpdb->prefix}rednaoeasycalculationforms_forms ORDER BY $order_by $order LIMIT %d",
+                "SELECT form_id, form_name, creation_date, update_date FROM {$wpdb->prefix}rednaoeasycalculationforms_forms ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
                 $limit
             ), 'ARRAY_A'
                 );
@@ -84,6 +88,7 @@ class Zoho_Flow_AIO_Forms extends Zoho_Flow_Service{
     private function is_valid_form( $form_id ){
         if( isset( $form_id ) && is_numeric( $form_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $result = $wpdb->get_row(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}rednaoeasycalculationforms_forms WHERE form_id = %d",
@@ -92,8 +97,6 @@ class Zoho_Flow_AIO_Forms extends Zoho_Flow_Service{
                             );
             
             if( !empty( $result ) ){
-                
-                $result['fields'] = maybe_unserialize( $result['fields'], true );
                 return $result;
                 
             }

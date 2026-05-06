@@ -37,12 +37,15 @@ class Zoho_Flow_Form_Maker extends Zoho_Flow_Service{
             'title'
         );
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'id';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ( isset( $request['order_by'] ) && in_array( $request['order_by'], $order_by_allowed, true ) ) ? $request['order_by'] : 'id';
+        $order = ( isset( $request['order'] ) && in_array( $request['order'], $order_allowed, true ) ) ? $request['order'] : 'DESC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- ORDER BY identifiers are allowlisted/escaped; custom table read is required and must return live data.
         $results = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT id,title,type,published FROM {$wpdb->prefix}formmaker ORDER BY $order_by $order LIMIT %d",
+                "SELECT id,title,type,published FROM {$wpdb->prefix}formmaker ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic ORDER BY identifiers are allowlisted.
                 $limit
             ), 'ARRAY_A'
                 );
@@ -85,6 +88,7 @@ class Zoho_Flow_Form_Maker extends Zoho_Flow_Service{
     private function is_valid_form( $form_id ){
         if( isset( $form_id ) && is_numeric( $form_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current form.
             $result = $wpdb->get_row(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}formmaker WHERE `id` = %d",
@@ -101,6 +105,7 @@ class Zoho_Flow_Form_Maker extends Zoho_Flow_Service{
     private function get_submission( $form_id, $submission_id ){
         if( isset( $form_id ) && is_numeric( $form_id ) && isset( $submission_id  ) && is_numeric( $submission_id  ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to fetch the live submission values.
             $result = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT element_label,element_value,ip,user_id_wd FROM {$wpdb->prefix}formmaker_submits WHERE `form_id` = %d AND `group_id` = %d",

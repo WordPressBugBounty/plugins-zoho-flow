@@ -47,6 +47,7 @@ class Zoho_Flow_SiteOrigin_Widgets_Bundle extends Zoho_Flow_Service{
             'numberposts' => $limit,
             'orderby'        => $order_by,
             'order'          => $order,
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required to locate posts containing SiteOrigin form widget markers in panels_data meta.
             'meta_query'     => array(
                 'relation' => 'AND',
                 array(

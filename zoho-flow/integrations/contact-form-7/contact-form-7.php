@@ -541,7 +541,7 @@ class Zoho_Flow_Contact_Form_7 extends Zoho_Flow_Service
 					'user_display_name' => @wpcf7_user_related_smt( '', '_user_display_name', false, new WPCF7_MailTag( sprintf( '[%s]', 'user_display_name' ), 'user_display_name', '' ) )
 				);
 				if( class_exists( 'Cf7_Visited_Pages_Url_Tracking_Public' ) ){
-					$submission_meta['cf7vput_last_visited_pages'] = @json_decode( stripslashes( sanitize_text_field( $_COOKIE[ 'cf7vput_last_visited_pages' ] ) ) );
+					$submission_meta['cf7vput_last_visited_pages'] = isset( $_COOKIE['cf7vput_last_visited_pages'] ) ? @json_decode( stripslashes( sanitize_text_field( wp_unslash( $_COOKIE['cf7vput_last_visited_pages'] ) ) ) ) : null; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotValidated, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				}
 	      $event_data = array(
 	        'event' => 'form_entry_added',

@@ -32,17 +32,18 @@ class Zoho_Flow_TheEventsCalendar extends Zoho_Flow_Service{
      */
     public function list_event_meta_keys( $request ){
         global $wpdb;
-        
-        $query = $wpdb->prepare(
-            'SELECT DISTINCT(m.meta_key)
-                FROM ' . $wpdb->base_prefix . 'postmeta m
-                INNER JOIN ' . $wpdb->base_prefix . 'posts p ON p.ID = m.post_id
-                WHERE p.post_type = %s
-                LIMIT 1400',
-            'tribe_events'
-            );
-        
-        $meta_keys = $wpdb->get_results($query);
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Read query is required for live meta-key discovery.
+        $meta_keys = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT DISTINCT(m.meta_key)
+                    FROM ' . $wpdb->base_prefix . 'postmeta m
+                    INNER JOIN ' . $wpdb->base_prefix . 'posts p ON p.ID = m.post_id
+                    WHERE p.post_type = %s
+                    LIMIT 1400',
+                'tribe_events'
+            )
+        );
         
         return rest_ensure_response( $meta_keys );
     }
@@ -55,17 +56,18 @@ class Zoho_Flow_TheEventsCalendar extends Zoho_Flow_Service{
      */
     public function list_organizer_meta_keys( $request ){
         global $wpdb;
-        
-        $query = $wpdb->prepare(
-            'SELECT DISTINCT(m.meta_key)
-                FROM ' . $wpdb->base_prefix . 'postmeta m
-                INNER JOIN ' . $wpdb->base_prefix . 'posts p ON p.ID = m.post_id
-                WHERE p.post_type = %s
-                LIMIT 1400',
-            'tribe_organizer'
-            );
-        
-        $meta_keys = $wpdb->get_results($query);
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Read query is required for live meta-key discovery.
+        $meta_keys = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT DISTINCT(m.meta_key)
+                    FROM ' . $wpdb->base_prefix . 'postmeta m
+                    INNER JOIN ' . $wpdb->base_prefix . 'posts p ON p.ID = m.post_id
+                    WHERE p.post_type = %s
+                    LIMIT 1400',
+                'tribe_organizer'
+            )
+        );
         
         return rest_ensure_response( $meta_keys );
     }
@@ -78,17 +80,18 @@ class Zoho_Flow_TheEventsCalendar extends Zoho_Flow_Service{
      */
     public function list_venue_meta_keys( $request ){
         global $wpdb;
-        
-        $query = $wpdb->prepare(
-            'SELECT DISTINCT(m.meta_key)
-                FROM ' . $wpdb->base_prefix . 'postmeta m
-                INNER JOIN ' . $wpdb->base_prefix . 'posts p ON p.ID = m.post_id
-                WHERE p.post_type = %s
-                LIMIT 1400',
-            'tribe_venue'
-            );
-        
-        $meta_keys = $wpdb->get_results($query);
+
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Read query is required for live meta-key discovery.
+        $meta_keys = $wpdb->get_results(
+            $wpdb->prepare(
+                'SELECT DISTINCT(m.meta_key)
+                    FROM ' . $wpdb->base_prefix . 'postmeta m
+                    INNER JOIN ' . $wpdb->base_prefix . 'posts p ON p.ID = m.post_id
+                    WHERE p.post_type = %s
+                    LIMIT 1400',
+                'tribe_venue'
+            )
+        );
         
         return rest_ensure_response( $meta_keys );
     }

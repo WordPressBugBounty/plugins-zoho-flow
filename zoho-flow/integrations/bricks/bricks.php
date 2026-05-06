@@ -47,6 +47,7 @@ class Zoho_Flow_Bricks extends Zoho_Flow_Service{
             'posts_per_page' => $limit,
             'orderby'        => $order_by,
             'order'          => $order,
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required to locate Bricks pages containing form blocks with custom action.
             'meta_query'     => array(
                 'relation' => 'AND',
                 array(

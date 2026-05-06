@@ -4,13 +4,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 //CONSTANTS
-define ( 'COURSE_COMPLETED', 'course_completed');
-define ( 'LESSON_COMPLETED', 'lesson_completed');
-define ( 'QUIZ_COMPLETED', 'quiz_completed');
-define ( 'USER_ENROLLED_TO_COURSE', 'user_enrolled_to_course');
-define ( 'USER_REMOVED_FROM_COURSE', 'user_removed_from_course');
-define ( 'USER_ENROLLED_TO_MEMBERSHIP', 'user_enrolled_to_membership');
-define ( 'USER_REMOVED_FROM_MEMBERSHIP', 'user_removed_from_membership');
+define ( 'ZOHO_FLOW_LIFTER_LMS_COURSE_COMPLETED', 'course_completed');
+define ( 'ZOHO_FLOW_LIFTER_LMS_LESSON_COMPLETED', 'lesson_completed');
+define ( 'ZOHO_FLOW_LIFTER_LMS_QUIZ_COMPLETED', 'quiz_completed');
+define ( 'ZOHO_FLOW_LIFTER_LMS_USER_ENROLLED_TO_COURSE', 'user_enrolled_to_course');
+define ( 'ZOHO_FLOW_LIFTER_LMS_USER_REMOVED_FROM_COURSE', 'user_removed_from_course');
+define ( 'ZOHO_FLOW_LIFTER_LMS_USER_ENROLLED_TO_MEMBERSHIP', 'user_enrolled_to_membership');
+define ( 'ZOHO_FLOW_LIFTER_LMS_USER_REMOVED_FROM_MEMBERSHIP', 'user_removed_from_membership');
 
 
 class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
@@ -312,9 +312,15 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
 	private function get_quiz_attempts($args){
 		global $wpdb;
 
-		$sql = $wpdb->prepare( "SELECT * FROM ".$wpdb->prefix . "lifterlms_quiz_attempts WHERE quiz_id= %d AND student_id= %d AND lesson_id= %d ORDER BY end_date DESC", array(absint( intval( $args['quiz_id'] ) ) , absint( intval( $args['student_id'] ) ), absint(intval($args['lesson_id']))));
-
-		$result = $wpdb->get_results( $sql );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
+        $result = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT * FROM {$wpdb->prefix}lifterlms_quiz_attempts WHERE quiz_id = %d AND student_id = %d AND lesson_id = %d ORDER BY end_date DESC",
+                absint( intval( $args['quiz_id'] ) ),
+                absint( intval( $args['student_id'] ) ),
+                absint( intval( $args['lesson_id'] ) )
+            )
+        );
 		return $result[0];
 	}
 
@@ -418,7 +424,7 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
      * @param int   $course_id      Course ID
      */
     public function process_llms_user_enrolled_in_course($student_id, $course_id){
-        return rest_ensure_response($this->process_hookdata($student_id, $course_id, USER_ENROLLED_TO_COURSE, null));
+        return rest_ensure_response($this->process_hookdata($student_id, $course_id, ZOHO_FLOW_LIFTER_LMS_USER_ENROLLED_TO_COURSE, null));
     }
     
     /**
@@ -427,7 +433,7 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
      * @param int   $course_id      Course ID
      */
     public function process_llms_user_removed_from_course($student_id, $course_id){
-        return rest_ensure_response($this->process_hookdata($student_id, $course_id, USER_REMOVED_FROM_COURSE, null));
+        return rest_ensure_response($this->process_hookdata($student_id, $course_id, ZOHO_FLOW_LIFTER_LMS_USER_REMOVED_FROM_COURSE, null));
     }
     
     /**
@@ -436,7 +442,7 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
      * @param int       $membership_id      Membership ID
      */
     public function process_llms_user_added_to_membership_level($student_id, $membership_id){
-        return rest_ensure_response($this->process_hookdata($student_id, $membership_id, USER_ENROLLED_TO_MEMBERSHIP, null));
+        return rest_ensure_response($this->process_hookdata($student_id, $membership_id, ZOHO_FLOW_LIFTER_LMS_USER_ENROLLED_TO_MEMBERSHIP, null));
     }
     
     /**
@@ -447,7 +453,7 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
      * @param string  $new_status
      */
     public function process_llms_user_removed_from_membership_level($student_id, $membership_id, $trigger, $new_status){
-        return rest_ensure_response($this->process_hookdata($student_id, $membership_id, USER_REMOVED_FROM_MEMBERSHIP, null));
+        return rest_ensure_response($this->process_hookdata($student_id, $membership_id, ZOHO_FLOW_LIFTER_LMS_USER_REMOVED_FROM_MEMBERSHIP, null));
     }
     
     /**
@@ -456,7 +462,7 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
      * @param int   $lesson_id      Lesson ID
      */
     public function process_lifterlms_lesson_completed($user_id, $lesson_id){
-        return rest_ensure_response($this->process_hookdata($user_id, $lesson_id, LESSON_COMPLETED, null));
+        return rest_ensure_response($this->process_hookdata($user_id, $lesson_id, ZOHO_FLOW_LIFTER_LMS_LESSON_COMPLETED, null));
     }
     
     /**
@@ -466,7 +472,7 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
      * @param int   $quizdata       Quiz details
      */
     public function process_lifterlms_quiz_completed($student_id, $quiz_id, $quizdata){
-        return rest_ensure_response($this->process_hookdata($student_id, $quiz_id, QUIZ_COMPLETED, $quizdata));
+        return rest_ensure_response($this->process_hookdata($student_id, $quiz_id, ZOHO_FLOW_LIFTER_LMS_QUIZ_COMPLETED, $quizdata));
     }
 
     /**
@@ -478,7 +484,7 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
      */
     public function process_lifterlms_course_completed($student_id, $object_id, $object_type, $trigger){
         if($object_type=='course'){
-            return rest_ensure_response($this->process_hookdata($student_id, $object_id, COURSE_COMPLETED, null));
+            return rest_ensure_response($this->process_hookdata($student_id, $object_id, ZOHO_FLOW_LIFTER_LMS_COURSE_COMPLETED, null));
         }
     }
 
@@ -497,10 +503,10 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
         $form = $this->form_validataion(null, $form_id, $action);
 
         if(is_wp_error($form)){
-            return new WP_Error( 'rest_bad_request', esc_html__( $form->get_error_message($form->get_error_code()), 'zoho-flow' ), $form->get_error_data($form->get_error_code()) );
+            return new WP_Error( 'rest_bad_request', esc_html( $form->get_error_message($form->get_error_code()) ), $form->get_error_data($form->get_error_code()) );
         }
         
-        $newform_id = ($action === COURSE_COMPLETED) ? "0" : $form->ID;
+        $newform_id = ($action === ZOHO_FLOW_LIFTER_LMS_COURSE_COMPLETED) ? "0" : $form->ID;
         $args = array(
             'action' => $action,
             "form_id" => $newform_id
@@ -509,18 +515,18 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
         $webhooks = $this->get_webhook_posts($args);
         if( !empty( $webhooks )){
             switch($action){
-                case COURSE_COMPLETED :
+                case ZOHO_FLOW_LIFTER_LMS_COURSE_COMPLETED :
                     $courseObj = new LLMS_Course($form_id);
                     $course = $courseObj->get_product();
                     $returndata['course'] = $course->post;
                     break;
-                case LESSON_COMPLETED :
+                case ZOHO_FLOW_LIFTER_LMS_LESSON_COMPLETED :
                     $lessonObj = new LLMS_Lesson($form_id);
                     $course = $lessonObj->get_course();
                     $returndata['course'] = $course->post;
                     $returndata['lesson'] = $lessonObj->post;
                     break;
-                case QUIZ_COMPLETED :
+                case ZOHO_FLOW_LIFTER_LMS_QUIZ_COMPLETED :
                     if(!empty($extradata)){
                         $quizObj = new LLMS_Quiz($form_id);
     					$course_id = $quizObj->get_course()->post->ID;
@@ -532,23 +538,23 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
                         $returndata['quizresult'] = $quiz_attempt;
                     }
                     break;
-                case USER_REMOVED_FROM_MEMBERSHIP:
-                case USER_ENROLLED_TO_MEMBERSHIP:
+                case ZOHO_FLOW_LIFTER_LMS_USER_REMOVED_FROM_MEMBERSHIP:
+                case ZOHO_FLOW_LIFTER_LMS_USER_ENROLLED_TO_MEMBERSHIP:
                     $membershipObj = new LLMS_Membership($form_id);
                     $membership = $membershipObj->get_product();
                     unset($membership->post->post_content, $membership->post->post_password);
                     $returndata['membership'] = $membership->post;
                     $studentdata = $membershipObj->get_students();
                     break;
-                case USER_ENROLLED_TO_COURSE:
-                case USER_REMOVED_FROM_COURSE:
+                case ZOHO_FLOW_LIFTER_LMS_USER_ENROLLED_TO_COURSE:
+                case ZOHO_FLOW_LIFTER_LMS_USER_REMOVED_FROM_COURSE:
                     $courseObj = new LLMS_Course($form_id);
                     $course = $courseObj->get_product();
                     unset($course->post->post_content, $course->post->post_password);
                     $returndata['course'] = $course->post;
                     $studentdata = $courseObj->get_students();
             }
-            if(($action == USER_ENROLLED_TO_MEMBERSHIP || $action == USER_ENROLLED_TO_COURSE) && !empty($studentdata) ) {
+            if(($action == ZOHO_FLOW_LIFTER_LMS_USER_ENROLLED_TO_MEMBERSHIP || $action == ZOHO_FLOW_LIFTER_LMS_USER_ENROLLED_TO_COURSE) && !empty($studentdata) ) {
                 if(in_array($user_id, $studentdata)){
                     $student = get_user_by('ID', $user_id);
                     unset($student->data->user_pass);
@@ -578,7 +584,8 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
         $type = $request['type'];
         $post_id = $request['post_id'];
         if(!ctype_digit($post_id)){
-            return new WP_Error( 'rest_bad_request', esc_html__( 'The '. $type .' ID is invalid.', 'zoho-flow' ), array( 'status' => 400 ) );
+            /* translators: %s: Resource type (course or membership). */
+            return new WP_Error( 'rest_bad_request', sprintf( esc_html__( 'The %s ID is invalid.', 'zoho-flow' ), esc_html( $type ) ), array( 'status' => 400 ) );
         }
 
         $usersIds =json_decode($request->get_body())->{'users'};
@@ -595,7 +602,8 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
         $product = (is_object($form))? $form->data : $form[0];
 
         if(empty($product)){
-            return new WP_Error( 'invalid_'.$type.'_id', __('No '. $type .' found'), array( 'status' => 400 ) );
+            /* translators: %s: Resource type (course or membership). */
+            return new WP_Error( 'invalid_'.$type.'_id', sprintf( esc_html__( 'No %s found', 'zoho-flow' ), esc_html( $type ) ), array( 'status' => 400 ) );
         }
 
         $enrolled_users = llms_get_enrolled_students($post_id);
@@ -634,7 +642,8 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
         $type = $request['type'];
         $post_id = $request['post_id'];
         if(!ctype_digit($post_id)){
-            return new WP_Error( 'rest_bad_request', esc_html__( 'The '.$type.' ID is invalid.', 'zoho-flow' ), array( 'status' => 400 ) );
+            /* translators: %s: Resource type (course or membership). */
+            return new WP_Error( 'rest_bad_request', sprintf( esc_html__( 'The %s ID is invalid.', 'zoho-flow' ), esc_html( $type ) ), array( 'status' => 400 ) );
         }
 
         $usersIds =json_decode($request->get_body())->{'users'};
@@ -650,7 +659,8 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
         $form = (($type == 'course') ? $this->handle_get_queries(array('form_id'=>$post_id), 'course') : $this->handle_get_queries(array('form_id'=>$post_id), 'llms_membership'));
         $product = (is_object($form))? $form->data : $form[0];
         if(empty($product)){
-            return new WP_Error( 'invalid_'.$type.'_id', __('No '.$type.' found'), array( 'status' => 400 ) );
+            /* translators: %s: Resource type (course or membership). */
+            return new WP_Error( 'invalid_'.$type.'_id', sprintf( esc_html__( 'No %s found', 'zoho-flow' ), esc_html( $type ) ), array( 'status' => 400 ) );
         }
 
         $enrolled_users=llms_get_enrolled_students($post_id);
@@ -685,13 +695,15 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
         $post_id = $request['post_id'];
         $type = $request['type'];
         if(!ctype_digit($post_id)){
-            return new WP_Error( 'rest_bad_request', esc_html__( 'The '.$type.' ID is invalid.', 'zoho-flow' ), array( 'status' => 400 ) );
+            /* translators: %s: Resource type (course or membership). */
+            return new WP_Error( 'rest_bad_request', sprintf( esc_html__( 'The %s ID is invalid.', 'zoho-flow' ), esc_html( $type ) ), array( 'status' => 400 ) );
         }
 
         $form = (($type == 'course') ? $this->handle_get_queries(array('form_id'=>$post_id), 'course') : $this->handle_get_queries(array('form_id'=>$post_id), 'llms_membership'));
         $product = (is_object($form))? $form->data : $form[0];
         if(empty($product)){
-            return new WP_Error( 'invalid_'.$type.'_id', __('No '.$type.' found'), array( 'status' => 400 ) );
+            /* translators: %s: Resource type (course or membership). */
+            return new WP_Error( 'invalid_'.$type.'_id', sprintf( esc_html__( 'No %s found', 'zoho-flow' ), esc_html( $type ) ), array( 'status' => 400 ) );
         }
         $data = llms_get_enrolled_students($post_id);
         return rest_ensure_response(array('users'=>$data));
@@ -709,19 +721,19 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
             case 'forms' :
                 $post_type = 'llms_form';
                 break;
-            case COURSE_COMPLETED:
-            case USER_ENROLLED_TO_COURSE:
-            case USER_REMOVED_FROM_COURSE:
+            case ZOHO_FLOW_LIFTER_LMS_COURSE_COMPLETED:
+            case ZOHO_FLOW_LIFTER_LMS_USER_ENROLLED_TO_COURSE:
+            case ZOHO_FLOW_LIFTER_LMS_USER_REMOVED_FROM_COURSE:
                 $post_type = 'course';
                 break;
-            case LESSON_COMPLETED:
+            case ZOHO_FLOW_LIFTER_LMS_LESSON_COMPLETED:
                 $post_type = 'lesson';
                 break;
-            case QUIZ_COMPLETED:
+            case ZOHO_FLOW_LIFTER_LMS_QUIZ_COMPLETED:
                 $post_type = 'llms_quiz';
                 break;
-            case USER_ENROLLED_TO_MEMBERSHIP:
-            case USER_REMOVED_FROM_MEMBERSHIP:
+            case ZOHO_FLOW_LIFTER_LMS_USER_ENROLLED_TO_MEMBERSHIP:
+            case ZOHO_FLOW_LIFTER_LMS_USER_REMOVED_FROM_MEMBERSHIP:
                 $post_type = 'llms_membership';
                 break;
         }
@@ -763,7 +775,7 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
 				}
 
         if(is_wp_error($form)){
-            return new WP_Error( 'rest_bad_request', esc_html__( $form->get_error_message($form->get_error_code()), 'zoho-flow' ), $form->get_error_data($form->get_error_code()) );
+            return new WP_Error( 'rest_bad_request', esc_html( $form->get_error_message($form->get_error_code()) ), $form->get_error_data($form->get_error_code()) );
         }
 				$form_id = ($form === null) ? $request['form_id'] : $form->ID;
         $args = array(
@@ -816,7 +828,7 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
 		}
 
         if(is_wp_error($form)){
-            return new WP_Error( 'rest_bad_request', esc_html__( $form->get_error_message($form->get_error_code()), 'zoho-flow' ), $form->get_error_data($form->get_error_code()) );
+            return new WP_Error( 'rest_bad_request', esc_html( $form->get_error_message($form->get_error_code()) ), $form->get_error_data($form->get_error_code()) );
         }
 				$form_id = ($form === null) ? $request['form_id'] : $form->ID;
 
@@ -959,8 +971,8 @@ class Zoho_Flow_Lifter_LMS extends Zoho_Flow_Service
                 'posts_per_page'    =>   500,
                 'orderby'           =>   'date',
                 'order'             =>   'DESC',
-                'meta_key'          => $meta_key,
-                'meta_value'        => $meta_value,
+                'meta_key'          => $meta_key, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Required metadata filter for LifterLMS relationship lookup.
+                'meta_value'        => $meta_value, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- Required metadata filter for LifterLMS relationship lookup.
                 'meta_compare'      => '=',
                 'no_paging'			=> 	true,
             );

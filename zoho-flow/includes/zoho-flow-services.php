@@ -60,8 +60,7 @@ class Zoho_Flow_Services {
 				$instance->register_hooks();
 				$instance->register_dynamic_hooks();
 
-				$hook = 'zoho_flow_register_service_' . str_replace('-', '_', $id);
-				do_action( $hook, $this->services[$id]);
+				do_action( 'zoho_flow_register_service_' . str_replace('-', '_', $id), $this->services[$id] );
 			}
 		}
 	}

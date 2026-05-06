@@ -6,8 +6,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function zoho_flow_debug($message) {
       if(WP_ZOHO_FLOW_DEBUG){
+            // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Debug logging configuration, only used when WP_ZOHO_FLOW_DEBUG is enabled.
             ini_set('log_errors', true);
+            // phpcs:ignore Squiz.PHP.DiscouragedFunctions.Discouraged -- Debug logging configuration, only used when WP_ZOHO_FLOW_DEBUG is enabled.
             ini_set('error_log', WP_ZOHO_FLOW_PLUGIN_DIR . DIRECTORY_SEPARATOR . 'errors.log');
+            // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log, WordPress.PHP.DevelopmentFunctions.error_log_print_r -- Debug logging, only used when WP_ZOHO_FLOW_DEBUG is enabled.
             error_log(print_r($message, true));
       }
 }
@@ -354,6 +357,10 @@ function zoho_flow_delete_webhook( $url ){
         'post_type' => WP_ZOHO_FLOW_WEBHOOK_POST_TYPE,
         'posts_per_page' => -1,
         'fields' => 'ids',
+        'cache_results' => false,
+        'update_post_meta_cache' => false,
+        'update_post_term_cache' => false,
+        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required to find webhooks by URL; indexed meta key.
         'meta_query' => array(
             array(
                 'key' => 'url',

@@ -25,6 +25,7 @@ class Zoho_Flow_Amelia extends Zoho_Flow_Service{
    */
   public function list_events( $request ){
     global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here and must return live event data.
     $results = $wpdb->get_results(
 			$wpdb->prepare(
 				"SELECT id, parentId, name, status, maxCapacity, price, created FROM {$wpdb->prefix}amelia_events WHERE status = %s ORDER BY created DESC LIMIT 1000",
@@ -43,6 +44,7 @@ class Zoho_Flow_Amelia extends Zoho_Flow_Service{
    */
   public function list_services( $request ){
       global $wpdb;
+      // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here and must return live service data.
       $results = $wpdb->get_results(
           $wpdb->prepare(
               "SELECT * FROM {$wpdb->prefix}amelia_services WHERE status = %s ORDER BY id DESC LIMIT 1000",
@@ -61,6 +63,7 @@ class Zoho_Flow_Amelia extends Zoho_Flow_Service{
    */
   public function list_categories( $request ){
       global $wpdb;
+      // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here and must return live category data.
       $results = $wpdb->get_results(
           $wpdb->prepare(
               "SELECT * FROM {$wpdb->prefix}amelia_categories WHERE status = %s ORDER BY id DESC LIMIT 1000",
@@ -80,6 +83,7 @@ class Zoho_Flow_Amelia extends Zoho_Flow_Service{
   public function list_services_by_category( $request ){
       if( $this->is_valid_category_id( $request['category_id'] ) ){
           global $wpdb;
+          // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here and must return live services for the selected category.
           $results = $wpdb->get_results(
               $wpdb->prepare(
                   "SELECT * FROM {$wpdb->prefix}amelia_services WHERE status = %s AND categoryId = %d ORDER BY id DESC LIMIT 1000",
@@ -104,6 +108,7 @@ class Zoho_Flow_Amelia extends Zoho_Flow_Service{
   private function is_valid_event_id( $event_id ){
       if( isset( $event_id ) && is_numeric( $event_id ) ){
           global $wpdb;
+          // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current event.
           $results = $wpdb->get_results(
               $wpdb->prepare(
                   "SELECT * FROM {$wpdb->prefix}amelia_events WHERE id = %d LIMIT 1",
@@ -130,6 +135,7 @@ class Zoho_Flow_Amelia extends Zoho_Flow_Service{
   private function is_valid_category_id( $category_id ){
       if( isset( $category_id ) && is_numeric( $category_id ) ){
           global $wpdb;
+          // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current category.
           $results = $wpdb->get_results(
               $wpdb->prepare(
                   "SELECT * FROM {$wpdb->prefix}amelia_categories WHERE id = %d LIMIT 1",
@@ -156,6 +162,7 @@ class Zoho_Flow_Amelia extends Zoho_Flow_Service{
   private function is_valid_service_id( $service_id ){
       if( isset( $service_id ) && is_numeric( $service_id ) ){
           global $wpdb;
+          // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current service.
           $results = $wpdb->get_results(
               $wpdb->prepare(
                   "SELECT * FROM {$wpdb->prefix}amelia_services WHERE id = %d LIMIT 1",

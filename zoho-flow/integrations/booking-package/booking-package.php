@@ -41,12 +41,16 @@ class Zoho_Flow_Booking_Package extends Zoho_Flow_Service{
             'name'
         );
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'created';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed, true))) ? $request['order_by'] : 'created';
+        $order = ($request['order'] && (in_array($request['order'], $order_allowed, true))) ? $request['order'] : 'DESC';
+        $limit = ($request['limit']) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
         $results = $wpdb->get_results(
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- ORDER BY identifiers are allowlisted and escaped before concatenation.
             $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}booking_package_calendar_accounts ORDER BY $order_by $order LIMIT %d",
+                "SELECT * FROM {$wpdb->prefix}booking_package_calendar_accounts ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic identifiers are allowlisted.
                 $limit
             ), 'ARRAY_A'
                 );
@@ -78,6 +82,7 @@ class Zoho_Flow_Booking_Package extends Zoho_Flow_Service{
     public function list_form_fields( $request ){
         global $wpdb;
         $calendar_id = $request->get_url_params()['calendar_id'];
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
         $results = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT * FROM {$wpdb->prefix}booking_package_form WHERE `key` = %d",
@@ -99,6 +104,7 @@ class Zoho_Flow_Booking_Package extends Zoho_Flow_Service{
     private function is_valid_calendar( $calendar_id ){
         if( isset( $calendar_id ) && is_numeric( $calendar_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_row(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}booking_package_calendar_accounts WHERE `key` = %d",
@@ -121,6 +127,7 @@ class Zoho_Flow_Booking_Package extends Zoho_Flow_Service{
     private function is_valid_customer( $booking_id ){
         if( isset( $booking_id ) && is_numeric( $booking_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_row(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}booking_package_booked_customers WHERE `key` = %d",

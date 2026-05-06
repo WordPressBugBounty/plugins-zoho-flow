@@ -356,6 +356,7 @@ class Zoho_Flow_Ultimate_Member extends Zoho_Flow_Service
             'orderby' => ( isset( $request['order_by'] ) && ( in_array( $request['order_by'], $allowed_orderby ) ) ) ? $request['order_by'] : 'date',
             'order' => ( isset( $request['order'] ) && ( in_array( $request['order'], $allowed_order ) ) ) ? $request['order'] : 'DESC',
             'post_status' => array('publish'),
+                        // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required to fetch only registration forms via _um_mode meta.
             'meta_query'  => array(
               array(
                 'key' => '_um_mode',

@@ -41,23 +41,39 @@ class Zoho_Flow_ARForms extends Zoho_Flow_Service{
             'created_date'
         );
         $order_allowed = array('ASC', 'DESC');
-        $order_by = ( isset( $request['order_by'] ) && ( in_array($request['order_by'], $order_by_allowed ) ) ) ? $request['order_by'] : 'id';
-        $order = ( isset( $request['order'] ) && ( in_array( $request['order'], $order_allowed ) ) ) ? $request['order'] : 'DESC';
-        $limit = isset( $request['limit'] ) ? $request['limit'] : '200';
-        $query = "SELECT id, form_key, name, description, status, created_date, arf_is_lite_form, arf_lite_form_id FROM {$wpdb->prefix}arf_forms  WHERE is_template = 0";
-        if ( isset( $request['form_type'] ) ) {
-            if ( 'PRO' === $request['form_type'] ) {
-                $query .= $wpdb->prepare(" AND arf_is_lite_form = 0");
-            }
-            elseif ( 'LITE' === $request['form_type'] ) {
-                $query .= $wpdb->prepare(" AND arf_is_lite_form = 1");
-            }
-        }
-        $query .= $wpdb->prepare(
-            " ORDER BY $order_by $order LIMIT %d",
-            $limit
+        $order_by = ( isset( $request['order_by'] ) && ( in_array( $request['order_by'], $order_by_allowed, true ) ) ) ? $request['order_by'] : 'id';
+        $order = ( isset( $request['order'] ) && ( in_array( $request['order'], $order_allowed, true ) ) ) ? $request['order'] : 'DESC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
+        if ( isset( $request['form_type'] ) && 'PRO' === $request['form_type'] ) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- ORDER BY identifiers are allowlisted/escaped; custom table read is required and must return live data.
+            $results = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT id, form_key, name, description, status, created_date, arf_is_lite_form, arf_lite_form_id FROM {$wpdb->prefix}arf_forms WHERE is_template = 0 AND arf_is_lite_form = 0 ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic ORDER BY identifiers are allowlisted.
+                    $limit
+                ),
+                'ARRAY_A'
             );
-        $results = $wpdb->get_results( $query, 'ARRAY_A' );
+        } elseif ( isset( $request['form_type'] ) && 'LITE' === $request['form_type'] ) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- ORDER BY identifiers are allowlisted/escaped; custom table read is required and must return live data.
+            $results = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT id, form_key, name, description, status, created_date, arf_is_lite_form, arf_lite_form_id FROM {$wpdb->prefix}arf_forms WHERE is_template = 0 AND arf_is_lite_form = 1 ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic ORDER BY identifiers are allowlisted.
+                    $limit
+                ),
+                'ARRAY_A'
+            );
+        } else {
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- ORDER BY identifiers are allowlisted/escaped; custom table read is required and must return live data.
+            $results = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT id, form_key, name, description, status, created_date, arf_is_lite_form, arf_lite_form_id FROM {$wpdb->prefix}arf_forms WHERE is_template = 0 ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic ORDER BY identifiers are allowlisted.
+                    $limit
+                ),
+                'ARRAY_A'
+            );
+        }
         
         return rest_ensure_response( $results );
     }
@@ -76,6 +92,7 @@ class Zoho_Flow_ARForms extends Zoho_Flow_Service{
         $form_id = $request->get_url_params()['form_id'];
         if( isset( $form_id) && $this->is_valid_form( $form_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}arf_fields WHERE form_id = %d ORDER BY id ASC",
@@ -100,6 +117,7 @@ class Zoho_Flow_ARForms extends Zoho_Flow_Service{
     private function fetch_form_entry( $entry_id ){
         if( isset( $entry_id ) && is_numeric( $entry_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}arf_entries WHERE id = %d LIMIT 1",
@@ -109,6 +127,7 @@ class Zoho_Flow_ARForms extends Zoho_Flow_Service{
             if( !empty( $results ) ){
                 $entry_details = $results[0];
                 $entry_details[ 'description' ] = maybe_unserialize( $entry_details[ 'description' ] );
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
                 $values = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT id, entry_value, field_id FROM {$wpdb->prefix}arf_entry_values WHERE entry_id = %d LIMIT 1000",
@@ -137,6 +156,7 @@ class Zoho_Flow_ARForms extends Zoho_Flow_Service{
     private function is_valid_form( $form_id ){
         if( isset( $form_id ) && is_numeric( $form_id )){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required and must return live data.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}arf_forms WHERE id = %d AND is_template = 0 LIMIT 1",

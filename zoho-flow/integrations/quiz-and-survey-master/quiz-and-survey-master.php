@@ -97,6 +97,7 @@ class Zoho_Flow_Quiz_And_Survey_Master extends Zoho_Flow_Service{
         $quiz_id = $request['quiz_id'];
         if( $this->is_valid_quiz( $quiz_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to fetch live quiz settings.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}mlw_quizzes WHERE quiz_id = %s",

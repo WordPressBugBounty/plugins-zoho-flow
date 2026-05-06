@@ -179,6 +179,7 @@ class Zoho_Flow_WPZOOM_Forms extends Zoho_Flow_Service{
      * Fires after entry is processed.
      */
     public function payload_form_entry_submitted( ){
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a third-party plugin callback consuming submitted payload, not a user-authenticated admin form action.
         $form_entry = $_POST;
         $form_id = $form_entry['form_id'];
         $args = array(

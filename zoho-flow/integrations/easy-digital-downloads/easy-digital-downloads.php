@@ -221,6 +221,7 @@ class Zoho_Flow_Easy_Digital_Downloads extends Zoho_Flow_Service{
     private function get_order( $order_id ){
         if( isset( $order_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom EDD table read is required here to fetch live order details.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}edd_orders WHERE id = %d ORDER BY date_created DESC LIMIT 1",
@@ -230,6 +231,7 @@ class Zoho_Flow_Easy_Digital_Downloads extends Zoho_Flow_Service{
             if( !empty( $results[0] ) ){
                 
                 $order_details = json_decode( json_encode( $results[0] ), true );
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom EDD table read is required here to fetch live order items.
                 $order_items = $wpdb->get_results(
                     $wpdb->prepare(
                         "SELECT * FROM {$wpdb->prefix}edd_order_items WHERE order_id = %d ORDER BY cart_index ASC LIMIT 500",
@@ -263,6 +265,7 @@ class Zoho_Flow_Easy_Digital_Downloads extends Zoho_Flow_Service{
     private function get_order_address( $order_id ){
         if( isset( $order_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom EDD table read is required here to fetch the live order address.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}edd_order_addresses WHERE order_id = %d ORDER BY date_created DESC LIMIT 1",
@@ -287,6 +290,7 @@ class Zoho_Flow_Easy_Digital_Downloads extends Zoho_Flow_Service{
     private function get_order_item( $order_item_uuid ){
         if( isset( $order_item_uuid ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom EDD table read is required here to fetch the live order item.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}edd_order_items WHERE uuid = %d ORDER BY date_created DESC LIMIT 1",
@@ -334,6 +338,7 @@ class Zoho_Flow_Easy_Digital_Downloads extends Zoho_Flow_Service{
     private function get_customer_primary_address( $customer_id ){
         if( isset( $customer_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom EDD table read is required here to fetch the live primary address.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}edd_customer_addresses WHERE customer_id = %d AND is_primary = 1 ORDER BY date_created ASC LIMIT 1",
@@ -358,6 +363,7 @@ class Zoho_Flow_Easy_Digital_Downloads extends Zoho_Flow_Service{
     private function get_customer_addresses( $customer_id ){
         if( isset( $customer_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom EDD table read is required here to fetch live customer addresses.
             $results = $wpdb->get_results(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}edd_customer_addresses WHERE customer_id = %d ORDER BY date_created DESC LIMIT 100",

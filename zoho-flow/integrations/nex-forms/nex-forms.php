@@ -40,13 +40,16 @@ class Zoho_Flow_NEX_Forms extends Zoho_Flow_Service{
         );
         $order_allowed = array('ASC', 'DESC');
         
-        $order_by = ($request['order_by'] && (in_array($request['order_by'], $order_by_allowed))) ? $request['order_by'] : 'id';
-        $order = ($request['order'] && (in_array($request['order'], $order_allowed))) ? $request['order'] : 'DESC';
-        $limit = ($request['limit']) ? $request['limit'] : '200';
+        $order_by = ( isset( $request['order_by'] ) && in_array( $request['order_by'], $order_by_allowed, true ) ) ? $request['order_by'] : 'id';
+        $order = ( isset( $request['order'] ) && in_array( $request['order'], $order_allowed, true ) ) ? $request['order'] : 'DESC';
+        $limit = isset( $request['limit'] ) ? absint( $request['limit'] ) : 200;
+        $order_by_sql = esc_sql( $order_by );
+        $order_sql = esc_sql( $order );
         
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- ORDER BY identifiers are allowlisted/escaped; custom table read is required and must return live data.
         $results = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT id, title, description, added, last_update, is_form, form_status FROM {$wpdb->prefix}wap_nex_forms ORDER BY $order_by $order LIMIT %d",
+                "SELECT id, title, description, added, last_update, is_form, form_status FROM {$wpdb->prefix}wap_nex_forms ORDER BY " . $order_by_sql . ' ' . $order_sql . ' LIMIT %d', // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Dynamic ORDER BY identifiers are allowlisted.
                 $limit
             ), 'ARRAY_A'
                 );
@@ -83,6 +86,7 @@ class Zoho_Flow_NEX_Forms extends Zoho_Flow_Service{
     private function is_valid_form( $form_id ){
         if( isset( $form_id ) && is_numeric( $form_id ) ){
             global $wpdb;
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Custom table read is required here to validate the current form.
             $result = $wpdb->get_row(
                 $wpdb->prepare(
                     "SELECT * FROM {$wpdb->prefix}wap_nex_forms WHERE id = %d",
@@ -174,6 +178,7 @@ class Zoho_Flow_NEX_Forms extends Zoho_Flow_Service{
      * Fires after entry is processed.
      */
     public function payload_form_entry_submitted( ){
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- This is a third-party webhook callback consuming plugin-submitted payload, not a user-authenticated admin form action.
         $form_entry = $_POST;
         $form_id = $form_entry['nex_forms_Id'];
         $args = array(
