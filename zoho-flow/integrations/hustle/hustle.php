@@ -50,7 +50,11 @@ class Zoho_Flow_Hustle extends Zoho_Flow_Service{
    * @return array|WP_Error Array of field arrays | WP_Error object with error details.
    */
   public function list_fields( $request ){
-    $module_model_obj = new Hustle_Module_Model( $request['module_id'] );
+    $module_collection_obj = new Hustle_Module_Collection();
+    if( is_wp_error( $module_collection_obj ) ){
+      return new WP_Error( 'rest_bad_request', $module_collection_obj->get_error_messages()[0], array( 'status' => 400 ) );
+    }
+    $module_model_obj = $module_collection_obj->return_model_from_id( $request['module_id'] );
     if( is_wp_error( $module_model_obj ) ){
       return new WP_Error( 'rest_bad_request', $module_model_obj->get_error_messages()[0], array( 'status' => 400 ) );
     }
@@ -71,20 +75,17 @@ class Zoho_Flow_Hustle extends Zoho_Flow_Service{
    */
   private function is_valid_module_id( $module_id ){
     if( isset( $module_id ) ){
-      $module_model_obj = new Hustle_Module_Model( $module_id );
-      if( is_wp_error( $module_model_obj ) ){
-        return false;
-      }
-      else if( $module_model_obj->active ){
-        return true;
-      }
-      else{
-        return false;
+      $module_collection_obj = new Hustle_Module_Collection();
+      if( !is_wp_error( $module_collection_obj ) ){
+        $module_model_obj = $module_collection_obj->return_model_from_id( $module_id );
+        if( !is_wp_error( $module_model_obj ) ){
+          if( $module_model_obj->active ){
+            return true;
+          }
+        }
       }
     }
-    else{
-      return false;
-    }
+    return false;
   }
 
   /**

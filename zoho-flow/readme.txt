@@ -1,11 +1,11 @@
-=== Zoho Flow ===
+=== Zoho Flow – No-Code Workflow Automation ===
 
 Contributors: zohoflow
 Tags: integration, automation, workflow, webhook, notification
 Requires at least: 5.0
 Requires PHP: 7.0.0
-Tested up to: 6.9
-Stable tag: 2.14.3
+Tested up to: 7.0
+Stable tag: 2.14.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -168,8 +168,8 @@ Verifies that your server supports secure TLS/SSL connections required for Zoho 
 A request is made during plugin initialization or setup.
 
 * What data is sent:
-- A standard HTTPS request
-- No personal user data or WordPress site content is transmitted
+A standard HTTPS request
+No personal user data or WordPress site content is transmitted
 
 * Why data is sent:
 To confirm that secure communication with Zoho services is possible.
@@ -228,6 +228,10 @@ IMPORTANT: Security update - Broken access control vulnerability has been fixed.
 IMPORTANT: Security update - SQL injection vulnerability has been fixed. Upgrade immediately.
 
 == Changelog ==
+
+= 2.14.4 =
+
+* Fixed an issue with field loading for the latest versions of Hustle.
 
 = 2.14.3 =
 
