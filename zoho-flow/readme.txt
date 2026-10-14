@@ -5,7 +5,7 @@ Tags: integration, automation, workflow, webhook, notification
 Requires at least: 5.0
 Requires PHP: 7.0.0
 Tested up to: 7.0
-Stable tag: 2.14.4
+Stable tag: 2.14.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -228,6 +228,10 @@ IMPORTANT: Security update - Broken access control vulnerability has been fixed.
 IMPORTANT: Security update - SQL injection vulnerability has been fixed. Upgrade immediately.
 
 == Changelog ==
+
+= 2.14.5 =
+
+* Security fix for an authenticated SSRF vulnerability that could allow local file reads.
 
 = 2.14.4 =
 

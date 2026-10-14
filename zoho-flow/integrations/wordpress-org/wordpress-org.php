@@ -51,17 +51,35 @@ class Zoho_Flow_WordPress_org extends Zoho_Flow_Service
 
 	public function upload_media($request) {
 	    $file = $request['file'];
-			if(!empty($file)){
+			if ( is_string( $file ) && '' !== trim( $file ) ) {
+				$url_parts = wp_parse_url( $file );
+				if ( ! is_array( $url_parts ) || empty( $url_parts['host'] ) || empty( $url_parts['scheme'] ) || 'https' !== strtolower( $url_parts['scheme'] ) || ( isset( $url_parts['port'] ) && 443 !== $url_parts['port'] ) || isset( $url_parts['user'] ) || isset( $url_parts['pass'] ) || ! wp_http_validate_url( $file ) ) {
+					return new WP_Error( 'rest_bad_request', esc_html__( 'Invalid HTTPS media URL.', 'zoho-flow' ), array( 'status' => 400 ) );
+				}
+
+				$remote_response = wp_safe_remote_get( $file, array(
+				'timeout'             => 45,
+				'redirection'         => 0,
+				'reject_unsafe_urls'  => true,
+				) );
+				if ( is_wp_error( $remote_response ) || wp_remote_retrieve_response_code( $remote_response ) < 200 || wp_remote_retrieve_response_code( $remote_response ) >= 300 ) {
+					return new WP_Error( 'rest_bad_request', esc_html__( 'Unable to retrieve the remote media file.', 'zoho-flow' ), array( 'status' => 400 ) );
+				}
+
+			$file_contents = wp_remote_retrieve_body( $remote_response );
+			if ( '' === $file_contents ) {
+				return new WP_Error( 'rest_bad_request', esc_html__( 'The remote media file is empty.', 'zoho-flow' ), array( 'status' => 400 ) );
+			}
+
 				$filename = "";
 				if(!empty($request['media_file_name'])){
 					$filename = $request['media_file_name'];
 				}
 				else{
-					$filename = basename($file);
+					$filename = basename( $url_parts['path'] ?? '' );
 				}
 
-		    $upload_file = wp_upload_bits($filename, null, file_get_contents($file));
-
+		    $upload_file = wp_upload_bits($filename, null, $file_contents);
 		    if (!$upload_file['error']) {
 		        $wp_filetype = wp_check_filetype($filename, null );
 		        $attachment = array(
